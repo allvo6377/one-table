@@ -112,6 +112,11 @@ handled explicitly rather than papered over:
     rest of the overlay never re-parse.
 - **Scroll position** — the scroll container survives re-renders (equal
   content height), and is reset to top only on actual view entry.
+- **Focus** — the focused control is identified by its `data-*` signature
+  before each re-render and its replacement is re-focused after, so keyboard
+  users are never dumped back to `<body>`. Overlays move focus in on open,
+  trap Tab inside while open, and hand focus back to the triggering control
+  on close.
 
 This is the pragmatic middle ground: the *simplicity* of "UI = f(state)"
 with targeted escape hatches where identity actually matters.
@@ -135,6 +140,15 @@ Monday-start week from the real clock, so "Today" is always today and the
 plan's day labels carry real dates. (During verification the container's
 clock rolled past midnight and the "Today" pill moved from Thu to Fri on its
 own — the feature demonstrating itself.)
+
+Day-keyed state is **week-scoped**: persistence carries the week's identity
+(`weekKey`, the Monday's date), and on load any `eaten`/`overrides`/
+`checked`/`nudgeDone` saved under a different week is discarded rather than
+misapplied to the new week's meals. Long-lived sessions recheck the clock on
+`visibilitychange`/`focus`, so an installed PWA left open overnight rolls
+"Today" forward (and resets cleanly at the week boundary) without a reload.
+Persisted swaps are validated against the recipe table at read time, so a
+deploy that renames a recipe id can't crash a returning client.
 
 ## Mobile strategy: same DOM, different physics
 

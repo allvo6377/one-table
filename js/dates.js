@@ -18,5 +18,8 @@ export function currentWeek(now = new Date()) {
     ? `${mon.getDate()} – ${sun.getDate()} ${MONTHS_FULL[mon.getMonth()]}`
     : `${mon.getDate()} ${MONTHS_FULL[mon.getMonth()]} – ${sun.getDate()} ${MONTHS_FULL[sun.getMonth()]}`;
   const todayLabel = `${FULL_DAY[DAY_NAMES[dow]]}, ${now.getDate()} ${MONTHS_FULL[now.getMonth()]}`;
-  return { days, todayIdx: dow, label, todayLabel };
+  // Stable identity for this week (Monday's date) — persisted alongside
+  // day-keyed state so a new week starts clean instead of inheriting it.
+  const key = `${mon.getFullYear()}-${String(mon.getMonth() + 1).padStart(2, '0')}-${String(mon.getDate()).padStart(2, '0')}`;
+  return { days, todayIdx: dow, label, todayLabel, key };
 }

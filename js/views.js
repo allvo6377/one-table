@@ -36,7 +36,7 @@ export function sidebar() {
       <div class="brand-sub">Party of one · eat the world</div>
     </div>
     <nav class="side-nav" aria-label="Sections">
-      ${NAV.map(([label, v]) => `<button class="nav-btn${state.view === v ? ' is-active' : ''}" data-act="view" data-view="${v}">${label}</button>`).join('')}
+      ${NAV.map(([label, v]) => `<button class="nav-btn${state.view === v ? ' is-active' : ''}"${state.view === v ? ' aria-current="page"' : ''} data-act="view" data-view="${v}">${label}</button>`).join('')}
     </nav>
     <button class="new-plan" data-act="openGen">＋ Plan a new week</button>
     <div class="glance">
@@ -47,7 +47,7 @@ export function sidebar() {
 
 export function tabbar() {
   return NAV.map(([label, v]) => `
-    <button class="tab${state.view === v ? ' is-active' : ''}" data-act="view" data-view="${v}" aria-label="${label}">
+    <button class="tab${state.view === v ? ' is-active' : ''}"${state.view === v ? ' aria-current="page"' : ''} data-act="view" data-view="${v}" aria-label="${label}">
       ${NAV_ICONS[v]}<span>${label.replace('Weekly plan', 'Plan').replace('Shopping list', 'List')}</span>
     </button>`).join('');
 }
@@ -67,7 +67,7 @@ function mealCard(m, i) {
       <button class="meal-name as-link" data-act="open" data-id="${m.rid}">${esc(r.name)}</button>
       <div class="meal-meta"><span>${esc(m.timeLabel)}</span><span>·</span><span>${r.protein}g protein</span></div>
       <div class="meal-actions">
-        <button class="eat-btn${m.isEaten ? ' is-on' : ''}" data-act="eat" data-key="${m.key}" data-id="${m.rid}">${m.isEaten ? 'Eaten ✓' : 'Mark eaten'}</button>
+        <button class="eat-btn${m.isEaten ? ' is-on' : ''}" aria-pressed="${m.isEaten}" data-act="eat" data-key="${m.key}" data-id="${m.rid}">${m.isEaten ? 'Eaten ✓' : 'Mark eaten'}</button>
         ${m.canCook ? `<button class="cook-btn" data-act="cook" data-id="${m.rid}">Cook · ${r.timeMin} min →</button>` : ''}
       </div>
     </div>
@@ -88,7 +88,7 @@ export function todayView() {
       </div>
       <div class="prot-box">
         <div class="prot-row"><b>${t.eatenProt}g of ${t.todayProt}g protein</b><span>${t.eatenCount}/3 meals</span></div>
-        <div class="bar"><div class="bar-fill fill-ochre" style="width:${t.pct}%"></div></div>
+        <div class="bar" role="progressbar" aria-label="Protein eaten today" aria-valuemin="0" aria-valuemax="${t.todayProt}" aria-valuenow="${t.eatenProt}"><div class="bar-fill fill-ochre" style="width:${t.pct}%"></div></div>
       </div>
     </header>
 
@@ -200,9 +200,9 @@ export function planView() {
         <h1 class="page-title">${esc(state.week.label)}</h1>
         <p class="page-blurb">${esc(blurb)}</p>
       </div>
-      <div class="seg" role="tablist" aria-label="Layout">
-        <button class="seg-btn${state.layout === 'grid' ? ' is-on' : ''}" data-act="layout" data-layout="grid">Grid</button>
-        <button class="seg-btn${state.layout === 'agenda' ? ' is-on' : ''}" data-act="layout" data-layout="agenda">Agenda</button>
+      <div class="seg" role="group" aria-label="Layout">
+        <button class="seg-btn${state.layout === 'grid' ? ' is-on' : ''}" aria-pressed="${state.layout === 'grid'}" data-act="layout" data-layout="grid">Grid</button>
+        <button class="seg-btn${state.layout === 'agenda' ? ' is-on' : ''}" aria-pressed="${state.layout === 'agenda'}" data-act="layout" data-layout="agenda">Agenda</button>
       </div>
     </header>
     ${state.layout === 'grid'
@@ -219,14 +219,14 @@ export function shoppingView() {
     <div class="kicker">Auto-generated from your week</div>
     <h1 class="page-title">Shopping list</h1>
     <p class="page-blurb">${s.totalNeed} items to buy · ${s.gotten} in the cart · pantry staples are already crossed off.</p>
-    <div class="bar bar-lg"><div class="bar-fill fill-olive shimmer" style="width:${s.pct}%"></div></div>
+    <div class="bar bar-lg" role="progressbar" aria-label="Shopping progress" aria-valuemin="0" aria-valuemax="${s.totalNeed}" aria-valuenow="${s.gotten}"><div class="bar-fill fill-olive shimmer" style="width:${s.pct}%"></div></div>
     <button class="link-btn" data-act="hideHave">${state.hideHave ? 'Show pantry items' : 'Hide items I already have'}</button>
     ${s.groups.map(g => `
       <section class="shop-group">
         <div class="shop-group-head"><h3>${esc(g.cat)}</h3><span>${esc(g.needLabel)}</span></div>
         ${g.items.map(it => `
-          <button class="shop-row${it.checked ? ' is-checked' : ''}" data-act="check" data-item="${esc(it.name)}" ${it.have ? 'disabled' : ''}>
-            <span class="checkbox">${it.checked ? '✓' : ''}</span>
+          <button class="shop-row${it.checked ? ' is-checked' : ''}" role="checkbox" aria-checked="${it.checked}" data-act="check" data-item="${esc(it.name)}" ${it.have ? 'disabled' : ''}>
+            <span class="checkbox" aria-hidden="true">${it.checked ? '✓' : ''}</span>
             <span class="shop-name">${esc(it.name)}</span>
             ${it.multi ? `<span class="shop-count">for ${it.count} meals</span>` : ''}
             ${it.have ? '<span class="shop-have">✓ in pantry</span>' : ''}

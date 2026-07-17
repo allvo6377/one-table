@@ -78,7 +78,7 @@ function cookMode() {
   const total = r.steps.length, n = state.cookStep + 1;
   return `
   <div class="cook" role="dialog" aria-modal="true" aria-label="Cooking ${esc(r.name)}">
-    <div class="cook-track"><div class="cook-fill" style="width:${Math.round(n / total * 100)}%"></div></div>
+    <div class="cook-track" role="progressbar" aria-label="Recipe progress" aria-valuemin="1" aria-valuemax="${total}" aria-valuenow="${n}"><div class="cook-fill" style="width:${Math.round(n / total * 100)}%"></div></div>
     <div class="cook-head">
       <div>
         <div class="cook-kicker">Cooking now</div>
@@ -105,7 +105,7 @@ function chipGroup(group, key, opts, note) {
       ${opts.map(label => {
         const on = state.prefs[key] === label;
         const sub = key === 'cuisines' && currency[label] ? currency[label].code : '';
-        return `<button class="pref-chip${on ? ' is-on' : ''}" data-act="pref" data-key="${key}" data-val="${esc(label)}">${esc(label)}${sub ? `<i>${sub}</i>` : ''}</button>`;
+        return `<button class="pref-chip${on ? ' is-on' : ''}" aria-pressed="${on}" data-act="pref" data-key="${key}" data-val="${esc(label)}">${esc(label)}${sub ? `<i>${sub}</i>` : ''}</button>`;
       }).join('')}
     </div>
     ${note ? `<div class="pref-note">${esc(note)}</div>` : ''}
@@ -124,7 +124,7 @@ function generator() {
     <div class="pref-group">
       <div class="pref-title">Weekly budget</div>
       <div class="slider-row">
-        <input type="range" min="${cur.budgetMin}" max="${cur.budgetMax}" step="${cur.budgetStep}" value="${bval}" data-act="budget" aria-label="Weekly budget">
+        <input type="range" min="${cur.budgetMin}" max="${cur.budgetMax}" step="${cur.budgetStep}" value="${bval}" data-act="budget" aria-label="Weekly budget" aria-valuetext="${cur.symbol}${Math.round(bval).toLocaleString('en-US')}">
         <span class="slider-val" id="budget-val">${cur.symbol}${Math.round(bval).toLocaleString('en-US')}</span>
       </div>
       <div class="pref-note">Local market prices. Drag to set what you can spend — we’ll build the cheapest ${esc(cz)} week that fits.</div>

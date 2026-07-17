@@ -21,9 +21,9 @@ export function cuisineChip(cuisine, extraClass = '') {
 }
 
 export const steam = `
-  <span class="steam s1"></span>
-  <span class="steam s2"></span>
-  <span class="steam s3"></span>`;
+  <span class="steam s1" aria-hidden="true"></span>
+  <span class="steam s2" aria-hidden="true"></span>
+  <span class="steam s3" aria-hidden="true"></span>`;
 
 let toastTimer = 0;
 export function toast(msg) {

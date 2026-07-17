@@ -104,8 +104,11 @@ export function onBudgetInput(input) {
   const v = Number(input.value);
   set({ prefs: { ...state.prefs, budgetLocal: v } }, { silent: true });
   const cur = currency[state.prefs.cuisines];
+  if (!cur) return;
+  const formatted = cur.symbol + Math.round(v).toLocaleString('en-US');
   const label = document.getElementById('budget-val');
-  if (label && cur) label.textContent = cur.symbol + Math.round(v).toLocaleString('en-US');
+  if (label) label.textContent = formatted;
+  input.setAttribute('aria-valuetext', formatted);
 }
 
 // Escape closes the topmost layer only.

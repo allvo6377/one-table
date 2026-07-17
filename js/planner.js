@@ -3,7 +3,10 @@ import { recipes, mixedPlan, cuisineMains, cuisineBreakfasts, neutralBreakfasts,
 import { state } from './store.js';
 
 export function effId(day, slot) {
-  return state.overrides[day.name + '-' + slot] || day[slot].id;
+  // Ignore persisted swaps that point at recipe ids this build doesn't know
+  // (e.g. a swap saved before a deploy that renamed a recipe).
+  const o = state.overrides[day.name + '-' + slot];
+  return (o && recipes[o]) ? o : day[slot].id;
 }
 
 export function fmtLocal(usd, cuisine) {
