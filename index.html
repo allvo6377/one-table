@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Table for One — solo meal planner</title>
+<meta name="description" content="Seven days of meals sized for one — Kenyan, Swahili, Nigerian, Ugandan, Indian and Italian cooking with smart leftovers, a live shopping list and a step-by-step cook mode.">
+<meta name="theme-color" content="#2B2620">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preload" href="fonts/newsreader-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/dm-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/app.css">
+<link rel="modulepreload" href="js/app.js">
+<link rel="modulepreload" href="js/store.js">
+<link rel="modulepreload" href="js/data.js">
+<link rel="modulepreload" href="js/dates.js">
+<link rel="modulepreload" href="js/planner.js">
+<link rel="modulepreload" href="js/derive.js">
+<link rel="modulepreload" href="js/ui.js">
+<link rel="modulepreload" href="js/views.js">
+<link rel="modulepreload" href="js/overlays.js">
+<link rel="modulepreload" href="js/actions.js">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar" class="sidebar" aria-label="Navigation and week summary"></aside>
+  <main id="view" class="main"></main>
+</div>
+<nav id="tabbar" class="tabbar" aria-label="Sections"></nav>
+<button id="fab" class="fab" data-act="openGen" aria-label="Plan a new week">＋</button>
+<div id="overlays"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:24px;font-family:system-ui">Table for One needs JavaScript — it’s a fully client-side app with no server behind it.</p></noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
