@@ -5,6 +5,7 @@ import { planTotals, fmtLocal, localVal } from './planner.js';
 import { currency } from './data.js';
 import { todayData, weekDays, fridgeData, radarData, nudgeData, shoppingData } from './derive.js';
 import { esc, cap, thumb, cuisineChip, steam } from './ui.js';
+import { auth } from './sync.js';
 
 const NAV = [['Today', 'today'], ['Weekly plan', 'plan'], ['Shopping list', 'shopping'], ['Pantry', 'pantry']];
 
@@ -39,6 +40,10 @@ export function sidebar() {
       ${NAV.map(([label, v]) => `<button class="nav-btn${state.view === v ? ' is-active' : ''}"${state.view === v ? ' aria-current="page"' : ''} data-act="view" data-view="${v}">${label}</button>`).join('')}
     </nav>
     <button class="new-plan" data-act="openGen">＋ Plan a new week</button>
+    <button class="sync-row" data-act="openAccount">
+      <span class="sync-dot${auth.user ? ' is-on' : ''}" aria-hidden="true"></span>
+      ${auth.user ? `Syncing · ${esc(auth.user.email)}` : 'Sign in to sync'}
+    </button>
     <div class="glance">
       <div class="glance-title">This week at a glance</div>
       ${glanceHTML()}
@@ -251,5 +256,10 @@ export function pantryView(pantrySuggestions) {
     <div class="chip-row">
       ${pantrySuggestions.map(n => `<button class="pantry-chip is-add" data-act="pantryAdd" data-item="${esc(n)}">＋ ${esc(n)}</button>`).join('')}
     </div>
+    <div class="pantry-label account-label">Account</div>
+    <button class="sync-row on-page" data-act="openAccount">
+      <span class="sync-dot${auth.user ? ' is-on' : ''}" aria-hidden="true"></span>
+      ${auth.user ? `Syncing · ${esc(auth.user.email)}` : 'Sign in to sync across devices'}
+    </button>
   </div>`;
 }

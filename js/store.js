@@ -17,6 +17,7 @@ export const state = {
   cooking: null,      // recipe id in cook mode
   cookStep: 0,
   showGen: false,
+  showAccount: false,
   hideHave: false,
   nudgeDone: false,
   have: ['Olive oil', 'Eggs', 'Honey', 'Rolled oats', 'Rice', 'Chia seeds', 'Cumin', 'Garam masala'],
@@ -36,6 +37,10 @@ export function resetWeekScoped() {
 let notify = null;
 export function onChange(fn) { notify = fn; }
 
+// Fires after each persisted write — the sync layer's "something changed" hook.
+let persistNotify = null;
+export function onPersist(fn) { persistNotify = fn; }
+
 let saveQueued = false;
 function queueSave() {
   if (saveQueued) return;
@@ -48,6 +53,7 @@ function queueSave() {
       for (const k of PERSISTED) out[k] = state[k];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(out));
     } catch { /* storage full / private mode — app still works in-memory */ }
+    if (persistNotify) persistNotify();
   };
   if ('requestIdleCallback' in window) requestIdleCallback(write, { timeout: 800 });
   else setTimeout(write, 120);

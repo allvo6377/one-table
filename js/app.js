@@ -8,6 +8,7 @@ import { pantryPool, recipes } from './data.js';
 import { sidebar, tabbar, todayView, planView, shoppingView, pantryView } from './views.js';
 import { overlays, cookFoot } from './overlays.js';
 import { actions, onBudgetInput, closeTopLayer } from './actions.js';
+import { initSync } from './sync.js';
 
 const $ = id => document.getElementById(id);
 let lastView = null;
@@ -87,8 +88,9 @@ function render() {
 
   const ovEl = $('overlays');
   const key = state.cooking ? 'cook:' + state.cooking
-    : state.showGen ? 'gen'
-      : state.selId ? 'sheet:' + state.selId : '';
+    : state.showAccount ? 'account'
+      : state.showGen ? 'gen'
+        : state.selId ? 'sheet:' + state.selId : '';
   const overlayChanged = key !== lastOverlayKey;
   if (key && !overlayChanged && state.cooking && ovEl.querySelector('.cook')) {
     patchCookStep(ovEl);
@@ -168,6 +170,7 @@ load();
 set({ plan: currentPlan() }, { silent: true });
 onChange(invalidate);
 render();
+initSync();
 
 // Offline + instant repeat visits; registered after first paint so it never
 // competes with the initial load.

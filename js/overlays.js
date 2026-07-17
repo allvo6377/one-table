@@ -4,6 +4,7 @@ import { state } from './store.js';
 import { recipes, currency, emojiOf } from './data.js';
 import { fmtLocal } from './planner.js';
 import { esc } from './ui.js';
+import { auth } from './sync.js';
 
 const CUISINE_OPTS = ['A mix of all', 'Kenyan', 'Swahili', 'Nigerian', 'Ugandan', 'Indian', 'Italian'];
 
@@ -149,9 +150,55 @@ function generator() {
   </div>`;
 }
 
-// Cook mode sits above everything; then the generator; then the sheet.
+function accountModal() {
+  const err = auth.error ? `<div class="pref-note sync-error" role="alert">${esc(auth.error)}</div>` : '';
+  let body;
+  if (auth.user) {
+    body = `
+      <p class="modal-blurb">Signed in as <b>${esc(auth.user.email)}</b>. Your pantry, plan choices and week progress sync to every device you sign in on.</p>
+      ${err}
+      <div class="modal-actions">
+        <button class="btn-ghost" data-act="closeAccount">Close</button>
+        <button class="btn-primary" data-act="syncOut">Sign out</button>
+      </div>`;
+  } else if (auth.pendingEmail) {
+    body = `
+      <p class="modal-blurb">We emailed a 6-digit code to <b>${esc(auth.pendingEmail)}</b>. Enter it below.</p>
+      <div class="pref-group">
+        <label class="pref-title" for="sync-code">Code</label>
+        <input id="sync-code" class="sync-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456">
+      </div>
+      ${err}
+      <div class="modal-actions">
+        <button class="btn-ghost" data-act="syncBack">Different email</button>
+        <button class="btn-primary" data-act="syncVerify">Verify &amp; sign in</button>
+      </div>`;
+  } else {
+    body = `
+      <p class="modal-blurb">Sync is optional — the app works fully offline without it. Sign in with your email and your pantry, plan and progress follow you to any device.</p>
+      <div class="pref-group">
+        <label class="pref-title" for="sync-email">Email</label>
+        <input id="sync-email" class="sync-input" type="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      ${err}
+      <div class="modal-actions">
+        <button class="btn-ghost" data-act="closeAccount">Cancel</button>
+        <button class="btn-primary" data-act="syncSend">Email me a code</button>
+      </div>`;
+  }
+  return `
+  <div class="scrim" data-act="closeAccount"></div>
+  <div class="modal modal-slim" role="dialog" aria-modal="true" aria-label="Account and sync">
+    <div class="sheet-kicker sand">Account</div>
+    <h2 class="sheet-title">Sync across devices</h2>
+    ${body}
+  </div>`;
+}
+
+// Cook mode sits above everything; then account; then generator; then sheet.
 export function overlays() {
   if (state.cooking) return cookMode();
+  if (state.showAccount) return accountModal();
   if (state.showGen) return generator();
   if (state.selId) return recipeSheet();
   return '';

@@ -5,6 +5,7 @@ import { state, set } from './store.js';
 import { recipes, currency } from './data.js';
 import { effId, swapCandidate, buildCuisinePlan, actualPlanCost, fmtLocal, localVal, currentPlan } from './planner.js';
 import { toast } from './ui.js';
+import { sendCode, verifyCode, signOut, resetPending, auth } from './sync.js';
 
 export const actions = {
   view(d) { set({ view: d.view }); },
@@ -68,6 +69,26 @@ export const actions = {
 
   openGen() { set({ showGen: true }); },
   closeGen() { set({ showGen: false }); },
+
+  openAccount() { set({ showAccount: true }); },
+  closeAccount() { set({ showAccount: false }); },
+  syncBack() { resetPending(); },
+  async syncSend() {
+    const email = document.getElementById('sync-email')?.value.trim();
+    if (!email || !email.includes('@')) { toast('Enter a valid email address'); return; }
+    await sendCode(email);
+  },
+  async syncVerify() {
+    const code = document.getElementById('sync-code')?.value.trim();
+    if (!code) { toast('Enter the 6-digit code from your email'); return; }
+    await verifyCode(code);
+    if (auth.user) { set({ showAccount: false }); toast('Signed in — your table follows you now'); }
+  },
+  async syncOut() {
+    await signOut();
+    set({ showAccount: false });
+    toast('Signed out — this device keeps its local copy');
+  },
   pref(d) {
     const patch = { ...state.prefs, [d.key]: d.val };
     if (d.key === 'cuisines') patch.budgetLocal = null;
@@ -114,6 +135,7 @@ export function onBudgetInput(input) {
 // Escape closes the topmost layer only.
 export function closeTopLayer() {
   if (state.cooking) set({ cooking: null });
+  else if (state.showAccount) set({ showAccount: false });
   else if (state.showGen) set({ showGen: false });
   else if (state.selId) set({ selId: null });
 }
