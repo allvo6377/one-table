@@ -1,7 +1,8 @@
 // Boot + render loop. One rAF-batched render per state change; four dirty
 // regions (sidebar, tabbar, view, overlays) each rewritten in a single
 // innerHTML assignment.
-import { state, set, load, onChange } from './store.js';
+import { state, set, load, onChange, resetWeekScoped } from './store.js';
+import { currentWeek } from './dates.js';
 import { currentPlan } from './planner.js';
 import { pantryPool, recipes } from './data.js';
 import { sidebar, tabbar, todayView, planView, shoppingView, pantryView } from './views.js';
@@ -35,7 +36,38 @@ function patchCookStep(root) {
   root.querySelector('.cook-foot').innerHTML = cookFoot();
 }
 
+// ---- focus management ----
+// innerHTML re-renders destroy the focused node. We identify the focused
+// control by its data-* signature and re-focus its replacement, so keyboard
+// users don't get dumped back to <body> after every interaction.
+let lastTrigger = null; // element that opened the current overlay
+
+function focusSignature(el) {
+  if (!el || el === document.body || !el.dataset) return null;
+  const d = el.dataset;
+  if (!d.act) return null;
+  return { act: d.act, id: d.id, key: d.key, view: d.view, layout: d.layout, item: d.item, val: d.val, dir: d.dir, slot: d.slot, day: d.day };
+}
+
+function refocus(root, sig) {
+  if (!sig) return false;
+  for (const el of root.querySelectorAll(`[data-act="${sig.act}"]`)) {
+    const d = el.dataset;
+    if (['id', 'key', 'view', 'layout', 'item', 'val', 'dir', 'slot', 'day'].every(k => (d[k] ?? undefined) === sig[k])) {
+      el.focus({ preventScroll: true });
+      return true;
+    }
+  }
+  return false;
+}
+
+const FOCUSABLE = 'button:not([disabled]), input, [href], [tabindex]:not([tabindex="-1"])';
+
 function render() {
+  const active = document.activeElement;
+  const sig = focusSignature(active && active.closest ? active.closest('[data-act]') : null);
+  const focusRegion = active ? active.closest('#view, #sidebar, #tabbar, #overlays') : null;
+
   $('sidebar').innerHTML = sidebar();
   $('tabbar').innerHTML = tabbar();
 
@@ -57,15 +89,29 @@ function render() {
   const key = state.cooking ? 'cook:' + state.cooking
     : state.showGen ? 'gen'
       : state.selId ? 'sheet:' + state.selId : '';
-  if (key && key === lastOverlayKey && state.cooking && ovEl.querySelector('.cook')) {
+  const overlayChanged = key !== lastOverlayKey;
+  if (key && !overlayChanged && state.cooking && ovEl.querySelector('.cook')) {
     patchCookStep(ovEl);
   } else {
-    setEntering(ovEl, key !== lastOverlayKey);
+    setEntering(ovEl, overlayChanged);
     ovEl.innerHTML = overlays();
   }
-  lastOverlayKey = key;
   document.documentElement.classList.toggle('locked', !!key);
   $('fab').hidden = !!key;
+
+  // Restore or move focus.
+  if (key && overlayChanged) {
+    if (!lastOverlayKey) lastTrigger = sig; // remember what opened the stack
+    const first = ovEl.querySelector(FOCUSABLE);
+    if (first) first.focus({ preventScroll: true });
+  } else if (!key && lastOverlayKey) {
+    // Overlay closed: hand focus back to whatever opened it.
+    if (!refocus(document, lastTrigger)) main.focus?.({ preventScroll: true });
+    lastTrigger = null;
+  } else if (focusRegion && sig) {
+    refocus(key ? ovEl : focusRegion.id === 'view' ? main : document, sig);
+  }
+  lastOverlayKey = key;
 }
 
 let scheduled = false;
@@ -89,8 +135,33 @@ document.addEventListener('change', e => {
   if (e.target.dataset.act === 'budget') invalidate();
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeTopLayer();
+  if (e.key === 'Escape') { closeTopLayer(); return; }
+  // Focus trap: while an overlay is open, Tab cycles inside it.
+  if (e.key === 'Tab' && lastOverlayKey) {
+    const items = [...$('overlays').querySelectorAll(FOCUSABLE)];
+    if (!items.length) return;
+    const first = items[0], last = items[items.length - 1];
+    const inside = $('overlays').contains(document.activeElement);
+    if (!inside) { e.preventDefault(); first.focus(); }
+    else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
 });
+
+// A long-lived session (installed PWA left open) can cross midnight or even
+// into a new week — recheck the clock whenever the app regains attention.
+function refreshWeek() {
+  const w = currentWeek();
+  if (w.key !== state.week.key) {
+    state.week = w;
+    set({ week: w, ...resetWeekScoped(), plan: currentPlan() });
+  } else if (w.todayIdx !== state.week.todayIdx) {
+    // Same week, new day: today moves; yesterday's prep nudge is done with.
+    set({ week: w, nudgeDone: false });
+  }
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshWeek(); });
+addEventListener('focus', refreshWeek);
 
 // ---- boot ----
 load();

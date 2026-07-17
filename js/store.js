@@ -3,7 +3,9 @@
 import { currentWeek } from './dates.js';
 
 const STORAGE_KEY = 'table-for-one:v1';
-const PERSISTED = ['have', 'checked', 'eaten', 'overrides', 'prefs', 'planCuisine', 'planBudgetLocal', 'hideHave', 'layout', 'nudgeDone'];
+const PERSISTED = ['have', 'checked', 'eaten', 'overrides', 'prefs', 'planCuisine', 'planBudgetLocal', 'hideHave', 'layout', 'nudgeDone', 'weekKey'];
+// Day-name-keyed state is only meaningful within the week it was written.
+const WEEK_SCOPED = ['checked', 'eaten', 'overrides', 'nudgeDone'];
 
 export const state = {
   week: currentWeek(),
@@ -24,7 +26,12 @@ export const state = {
   prefs: { cuisines: 'A mix of all', time: 'Balanced', budget: '$$', batch: 'Some', budgetLocal: null },
   planCuisine: null,
   planBudgetLocal: null,
+  weekKey: currentWeek().key,
 };
+
+export function resetWeekScoped() {
+  return { checked: [], eaten: {}, overrides: {}, nudgeDone: false, weekKey: state.week.key };
+}
 
 let notify = null;
 export function onChange(fn) { notify = fn; }
@@ -57,9 +64,15 @@ export function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
+    // State saved during a previous week must not leak onto this week's
+    // meals — 'Thu-dinner' means a different dish now.
+    const sameWeek = saved.weekKey === state.week.key;
     for (const k of PERSISTED) {
-      if (saved[k] !== undefined) state[k] = saved[k];
+      if (saved[k] === undefined) continue;
+      if (!sameWeek && WEEK_SCOPED.includes(k)) continue;
+      state[k] = saved[k];
     }
+    state.weekKey = state.week.key;
     state.prefs = { cuisines: 'A mix of all', time: 'Balanced', budget: '$$', batch: 'Some', budgetLocal: null, ...state.prefs };
   } catch { /* corrupt storage — start fresh */ }
 }
