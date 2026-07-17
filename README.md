@@ -42,3 +42,13 @@ HTTPS.)
 On phones the sidebar becomes a bottom tab bar, the recipe panel becomes a
 bottom sheet, and the week grid becomes a snap-scrolling carousel. State
 (pantry, checks, eaten meals, swaps, plan choice) persists in localStorage.
+
+## Optional cross-device sync
+
+The app is **local-first** — it works fully offline and signed out. Sign in
+with your email (a six-digit code, no password) and your pantry, plan choice
+and week progress sync to any device you sign in on. It's a ~3 KB
+dependency-free client over Supabase auth + REST; every table is guarded by
+row-level security, so the publishable key in `js/config.js` is safe to ship.
+See [ARCHITECTURE.md](ARCHITECTURE.md#backend-optional-sync-local-first-syncjs--supabase)
+for the schema, RLS model, and conflict strategy.

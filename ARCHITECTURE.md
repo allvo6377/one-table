@@ -207,14 +207,66 @@ from inline styles into ~50 CSS custom properties and classes (which is
 itself a size win: class names compress far better than repeated inline
 styles, and the CSS caches independently of markup).
 
+## Backend: optional sync, local-first (`sync.js` + Supabase)
+
+The app is **local-first** — fully functional offline and signed out, with
+localStorage as the source of truth. Sync is an *optional* layer bolted on
+top: sign in and your intent (pantry, plan choice, week progress) follows you
+to any device. Nothing about the offline experience changes if you never sign
+in, and the sync module is the only code that talks to the network.
+
+**No SDK.** `sync.js` is ~3 KB of raw `fetch` against Supabase's GoTrue (auth)
+and PostgREST (data) endpoints — the `@supabase/supabase-js` SDK is ~40 KB gz
+and would have doubled the app's JS. Auth is **email OTP** (a six-digit code,
+no password to store, no redirect URLs to configure). The access token is
+kept in localStorage and silently refreshed 60 s before expiry.
+
+**Schema** (two tables, namespaced `tfo_*`, in a shared Supabase project):
+
+| table | grain | columns |
+|---|---|---|
+| `tfo_user_state` | one row per user | `have`, `prefs`, `plan_cuisine`, `plan_budget_local`, `hide_have`, `layout`, `updated_at` |
+| `tfo_week_state` | one row per (user, week) | `eaten`, `overrides`, `checked`, `nudge_done`, `updated_at`, PK `(user_id, week_key)` |
+
+The split mirrors the client's own week-scoping: profile-wide state lives in
+one row, day-keyed state is partitioned by `week_key` (the Monday's date), so
+a new week is a new row and old weeks never contaminate it — the same
+invariant the client enforces locally, now enforced in the schema.
+
+**Security is the database's job, not the client's.** Every table has
+**row-level security** with a single policy — `auth.uid() = user_id` for all
+operations — so the publishable key is safe to ship in `config.js`: a signed-in
+user can read and write only their own rows, and anon can see nothing. This
+was verified directly (two test users): each sees zero of the other's rows,
+cross-user writes return `403`, and anon reads return `[]`. `updated_at` is
+stamped by a `SECURITY INVOKER` trigger, so the server clock is authoritative
+regardless of device time; the trigger function has its `EXECUTE` revoked so
+it isn't callable over RPC.
+
+**Conflict model: last-write-wins, per row.** Writes are debounced 1.5 s and
+`upsert` the whole row (`Prefer: resolution=merge-duplicates`). Pulls happen
+on sign-in, on `visibilitychange`, and on reconnect; a pull only applies when
+the server's `updated_at` differs from the copy we already hold, and applying
+a remote change suppresses the echo push. Row-level (not field-level) LWW is
+the honest MVP choice — for a single user across their own devices, the
+failure mode (edit the same week on two offline devices, last sync wins) is
+acceptable and predictable. Field-level merge or CRDTs would be the upgrade if
+this ever became multi-user-per-plan; the row split already narrows the blast
+radius (a pantry edit and a meal-eaten tick are different rows).
+
+The store grew exactly one seam for this: an `onPersist` hook that fires after
+each local save. `sync.js` subscribes to it and nothing else in the app knows
+sync exists — the same isolation the architecture predicted the backend would
+need.
+
 ## When this architecture stops being true
 
 Honesty clause. Revisit the no-framework call if any of these arrive:
 
-1. **A backend / accounts.** Persisted plans keyed by ISO week, sync,
-   multi-device — add a thin API layer first; the store/selector split
-   already isolates that seam (only `store.js` and `planner.currentPlan()`
-   would change).
+1. **Multi-user-per-plan or field-level conflict needs.** The current
+   row-level last-write-wins sync (see above) is right for one user across
+   their own devices; shared plans would need field-level merge or CRDTs and a
+   real-time channel.
 2. **User-generated recipes at scale.** Thousands of recipes means moving
    data out of the JS bundle into fetched/IndexedDB-cached JSON and
    virtualizing long lists.
@@ -231,4 +283,7 @@ Until then, the fastest framework is the one you don't ship.
 *Verified end-to-end in headless Chromium at 1360×850 and 390×844 (touch):
 all four views, recipe sheet, 3-step cook flow, meal swap, shopping check-off,
 pantry add/remove, cuisine + budget regeneration (KSh budget fitting), Escape
-layering, localStorage persistence across reload — zero console errors.*
+layering, focus restoration + overlay focus trap, and localStorage
+persistence across reload — zero console errors. Backend verified directly
+against Supabase: email/password auth, owner upserts, RLS isolation in both
+directions, forbidden cross-user write (403), and the `updated_at` trigger.*

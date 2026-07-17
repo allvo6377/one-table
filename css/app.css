@@ -214,6 +214,40 @@ a { color: #A84C32; text-decoration: none; }
 }
 .fab:active { transform: scale(.94); }
 
+/* ---- sync/account ---- */
+.sync-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 14px;
+  border-radius: 11px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cream-mute);
+  background: rgba(255, 255, 255, .04);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sync-row:hover { color: var(--cream); }
+.sync-row.on-page { background: var(--card); border: 1px solid var(--line); color: var(--ink-mute); max-width: 420px; }
+.sync-row.on-page:hover { color: var(--ink); }
+.sync-dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: #8a7e6f; }
+.sync-dot.is-on { background: var(--sage); }
+.account-label { margin-top: 34px; }
+.sync-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 11px;
+  border: 1.5px solid #DDCFB6;
+  background: #fff;
+  font: 500 15px var(--sans);
+  color: var(--ink);
+}
+.sync-input:focus { outline: 2px solid var(--rust); outline-offset: 1px; border-color: var(--rust); }
+.sync-error { color: #A84C32; font-weight: 600; }
+.modal-slim { width: 440px; }
+
 /* ---- page scaffold ---- */
 .page { padding: 36px 44px 64px; }
 .page-narrow { max-width: 1080px; }
