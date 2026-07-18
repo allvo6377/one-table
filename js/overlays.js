@@ -163,10 +163,10 @@ function accountModal() {
       </div>`;
   } else if (auth.pendingEmail) {
     body = `
-      <p class="modal-blurb">We emailed a 6-digit code to <b>${esc(auth.pendingEmail)}</b>. Enter it below.</p>
+      <p class="modal-blurb">We emailed <b>${esc(auth.pendingEmail)}</b>. Enter the 6-digit code below — or just tap the link in the email on this device.</p>
       <div class="pref-group">
         <label class="pref-title" for="sync-code">Code</label>
-        <input id="sync-code" class="sync-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456">
+        <input id="sync-code" class="sync-input" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="123456">
       </div>
       ${err}
       <div class="modal-actions">

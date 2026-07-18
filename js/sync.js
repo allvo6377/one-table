@@ -59,11 +59,17 @@ async function refresh() {
   }
 }
 
-// ---- auth flows (email OTP: send a 6-digit code, no redirect config) ----
+// ---- auth flows ----
+// One email supports both paths: the "Magic Link" template can show the
+// 6-digit {{ .Token }} (typed into the code box, best on mobile) AND the
+// {{ .ConfirmationURL }} link (tapped — redirects back here, handled on boot).
+const appUrl = () => location.origin + location.pathname;
+
 export async function sendCode(email) {
   lastError = '';
   try {
-    await api(AUTH, '/otp', { method: 'POST', body: JSON.stringify({ email, create_user: true }) });
+    await api(AUTH, '/otp?redirect_to=' + encodeURIComponent(appUrl()),
+      { method: 'POST', body: JSON.stringify({ email, create_user: true }) });
     pendingEmail = email;
   } catch (e) { lastError = e.message; }
   set({}); // re-render account UI
@@ -71,14 +77,49 @@ export async function sendCode(email) {
 
 export async function verifyCode(code) {
   lastError = '';
+  const clean = String(code).replace(/\s+/g, ''); // tolerate "123 456" / pasted spaces
   try {
     const s = await api(AUTH, '/verify', {
-      method: 'POST', body: JSON.stringify({ type: 'email', email: pendingEmail, token: code }),
+      method: 'POST', body: JSON.stringify({ type: 'email', email: pendingEmail, token: clean }),
     });
     saveSession(s);
     pendingEmail = null;
     await pull({ firstSignIn: true });
   } catch (e) { lastError = e.message; set({}); }
+}
+
+// Magic-link return: Supabase redirects back with tokens (or an error) in the
+// URL fragment. Adopt the session, strip the fragment, and sync.
+async function handleAuthRedirect() {
+  const h = location.hash;
+  if (!h || (h.indexOf('access_token=') === -1 && h.indexOf('error') === -1)) return false;
+  const params = new URLSearchParams(h.slice(1));
+  const clean = () => history.replaceState(null, '', location.pathname + location.search);
+  const token = params.get('access_token');
+  if (!token) {
+    lastError = (params.get('error_description') || params.get('error') || '').replace(/\+/g, ' ');
+    clean();
+    return false;
+  }
+  try {
+    const user = await api(AUTH, '/user', { headers: { Authorization: 'Bearer ' + token } });
+    saveSession({
+      access_token: token,
+      refresh_token: params.get('refresh_token'),
+      expires_at: Math.floor(Date.now() / 1000) + Number(params.get('expires_in') || 3600),
+      user,
+    });
+    pendingEmail = null;
+    clean();
+    set({}); // reflect signed-in state (sidebar/tabbar) even if the pull is a no-op
+    await pull({ firstSignIn: true });
+    return true;
+  } catch (e) {
+    lastError = e.message;
+    clean();
+    set({});
+    return false;
+  }
 }
 
 // Back out of code entry to the email form.
@@ -169,5 +210,6 @@ export function initSync() {
   onPersist(pushSoon);                       // every persisted local change syncs up
   addEventListener('online', () => { push(); pull(); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
-  if (session) pull();                       // catch up on boot
+  // A magic-link return takes priority; otherwise catch up an existing session.
+  handleAuthRedirect().then(handled => { if (!handled && session) pull(); });
 }
