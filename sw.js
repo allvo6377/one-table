@@ -1,7 +1,7 @@
 // Cache-first service worker: after the first visit the whole app (it is
 // entirely static) loads from disk — instant repeat visits, fully offline.
 // Bump VERSION on any deploy to invalidate.
-const VERSION = 'tfo-v4';
+const VERSION = 'tfo-v5';
 const ASSETS = [
   './',
   'index.html',
