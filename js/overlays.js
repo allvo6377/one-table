@@ -3,8 +3,42 @@
 import { state } from './store.js';
 import { recipes, currency, emojiOf } from './data.js';
 import { fmtLocal } from './planner.js';
-import { esc } from './ui.js';
+import { esc, photoUrl, thumb } from './ui.js';
 import { auth } from './sync.js';
+
+const slotForTag = t => /breakfast/i.test(t) ? 'breakfast' : /lunch/i.test(t) ? 'lunch' : 'dinner';
+
+// Results list, regenerated on its own as the query changes (keeps input focus).
+export function searchResultsHTML() {
+  const q = (state.searchQuery || '').trim().toLowerCase();
+  let list = Object.values(recipes);
+  if (q) list = list.filter(r => (r.name + ' ' + r.cuisine + ' ' + r.tagline).toLowerCase().includes(q));
+  list = list.sort((a, b) => a.name.localeCompare(b.name)).slice(0, 40);
+  if (!list.length) return `<div class="search-empty">No meals match “${esc(state.searchQuery)}”. Try a cuisine or ingredient.</div>`;
+  return list.map(r => `
+    <button class="search-row" data-act="open" data-id="${r.id}">
+      <span class="search-thumb">${thumb(r.id, slotForTag(r.tagline), '', [140, 140])}</span>
+      <span class="search-info">
+        <span class="search-name">${esc(r.name)}</span>
+        <span class="search-meta">${r.cuisine ? esc(r.cuisine) + ' · ' : ''}${r.timeMin} min · ${r.protein}g · $${r.cost}</span>
+      </span>
+      <span class="search-go" aria-hidden="true">View →</span>
+    </button>`).join('');
+}
+
+function searchModal() {
+  return `
+  <div class="scrim" data-act="closeSearch"></div>
+  <div class="modal modal-search" role="dialog" aria-modal="true" aria-label="Search meals">
+    <div class="search-head">
+      <input id="search-input" class="sync-input search-input" type="search" inputmode="search" autocomplete="off"
+             placeholder="Search ${Object.keys(recipes).length}+ meals — name, cuisine, ingredient…" data-act="search" value="${esc(state.searchQuery)}">
+      <button class="btn-ghost search-close" data-act="closeSearch">Close</button>
+    </div>
+    <div id="search-results" class="search-results">${searchResultsHTML()}</div>
+    <div class="search-foot">Tap a meal to see the recipe and add its ingredients to your shopping list.</div>
+  </div>`;
+}
 
 const CUISINE_OPTS = ['A mix of all', 'Kenyan', 'Swahili', 'Nigerian', 'Ugandan', 'Indian', 'Italian'];
 
@@ -18,6 +52,7 @@ function recipeSheet() {
   <aside class="sheet" role="dialog" aria-modal="true" aria-label="${esc(r.name)}">
     <div class="sheet-hero">
       <span class="hero-emoji" aria-hidden="true">${emojiOf[r.id] || '🍽'}</span>
+      <img class="hero-img" alt="" decoding="async" src="${photoUrl(r.id, 900, 500)}" onerror="this.remove()">
       <button class="hero-close" data-act="closeRecipe" aria-label="Close">×</button>
       ${r.cuisine ? `<span class="cuisine-chip hero-chip">${esc(r.cuisine)}</span>` : ''}
       <div class="sheet-grab" aria-hidden="true"></div>
@@ -195,10 +230,11 @@ function accountModal() {
   </div>`;
 }
 
-// Cook mode sits above everything; then account; then generator; then sheet.
+// Cook > account > search > generator > recipe sheet.
 export function overlays() {
   if (state.cooking) return cookMode();
   if (state.showAccount) return accountModal();
+  if (state.showSearch) return searchModal();
   if (state.showGen) return generator();
   if (state.selId) return recipeSheet();
   return '';

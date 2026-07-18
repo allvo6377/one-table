@@ -1,18 +1,28 @@
 // All user interactions, keyed by data-act. One delegated listener in app.js
 // dispatches here — no per-element handlers, so re-rendering a region never
 // re-binds anything.
-import { state, set } from './store.js';
+import { state, set, goToWeek } from './store.js';
 import { recipes, currency } from './data.js';
-import { effId, swapCandidate, buildCuisinePlan, actualPlanCost, fmtLocal, localVal, currentPlan } from './planner.js';
+import { effId, swapCandidate, actualPlanCost, fmtLocal, localVal, currentPlan } from './planner.js';
+import { weekByOffset } from './dates.js';
 import { toast } from './ui.js';
 import { sendCode, verifyCode, signOut, resetPending, auth } from './sync.js';
 
 export const actions = {
   view(d) { set({ view: d.view }); },
   layout(d) { set({ layout: d.layout }); },
+  selectWeek(d, e, el) {
+    const offset = Number(el ? el.value : d.offset);
+    if (offset === state.weekOffset) return;
+    goToWeek(weekByOffset(offset), offset);
+    set({ plan: currentPlan() });
+  },
 
-  open(d) { set({ selId: d.id, servings: 1 }); },
+  open(d) { set({ selId: d.id, servings: 1, showSearch: false }); },
   closeRecipe() { set({ selId: null }); },
+
+  openSearch() { set({ showSearch: true, searchQuery: '' }); },
+  closeSearch() { set({ showSearch: false }); },
   servings(d) {
     const next = Math.min(4, Math.max(1, state.servings + Number(d.dir)));
     if (next !== state.servings) set({ servings: next });
@@ -105,12 +115,15 @@ export const actions = {
     }
     const cur = currency[cz];
     const budgetLocal = state.prefs.budgetLocal ?? cur.budgetDefault;
-    const plan = buildCuisinePlan(cz, budgetLocal);
+    // Set the choice first, then derive the plan the same way a reload will
+    // (seeded by the week key) so what you see now is what persists.
+    set({ planCuisine: cz, planBudgetLocal: budgetLocal, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
+    const plan = currentPlan();
     const actualCost = actualPlanCost(plan);
     const actualLocal = fmtLocal(actualCost, cz);
     const targetLocal = cur.symbol + Math.round(budgetLocal).toLocaleString('en-US');
     const ratio = localVal(actualCost, cur) / budgetLocal;
-    set({ plan, planCuisine: cz, planBudgetLocal: budgetLocal, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
+    set({ plan });
     toast(ratio <= 1
       ? `Your all-${cz} week is ready — ${actualLocal} of your ${targetLocal} budget.`
       : ratio <= 1.2
@@ -136,6 +149,7 @@ export function onBudgetInput(input) {
 export function closeTopLayer() {
   if (state.cooking) set({ cooking: null });
   else if (state.showAccount) set({ showAccount: false });
-  else if (state.showGen) set({ showGen: false });
   else if (state.selId) set({ selId: null });
+  else if (state.showSearch) set({ showSearch: false });
+  else if (state.showGen) set({ showGen: false });
 }

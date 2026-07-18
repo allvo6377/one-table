@@ -2,7 +2,7 @@
 // fetch. Local-first — the app works fully offline and signed out; signing in
 // layers last-write-wins sync of user intent on top. ~3 KB instead of an SDK.
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
-import { state, set, onPersist, resetWeekScoped } from './store.js';
+import { state, set, onPersist } from './store.js';
 import { currentPlan } from './planner.js';
 
 const SESSION_KEY = 'table-for-one:session';
