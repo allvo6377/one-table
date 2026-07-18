@@ -1,12 +1,12 @@
 // Boot + render loop. One rAF-batched render per state change; four dirty
 // regions (sidebar, tabbar, view, overlays) each rewritten in a single
 // innerHTML assignment.
-import { state, set, load, onChange, resetWeekScoped } from './store.js';
-import { currentWeek } from './dates.js';
+import { state, set, load, onChange, goToWeek } from './store.js';
+import { weekByOffset } from './dates.js';
 import { currentPlan } from './planner.js';
 import { pantryPool, recipes } from './data.js';
 import { sidebar, tabbar, todayView, planView, shoppingView, pantryView } from './views.js';
-import { overlays, cookFoot } from './overlays.js';
+import { overlays, cookFoot, searchResultsHTML } from './overlays.js';
 import { actions, onBudgetInput, closeTopLayer } from './actions.js';
 import { initSync } from './sync.js';
 
@@ -89,11 +89,14 @@ function render() {
   const ovEl = $('overlays');
   const key = state.cooking ? 'cook:' + state.cooking
     : state.showAccount ? 'account'
-      : state.showGen ? 'gen'
-        : state.selId ? 'sheet:' + state.selId : '';
+      : state.showSearch ? 'search'
+        : state.showGen ? 'gen'
+          : state.selId ? 'sheet:' + state.selId : '';
   const overlayChanged = key !== lastOverlayKey;
   if (key && !overlayChanged && state.cooking && ovEl.querySelector('.cook')) {
     patchCookStep(ovEl);
+  } else if (key === 'search' && !overlayChanged && ovEl.querySelector('#search-results')) {
+    ovEl.querySelector('#search-results').innerHTML = searchResultsHTML();
   } else {
     setEntering(ovEl, overlayChanged);
     ovEl.innerHTML = overlays();
@@ -131,10 +134,19 @@ document.addEventListener('click', e => {
   if (fn) fn(el.dataset, e, el);
 });
 document.addEventListener('input', e => {
-  if (e.target.dataset.act === 'budget') onBudgetInput(e.target);
+  const act = e.target.dataset.act;
+  if (act === 'budget') onBudgetInput(e.target);
+  else if (act === 'search') {
+    // Patch results in place so the input keeps focus (no full re-render).
+    set({ searchQuery: e.target.value }, { silent: true });
+    const box = document.getElementById('search-results');
+    if (box) box.innerHTML = searchResultsHTML();
+  }
 });
 document.addEventListener('change', e => {
-  if (e.target.dataset.act === 'budget') invalidate();
+  const act = e.target.dataset.act;
+  if (act === 'budget') invalidate();
+  else if (act === 'selectWeek') actions.selectWeek(e.target.dataset, e, e.target);
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeTopLayer(); return; }
@@ -153,13 +165,12 @@ document.addEventListener('keydown', e => {
 // A long-lived session (installed PWA left open) can cross midnight or even
 // into a new week — recheck the clock whenever the app regains attention.
 function refreshWeek() {
-  const w = currentWeek();
+  const w = weekByOffset(state.weekOffset); // dates shift as the clock advances
   if (w.key !== state.week.key) {
-    state.week = w;
-    set({ week: w, ...resetWeekScoped(), plan: currentPlan() });
+    goToWeek(w, state.weekOffset);           // load that week's own saved state
+    set({ plan: currentPlan() });
   } else if (w.todayIdx !== state.week.todayIdx) {
-    // Same week, new day: today moves; yesterday's prep nudge is done with.
-    set({ week: w, nudgeDone: false });
+    set({ week: w }); // same week, new day — the "today" marker moves
   }
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshWeek(); });

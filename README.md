@@ -36,6 +36,15 @@ HTTPS.)
   recipe "have it" markers.
 - **Plan a new week** — lock the week to one cuisine and fit it to a local
   budget (KES / TZS / NGN / UGX / INR / EUR, PPP-adjusted), or mix them all.
+  The generator gives 7 **unique** breakfasts and distinct fresh-cooked mains
+  (only intentional batch-cook leftovers repeat), seeded per week so each
+  week differs.
+- **Multiple weeks** — a dropdown plans this week and the weeks ahead, each
+  with its own meals and its own saved progress.
+- **Search** — find any of the 80+ meals by name, cuisine or ingredient;
+  open its recipe and add the ingredients to your shopping list.
+- **Real photos** — dishes show real food photography that loads over an
+  emoji placeholder (so it still works offline).
 - **Cook mode** — full-screen, step-at-a-time, with a satisfying "Plate up"
   that logs your protein.
 

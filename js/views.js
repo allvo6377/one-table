@@ -6,6 +6,7 @@ import { currency } from './data.js';
 import { todayData, weekDays, fridgeData, radarData, nudgeData, shoppingData } from './derive.js';
 import { esc, cap, thumb, cuisineChip, steam } from './ui.js';
 import { auth } from './sync.js';
+import { upcomingWeeks } from './dates.js';
 
 const NAV = [['Today', 'today'], ['Weekly plan', 'plan'], ['Shopping list', 'shopping'], ['Pantry', 'pantry']];
 
@@ -38,6 +39,7 @@ export function sidebar() {
     </div>
     <nav class="side-nav" aria-label="Sections">
       ${NAV.map(([label, v]) => `<button class="nav-btn${state.view === v ? ' is-active' : ''}"${state.view === v ? ' aria-current="page"' : ''} data-act="view" data-view="${v}">${label}</button>`).join('')}
+      <button class="nav-btn nav-search" data-act="openSearch">🔍 Search meals</button>
     </nav>
     <button class="new-plan" data-act="openGen">＋ Plan a new week</button>
     <button class="sync-row" data-act="openAccount">
@@ -50,11 +52,14 @@ export function sidebar() {
     </div>`;
 }
 
+const SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>';
+
 export function tabbar() {
   return NAV.map(([label, v]) => `
     <button class="tab${state.view === v ? ' is-active' : ''}"${state.view === v ? ' aria-current="page"' : ''} data-act="view" data-view="${v}" aria-label="${label}">
       ${NAV_ICONS[v]}<span>${label.replace('Weekly plan', 'Plan').replace('Shopping list', 'List')}</span>
-    </button>`).join('');
+    </button>`).join('')
+    + `<button class="tab" data-act="openSearch" aria-label="Search meals">${SEARCH_ICON}<span>Search</span></button>`;
 }
 
 // ---------- Today ----------
@@ -197,17 +202,27 @@ export function planView() {
   const blurb = state.planCuisine
     ? `Seven days of ${state.planCuisine} cooking, all sized for one — batch-cooked mains roll into next-day lunches, so good food never goes to waste. No other cuisine sneaks in this week.`
     : 'Seven days that travel the world — Kenyan, Swahili, Nigerian, Ugandan, Indian and Italian dishes, all sized for one. Big-batch dinners roll into next-day lunches, so good food never goes to waste.';
+  const weeks = upcomingWeeks(6);
   return `
   <div class="page page-wide anim-in">
     <header class="page-head">
       <div class="page-head-main">
         <div class="kicker">Your meal plan</div>
-        <h1 class="page-title">${esc(state.week.label)}</h1>
+        <div class="week-picker">
+          <select class="week-select" data-act="selectWeek" aria-label="Choose week">
+            ${weeks.map(w => `<option value="${w.offset}"${w.offset === state.weekOffset ? ' selected' : ''}>${esc(w.label)}</option>`).join('')}
+          </select>
+        </div>
         <p class="page-blurb">${esc(blurb)}</p>
       </div>
-      <div class="seg" role="group" aria-label="Layout">
-        <button class="seg-btn${state.layout === 'grid' ? ' is-on' : ''}" aria-pressed="${state.layout === 'grid'}" data-act="layout" data-layout="grid">Grid</button>
-        <button class="seg-btn${state.layout === 'agenda' ? ' is-on' : ''}" aria-pressed="${state.layout === 'agenda'}" data-act="layout" data-layout="agenda">Agenda</button>
+      <div class="head-tools">
+        <button class="tool-btn" data-act="openSearch" aria-label="Search meals">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
+        </button>
+        <div class="seg" role="group" aria-label="Layout">
+          <button class="seg-btn${state.layout === 'grid' ? ' is-on' : ''}" aria-pressed="${state.layout === 'grid'}" data-act="layout" data-layout="grid">Grid</button>
+          <button class="seg-btn${state.layout === 'agenda' ? ' is-on' : ''}" aria-pressed="${state.layout === 'agenda'}" data-act="layout" data-layout="agenda">Agenda</button>
+        </div>
       </div>
     </header>
     ${state.layout === 'grid'

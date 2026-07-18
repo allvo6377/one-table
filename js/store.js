@@ -3,12 +3,14 @@
 import { currentWeek } from './dates.js';
 
 const STORAGE_KEY = 'table-for-one:v1';
-const PERSISTED = ['have', 'checked', 'eaten', 'overrides', 'prefs', 'planCuisine', 'planBudgetLocal', 'hideHave', 'layout', 'nudgeDone', 'weekKey'];
-// Day-name-keyed state is only meaningful within the week it was written.
-const WEEK_SCOPED = ['checked', 'eaten', 'overrides', 'nudgeDone'];
+// Profile-wide persisted keys. Day-keyed state lives per-week in `weekStore`.
+const PROFILE = ['have', 'prefs', 'planCuisine', 'planBudgetLocal', 'hideHave', 'layout'];
+const DEFAULT_PREFS = { cuisines: 'A mix of all', time: 'Balanced', budget: '$$', batch: 'Some', budgetLocal: null };
 
 export const state = {
   week: currentWeek(),
+  weekOffset: 0,      // which week the Plan view is showing (0 = current)
+  weekStore: {},      // weekKey -> { eaten, overrides, checked, nudgeDone }
   plan: [],           // set at boot by planner.currentPlan()
   view: 'today',      // today | plan | shopping | pantry
   layout: 'grid',     // grid | agenda
@@ -18,20 +20,37 @@ export const state = {
   cookStep: 0,
   showGen: false,
   showAccount: false,
+  showSearch: false,
+  searchQuery: '',
   hideHave: false,
   nudgeDone: false,
   have: ['Olive oil', 'Eggs', 'Honey', 'Rolled oats', 'Rice', 'Chia seeds', 'Cumin', 'Garam masala'],
   checked: [],
-  eaten: {},          // 'Thu-dinner' -> true
+  eaten: {},          // 'Thu-dinner' -> true   (active week's working copy)
   overrides: {},      // 'Thu-dinner' -> recipeId (swaps)
-  prefs: { cuisines: 'A mix of all', time: 'Balanced', budget: '$$', batch: 'Some', budgetLocal: null },
+  prefs: { ...DEFAULT_PREFS },
   planCuisine: null,
   planBudgetLocal: null,
-  weekKey: currentWeek().key,
 };
 
-export function resetWeekScoped() {
-  return { checked: [], eaten: {}, overrides: {}, nudgeDone: false, weekKey: state.week.key };
+// The active week's day-keyed state, snapshotted for storage.
+function scopedSnapshot() {
+  return { eaten: state.eaten, overrides: state.overrides, checked: state.checked, nudgeDone: state.nudgeDone };
+}
+function hydrateScoped(key) {
+  const s = state.weekStore[key] || {};
+  state.eaten = s.eaten || {};
+  state.overrides = s.overrides || {};
+  state.checked = s.checked || [];
+  state.nudgeDone = s.nudgeDone || false;
+}
+
+// Switch the active/plan week: stash the current week's state, load the target.
+export function goToWeek(weekObj, offset) {
+  state.weekStore[state.week.key] = scopedSnapshot();
+  state.week = weekObj;
+  state.weekOffset = offset;
+  hydrateScoped(weekObj.key);
 }
 
 let notify = null;
@@ -45,12 +64,13 @@ let saveQueued = false;
 function queueSave() {
   if (saveQueued) return;
   saveQueued = true;
-  // Persist off the interaction path.
   const write = () => {
     saveQueued = false;
     try {
-      const out = {};
-      for (const k of PERSISTED) out[k] = state[k];
+      // Fold the active week's working copy back into the store before saving.
+      state.weekStore[state.week.key] = scopedSnapshot();
+      const out = { weekStore: state.weekStore };
+      for (const k of PROFILE) out[k] = state[k];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(out));
     } catch { /* storage full / private mode — app still works in-memory */ }
     if (persistNotify) persistNotify();
@@ -70,15 +90,16 @@ export function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    // State saved during a previous week must not leak onto this week's
-    // meals — 'Thu-dinner' means a different dish now.
-    const sameWeek = saved.weekKey === state.week.key;
-    for (const k of PERSISTED) {
-      if (saved[k] === undefined) continue;
-      if (!sameWeek && WEEK_SCOPED.includes(k)) continue;
-      state[k] = saved[k];
+    for (const k of PROFILE) if (saved[k] !== undefined) state[k] = saved[k];
+    state.weekStore = saved.weekStore || {};
+    // Migrate v1 flat format: top-level eaten/overrides/checked keyed by weekKey.
+    if (!saved.weekStore && saved.weekKey) {
+      state.weekStore[saved.weekKey] = {
+        eaten: saved.eaten || {}, overrides: saved.overrides || {},
+        checked: saved.checked || [], nudgeDone: saved.nudgeDone || false,
+      };
     }
-    state.weekKey = state.week.key;
-    state.prefs = { cuisines: 'A mix of all', time: 'Balanced', budget: '$$', batch: 'Some', budgetLocal: null, ...state.prefs };
+    state.prefs = { ...DEFAULT_PREFS, ...state.prefs };
+    hydrateScoped(state.week.key); // start on the current week
   } catch { /* corrupt storage — start fresh */ }
 }

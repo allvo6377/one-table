@@ -5,6 +5,9 @@ import { state } from './store.js';
 import { effId } from './planner.js';
 import { FULL_DAY } from './dates.js';
 
+// Future weeks have no real "today" (todayIdx === -1) — focus on Monday.
+const focusIdx = () => (state.week.todayIdx >= 0 ? state.week.todayIdx : 0);
+
 // ---- Shopping ----
 export function shoppingData() {
   const need = {};
@@ -80,7 +83,7 @@ export function radarData() {
   }));
   return Object.entries(uses).map(([item, u]) => {
     u.sort((a, b) => a.idx - b.idx);
-    const last = u[u.length - 1], daysAway = last.idx - state.week.todayIdx;
+    const last = u[u.length - 1], daysAway = last.idx - focusIdx();
     let status, tone;
     if (daysAway === 0) { status = 'use today'; tone = 'amber'; }
     else if (daysAway <= 2) { status = 'use by ' + last.day; tone = 'green'; }
@@ -96,7 +99,7 @@ export function radarData() {
 
 // ---- Tonight's head-start nudge ----
 export function nudgeData() {
-  const tomorrow = state.plan[(state.week.todayIdx + 1) % 7];
+  const tomorrow = state.plan[(focusIdx() + 1) % 7];
   if (tomorrow.dinner.leftover) {
     return { icon: '◷', text: 'Tomorrow’s lunch is already sorted — tonight’s leftovers carry straight through.', btn: '' };
   }
@@ -118,7 +121,7 @@ export function nudgeData() {
 
 // ---- Today's meals ----
 export function todayData() {
-  const td = state.plan[state.week.todayIdx];
+  const td = state.plan[focusIdx()];
   let eatenProt = 0, todayProt = 0, eatenCount = 0;
   const meals = SLOTS.map(slot => {
     const e = td[slot], rid = effId(td, slot), r = recipes[rid];
