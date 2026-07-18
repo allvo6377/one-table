@@ -1,7 +1,7 @@
-// Cache-first service worker: after the first visit the whole app (it is
-// entirely static) loads from disk — instant repeat visits, fully offline.
-// Bump VERSION on any deploy to invalidate.
-const VERSION = 'tfo-v6';
+// Service worker: precache the whole (static) app for offline use. App code
+// is served network-first so online visits always get the latest deploy;
+// fonts/icons are cache-first. Bump VERSION on any deploy to invalidate.
+const VERSION = 'tfo-v7';
 const ASSETS = [
   './',
   'index.html',
@@ -40,19 +40,38 @@ self.addEventListener('activate', e => {
   );
 });
 
+// Fonts and icons are immutable — serve them cache-first (instant, offline).
+// Everything else (HTML, JS, CSS, manifest) is network-first so an online
+// visit always gets the freshest deploy; the cache is the offline fallback.
+// This stops returning visitors getting stuck on a stale cached build.
+const IMMUTABLE = /\.(woff2|png|svg)$/;
+
+function cachePut(request, res) {
+  if (res && res.ok) {
+    const copy = res.clone();
+    caches.open(VERSION).then(c => c.put(request, copy));
+  }
+  return res;
+}
+
 self.addEventListener('fetch', e => {
   const { request } = e;
   if (request.method !== 'GET' || !request.url.startsWith(self.location.origin)) return;
+  const url = new URL(request.url);
+
+  if (IMMUTABLE.test(url.pathname)) {
+    e.respondWith(
+      caches.match(request, { ignoreSearch: true })
+        .then(hit => hit || fetch(request).then(res => cachePut(request, res)))
+    );
+    return;
+  }
+
+  // network-first with cache fallback
   e.respondWith(
-    caches.match(request, { ignoreSearch: true }).then(hit =>
-      hit ||
-      fetch(request).then(res => {
-        if (res.ok) {
-          const copy = res.clone();
-          caches.open(VERSION).then(c => c.put(request, copy));
-        }
-        return res;
-      }).catch(() => (request.mode === 'navigate' ? caches.match('index.html') : undefined))
-    )
+    fetch(request)
+      .then(res => cachePut(request, res))
+      .catch(() => caches.match(request, { ignoreSearch: true })
+        .then(hit => hit || (request.mode === 'navigate' ? caches.match('index.html') : undefined)))
   );
 });
