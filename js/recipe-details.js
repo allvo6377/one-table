@@ -177,6 +177,42 @@ export const details = {
     'Mash a few grams against the pan to thicken and season well.',
     'Serve with warm chapati.',
   ], tips: ['A spoon of coconut milk turns everyday ndengu silky and rich.', 'Cook a big batch of grams and freeze — they reheat perfectly.'] },
+  // ---------- pastries ----------
+  'blueberry-muffins': { prep: 10, steps: [
+    'Heat the oven to 200°C and line a muffin tin with 8 paper cases.',
+    'Whisk 1½ cups flour, ½ cup sugar, 2 tsp baking powder and a pinch of salt in a bowl.',
+    'In a jug beat 1 egg, ⅓ cup melted butter and ½ cup milk until smooth.',
+    'Fold the wet into the dry with a few strokes — lumpy batter is fine — then fold in ¾ cup blueberries.',
+    'Divide between the cases and bake 18–20 minutes until domed and springy.',
+  ], tips: ['Toss the blueberries in a little flour first so they don’t sink to the bottom.', 'Stop mixing the moment the flour disappears — over-mixing makes muffins tough and peaked.'], storage: 'Keeps 3 days in an airtight tin, or freeze; refresh 10 seconds in the microwave or a few minutes in a warm oven.' },
+  'cinnamon-rolls': { prep: 20, steps: [
+    'Warm ¾ cup milk, stir in 1 tsp yeast and 1 tbsp sugar, and leave 5 minutes until foamy.',
+    'Mix into 2 cups flour with a pinch of salt to a soft dough; knead 8 minutes and rise 1 hour until doubled.',
+    'Roll into a rectangle, spread with ¼ cup soft butter, ⅓ cup brown sugar and 1 tbsp cinnamon.',
+    'Roll up tightly, slice into 8, and set in a tin to prove 30 minutes.',
+    'Bake at 190°C for 20–22 minutes, then drizzle with icing made from powdered sugar and a little milk.',
+  ], tips: ['Shape and slice the night before, refrigerate, and just prove and bake in the morning.', 'Use unwaxed dental floss to cut clean slices without squashing the spiral.'], storage: 'Best the day they’re baked; store covered 2 days and warm briefly, or freeze un-iced and ice after reheating.' },
+  'cheese-danish': { prep: 8, steps: [
+    'Heat the oven to 200°C and line a tray with baking paper.',
+    'Cut 1 sheet puff pastry into 6 squares and press a shallow well into each centre with your fingers.',
+    'Beat ½ cup cream cheese with 3 tbsp sugar, a little egg yolk and the zest of ½ lemon until smooth.',
+    'Spoon the filling into the wells and brush the pastry edges with beaten egg.',
+    'Bake 16–18 minutes until the pastry is puffed and deep golden; cool before eating.',
+  ], tips: ['Keep the puff pastry cold right up to the oven — warm pastry loses its rise.', 'A dot of jam on the cheese before baking turns it into a fruit danish.'], storage: 'Eat the same day for maximum crispness; keeps 2 days chilled and crisps back up in a hot oven for 5 minutes.' },
+  'almond-croissant': { prep: 10, steps: [
+    'Heat the oven to 180°C and line a tray with baking paper.',
+    'Beat 3 tbsp soft butter with 3 tbsp sugar, then work in ½ cup almond flour and a splash of egg to a paste (frangipane).',
+    'Split 2 day-old croissants and, if you like, brush the cut sides with a little sugar syrup.',
+    'Fill with frangipane, close, spread a thin layer on top and scatter with flaked almonds.',
+    'Bake 12–14 minutes until the almonds are toasted; dust with powdered sugar.',
+  ], tips: ['This is the bakery trick for day-old croissants — stale ones actually work best.', 'Make a batch of frangipane and keep it in the fridge for a week of quick almond croissants.'], storage: 'Best warm from the oven; keeps 2 days in a tin and reheats well at 160°C for a few minutes.' },
+  'banana-bread': { prep: 12, steps: [
+    'Heat the oven to 175°C and grease and line a loaf tin.',
+    'Mash 3 very ripe bananas in a large bowl until almost smooth.',
+    'Beat in ⅓ cup melted butter, ½ cup sugar and 2 eggs until glossy.',
+    'Fold in 1½ cups flour, 1 tsp baking powder and a pinch of salt until just combined.',
+    'Pour into the tin and bake 45–50 minutes until a skewer comes out clean; cool before slicing.',
+  ], tips: ['The blacker the bananas, the sweeter and moister the loaf.', 'Add a handful of walnuts or chocolate chips with the flour for texture.'], storage: 'Keeps 4 days wrapped at room temperature and freezes beautifully in slices — toast straight from frozen.' },
 };
 
 // ---------- Swahili (coastal) ----------

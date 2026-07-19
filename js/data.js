@@ -333,6 +333,30 @@ cuisineMains.Kenyan.push('chapati-beef-stew','chapati-ndengu');
 for (const [id, reg] of Object.entries(REGION)) { if (recipes[id]) recipes[id].region = reg; }
 export { REGION };
 
+// ---- Pastry breakfasts (user request) ----
+Object.assign(recipes, {
+  'blueberry-muffins':{id:'blueberry-muffins',name:'Blueberry Muffins',cuisine:'',tagline:'Breakfast · bakery-style',cost:2.4,protein:8,timeMin:30,ingredients:[{item:'Flour',qty:'1½ cups'},{item:'Blueberries',qty:'¾ cup'},{item:'Eggs',qty:'1'},{item:'Butter',qty:'⅓ cup'},{item:'Baking powder',qty:'2 tsp'}],steps:['Whisk flour, sugar and baking powder, then fold in egg, melted butter and milk.','Fold the blueberries through gently.','Spoon into a muffin tin and bake at 200°C for 20 min until domed and golden.'],note:'Tender bakery-style muffins bursting with berries — batch a tray for the week.'},
+  'cinnamon-rolls':{id:'cinnamon-rolls',name:'Cinnamon Rolls',cuisine:'',tagline:'Breakfast · make-ahead',cost:2.8,protein:7,timeMin:45,ingredients:[{item:'Flour',qty:'2 cups'},{item:'Yeast',qty:'1 tsp'},{item:'Butter',qty:'¼ cup'},{item:'Cinnamon',qty:'1 tbsp'},{item:'Brown sugar',qty:'⅓ cup'}],steps:['Make a soft yeast dough and let it rise until doubled.','Roll out, spread with butter, cinnamon and brown sugar, then roll up and slice.','Prove, bake at 190°C for 22 min, and drizzle with a simple icing.'],note:'Soft, spiral cinnamon rolls — shape them the night before and bake fresh.'},
+  'cheese-danish':{id:'cheese-danish',name:'Cheese Danish',cuisine:'',tagline:'Breakfast · flaky',cost:2.6,protein:9,timeMin:25,ingredients:[{item:'Puff pastry',qty:'1 sheet'},{item:'Cream cheese',qty:'½ cup'},{item:'Eggs',qty:'1'},{item:'Sugar',qty:'3 tbsp'},{item:'Lemon',qty:'½'}],steps:['Cut the puff pastry into squares and press a well into each centre.','Beat cream cheese with sugar, a little egg and lemon zest, and spoon into the wells.','Brush the edges with egg and bake at 200°C for 18 min until puffed and golden.'],note:'Flaky pastry around a tangy sweet-cheese centre — the classic café danish.'},
+  'almond-croissant':{id:'almond-croissant',name:'Almond Croissant',cuisine:'',tagline:'Breakfast · café-style',cost:3.0,protein:10,timeMin:20,ingredients:[{item:'Croissants',qty:'2 day-old'},{item:'Almond flour',qty:'½ cup'},{item:'Butter',qty:'3 tbsp'},{item:'Sugar',qty:'3 tbsp'},{item:'Almonds',qty:'handful'}],steps:['Beat butter, sugar and almond flour into a frangipane.','Split day-old croissants, fill with frangipane and spread a little on top.','Scatter flaked almonds and bake at 180°C for 12 min until toasted.'],note:'The bakery trick for reviving day-old croissants — almond frangipane, twice baked.'},
+  'banana-bread':{id:'banana-bread',name:'Banana Bread',cuisine:'',tagline:'Breakfast · make-ahead',cost:2.2,protein:8,timeMin:55,ingredients:[{item:'Flour',qty:'1½ cups'},{item:'Banana',qty:'3 ripe'},{item:'Eggs',qty:'2'},{item:'Butter',qty:'⅓ cup'},{item:'Baking powder',qty:'1 tsp'}],steps:['Mash the ripe bananas and beat in melted butter, eggs and sugar.','Fold in flour and baking powder until just combined.','Pour into a loaf tin and bake at 175°C for 45 min until a skewer comes out clean.'],note:'A moist loaf that turns over-ripe bananas into a week of easy slices.'},
+});
+Object.assign(emojiOf, {
+  'blueberry-muffins':'🧁','cinnamon-rolls':'🥐','cheese-danish':'🥧','almond-croissant':'🥐','banana-bread':'🍞',
+});
+Object.assign(catOf, {
+  'Butter':'Dairy & Eggs','Cream cheese':'Dairy & Eggs','Baking powder':'Pantry',
+  'Brown sugar':'Pantry','Almond flour':'Pantry','Puff pastry':'Grains & Bread','Croissants':'Grains & Bread',
+});
+Object.assign(photoMap, {
+  'blueberry-muffins':'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/02116jfMuffins_in_Philippinesfvf_02.jpg/960px-02116jfMuffins_in_Philippinesfvf_02.jpg',
+  'cinnamon-rolls':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Cinnamon_roll_in_Stockholm.jpg/960px-Cinnamon_roll_in_Stockholm.jpg',
+  'cheese-danish':'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Glazed_apple_Danish.jpg/960px-Glazed_apple_Danish.jpg',
+  'almond-croissant':'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Croissant-Petr_Kratochvil.jpg/960px-Croissant-Petr_Kratochvil.jpg',
+  'banana-bread':'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Banana_bread_slices.jpg/960px-Banana_bread_slices.jpg',
+});
+neutralBreakfasts.push('blueberry-muffins','cinnamon-rolls','cheese-danish','almond-croissant','banana-bread');
+
 // Merge detailed methods, prep times and tips over the concise base recipes.
 import { details } from './recipe-details.js';
 for (const [id, d] of Object.entries(details)) {
