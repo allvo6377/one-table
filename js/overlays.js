@@ -62,7 +62,9 @@ function recipeSheet() {
       <h2 class="sheet-title">${esc(r.name)}</h2>
       ${r.cuisine ? `<div class="sheet-origin">${r.region && r.region !== 'Nationwide' && r.region !== 'Coastal' ? `<b>${esc(r.region)}</b> · ` : ''}${esc(r.cuisine)}</div>` : ''}
       <div class="meta-chips">
-        <span class="meta-chip">⏱ ${r.timeMin} min</span>
+        <span class="meta-chip">⏱ ${r.timeMin} min total</span>
+        <span class="meta-chip">🔪 ${r.prep ?? Math.max(3, Math.round(r.timeMin / 3))} min prep</span>
+        <span class="meta-chip">🍽 serves ${sv}</span>
         <span class="meta-chip">💪 ${r.protein}g protein</span>
         <span class="meta-chip">＄${r.cost}${local ? ` · ${esc(local)}` : ''} / serving</span>
       </div>
@@ -90,6 +92,9 @@ function recipeSheet() {
           <span class="step-num">${i + 1}</span>
           <span class="step-text">${esc(t)}</span>
         </div>`).join('')}
+      ${r.tips && r.tips.length ? `
+        <h3 class="sheet-h3">Cook’s tips</h3>
+        <ul class="tips-list">${r.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
       <div class="sheet-actions">
         <button class="btn-ghost" data-act="addList" data-id="${r.id}">＋ Shopping list</button>
         <button class="btn-dark" data-act="cook" data-id="${r.id}">Start cooking →</button>
