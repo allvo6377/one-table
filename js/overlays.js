@@ -95,6 +95,7 @@ function recipeSheet() {
       ${r.tips && r.tips.length ? `
         <h3 class="sheet-h3">Cook’s tips</h3>
         <ul class="tips-list">${r.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      ${r.storage ? `<div class="sheet-storage"><span class="storage-ic" aria-hidden="true">🧊</span><div><b>Make ahead &amp; storage</b><br>${esc(r.storage)}</div></div>` : ''}
       <div class="sheet-actions">
         <button class="btn-ghost" data-act="addList" data-id="${r.id}">＋ Shopping list</button>
         <button class="btn-dark" data-act="cook" data-id="${r.id}">Start cooking →</button>

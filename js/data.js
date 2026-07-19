@@ -341,4 +341,5 @@ for (const [id, d] of Object.entries(details)) {
   if (d.steps) r.steps = d.steps;
   if (d.prep != null) r.prep = d.prep;
   if (d.tips) r.tips = d.tips;
+  if (d.storage) r.storage = d.storage;
 }
