@@ -332,3 +332,13 @@ cuisineMains.Kenyan.push('chapati-beef-stew','chapati-ndengu');
 // Attach region to every recipe that has one.
 for (const [id, reg] of Object.entries(REGION)) { if (recipes[id]) recipes[id].region = reg; }
 export { REGION };
+
+// Merge detailed methods, prep times and tips over the concise base recipes.
+import { details } from './recipe-details.js';
+for (const [id, d] of Object.entries(details)) {
+  const r = recipes[id];
+  if (!r) continue;
+  if (d.steps) r.steps = d.steps;
+  if (d.prep != null) r.prep = d.prep;
+  if (d.tips) r.tips = d.tips;
+}

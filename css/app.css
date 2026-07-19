@@ -777,6 +777,10 @@ em.tone-red { color: #B3432B; }
   justify-content: center;
 }
 .step-text { font-size: 14.5px; line-height: 1.5; color: #3a3229; padding-top: 2px; }
+.tips-list { margin: 4px 0 0; padding: 14px 16px; list-style: none; background: #F6ECD9; border: 1px solid #E4CFA4; border-radius: 12px; }
+.tips-list li { position: relative; padding-left: 22px; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+.tips-list li + li { margin-top: 9px; }
+.tips-list li::before { content: '💡'; position: absolute; left: 0; top: 0; font-size: 13px; }
 .sheet-actions { display: flex; gap: 10px; margin-top: 20px; }
 .btn-ghost {
   flex: 1;
