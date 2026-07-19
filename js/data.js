@@ -343,3 +343,10 @@ for (const [id, d] of Object.entries(details)) {
   if (d.tips) r.tips = d.tips;
   if (d.storage) r.storage = d.storage;
 }
+
+// Photo corrections (uji, ugali+beef stew plates).
+Object.assign(photoMap, {
+  'kenyan-uji':'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Fermented_porridge.jpg/960px-Fermented_porridge.jpg',
+  'kenyan-wet-fry-beef':'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Ugali_beef_stew_with_sukuma_n_fresh_tomatoes_taken_in_Nanyuki%2C_Kenya.jpg/960px-Ugali_beef_stew_with_sukuma_n_fresh_tomatoes_taken_in_Nanyuki%2C_Kenya.jpg',
+  'beef-posho':'https://upload.wikimedia.org/wikipedia/commons/0/01/Balanced-diet-ugali-vegetables-meat-stew.jpg',
+});

@@ -70,17 +70,36 @@ function sequence(pool, n) {
   return out;
 }
 
-// Near-identical dishes that shouldn't both show in one week (they read as a
-// repeat). Keep the first, swap any others for an unused, non-twin dish.
-const TWINS = [['githeri', 'muthokoi']];
-function dedupeTwins(M, pool) {
+// githeri and muthokoi are near-twin maize+legume dishes. Across one week we
+// want at most ONE of them, appearing ONCE — never both, never two days running
+// (they read as repetition). NO_REPEAT holds the twin set.
+const NO_REPEAT = new Set(['githeri', 'muthokoi']);
+const REPEAT_IDX = [0, 1, 3, 6]; // template slots that appear twice (cook + leftover)
+const SINGLE_IDX = [2, 4, 5, 7, 8, 9];
+
+// Keep the first twin occurrence; replace every other twin occurrence (a second
+// twin, or a duplicate of the same one) with a non-twin dish — preferring an
+// unused one, otherwise duplicating an existing non-twin (a harmless repeat).
+function resolveTwins(M, pool) {
   const out = M.slice();
-  for (const group of TWINS) {
-    const present = group.filter(id => out.includes(id));
-    for (let k = 1; k < present.length; k++) {
-      const idx = out.indexOf(present[k]);
-      const repl = pool.find(p => !out.includes(p) && !group.includes(p));
-      if (repl) out[idx] = repl;
+  let kept = false;
+  for (let i = 0; i < out.length; i++) {
+    if (!NO_REPEAT.has(out[i])) continue;
+    if (!kept) { kept = true; continue; }
+    const repl = pool.find(p => !out.includes(p) && !NO_REPEAT.has(p))
+      || pool.find(p => !NO_REPEAT.has(p) && p !== out[i]);
+    if (repl) out[i] = repl;
+  }
+  return out;
+}
+
+// Move the single remaining twin off a repeating slot so it shows up once.
+function placeSingle(M) {
+  const out = M.slice();
+  for (const ri of REPEAT_IDX) {
+    if (NO_REPEAT.has(out[ri])) {
+      const si = SINGLE_IDX.find(i => !NO_REPEAT.has(out[i]));
+      if (si != null) { const t = out[ri]; out[ri] = out[si]; out[si] = t; }
     }
   }
   return out;
@@ -90,7 +109,7 @@ function dedupeTwins(M, pool) {
 export function buildMixedPlan(seed) {
   const bf = shuffle(allBreakfasts(), seed).slice(0, 7);
   const pool = shuffle(allMains(), seed ^ 0x9e3779b9);
-  const M = dedupeTwins(pool.slice(0, 10), pool);
+  const M = placeSingle(resolveTwins(pool.slice(0, 10), pool));
   return assemble(state.week.days, bf, M);
 }
 
@@ -127,7 +146,7 @@ export function buildCuisinePlan(cuisine, budgetLocal, seed = 1, region = null) 
   let M = [...mainIds];
   for (const id of ms) { if (M.length >= 10) break; if (!M.includes(id)) M.push(id); }
   while (M.length < 10) M.push(mainIds[M.length % mainIds.length]);
-  M = dedupeTwins(M, ms); // no near-twin dishes (githeri + muthokoi) in one week
+  M = placeSingle(resolveTwins(M, ms)); // at most one of githeri/muthokoi, appearing once
   // Breakfasts: cycle through the (region-narrowed) breakfast pool, seeded,
   // so the week repeats them as little as the menu allows.
   const bf = sequence(shuffle(bfPool, seed), 7);
