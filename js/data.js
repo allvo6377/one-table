@@ -288,3 +288,47 @@ Object.assign(photoMap, {
   'urojo-soup':'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Urojo_Zanzibar_112018.jpg/960px-Urojo_Zanzibar_112018.jpg',
   'yam-egg-sauce':'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Boiled_yam_and_egg_sauce.jpg/960px-Boiled_yam_and_egg_sauce.jpg',
 });
+
+// ---- Tribe/region labels + chapati dishes (user request) ----
+const REGION = {
+  githeri:'Kikuyu','nyama-choma':'Nationwide','sukuma-ugali':'Nationwide','mukimo-beef':'Kikuyu',
+  'mandazi-chai':'Nationwide','kenyan-uji':'Nationwide','omena-ugali':'Luo',muthokoi:'Kamba',
+  'ingokho-stew':'Luhya','mursik-sweet-potato':'Kalenjin','nduma-eggs':'Kikuyu',
+  'kenyan-sweet-potato-eggs':'Nationwide','kenyan-wet-fry-beef':'Nationwide',
+  'jollof-chicken':'Nationwide','egusi-soup':'Igbo','efo-riro':'Yoruba','moi-moi-plantain':'Nationwide',
+  'akara-pap':'Nationwide','yam-egg-sauce':'Nationwide','nigerian-fried-yam-eggs':'Nationwide',
+  'plantain-frittata':'Nationwide','amala-ewedu':'Yoruba','ofe-nsala':'Igbo','tuwo-kuka':'Hausa',
+  'suya-skewers':'Hausa','ofada-stew':'Yoruba',
+  'matoke-groundnut':'Nationwide','luwombo-chicken':'Buganda','beef-posho':'Nationwide',
+  'doodo-groundnut':'Nationwide','rolex-wrap':'Nationwide',katogo:'Buganda','eshabwe-kalo':'Banyankole',
+  malakwang:'Acholi',kabalagala:'Buganda','ugandan-millet-porridge':'Nationwide','ugandan-groundnut-chicken':'Nationwide',
+  'chicken-tikka':'Punjabi','chana-masala':'Punjabi','dal-tadka':'Nationwide','palak-paneer':'Punjabi',
+  'veg-upma':'South Indian','besan-chilla':'Nationwide','sarson-makki':'Punjabi','sambar-rice':'South Indian',
+  'gujarati-khichdi':'Gujarati','bengali-fish-curry':'Bengali','masala-omelette':'Nationwide',poha:'Maharashtrian','rajma-rice':'Punjabi',
+  'spaghetti-bolognese':'Emilian','pesto-chicken-pasta':'Ligurian','minestrone-crostini':'Nationwide',
+  'chicken-parmigiana':'Nationwide','ricotta-toast':'Nationwide','uova-pomodoro':'Nationwide',
+  'cacio-e-pepe':'Roman',ribollita:'Tuscan','pasta-alla-norma':'Sicilian','pasta-e-fagioli':'Neapolitan',
+  'italian-frittata':'Nationwide','yogurt-granola':'Nationwide',
+  'coconut-fish-curry':'Coastal',pilau:'Coastal','mishkaki-skewers':'Coastal','maharagwe-nazi':'Coastal',
+  'vitumbua-chai':'Zanzibari','bajia-chutney':'Coastal','zanzibar-biryani':'Zanzibari','urojo-soup':'Zanzibari',
+  'mahamri-mbaazi':'Zanzibari','viazi-karai':'Coastal','kuku-wa-kupaka':'Coastal',
+  'chapati-beef-stew':'Nationwide','chapati-ndengu':'Kamba',
+};
+
+Object.assign(recipes, {
+  'chapati-beef-stew':{id:'chapati-beef-stew',name:'Chapati & Beef Stew',cuisine:'Kenyan',tagline:'Dinner · Sunday favourite',cost:4.6,protein:34,timeMin:45,ingredients:[{item:'Flour',qty:'1 cup'},{item:'Beef stew meat',qty:'200g'},{item:'Onion',qty:'1'},{item:'Tomato',qty:'2'},{item:'Carrot',qty:'1'}],steps:['Make a soft chapati dough, rest, roll and fry into layered chapatis.','Brown the beef, then simmer with onion, tomato and carrot into a rich stew.','Serve the stew with warm chapati to scoop.'],note:'The Kenyan Sunday plate — soft, flaky chapati against a slow beef stew.'},
+  'chapati-ndengu':{id:'chapati-ndengu',name:'Chapati na Ndengu (Green Gram Stew)',cuisine:'Kenyan',tagline:'Lunch · budget & meat-free',cost:2.8,protein:20,timeMin:40,ingredients:[{item:'Flour',qty:'1 cup'},{item:'Green grams (ndengu)',qty:'1 cup'},{item:'Onion',qty:'1'},{item:'Tomato',qty:'2'},{item:'Coconut milk',qty:'¼ cup'}],steps:['Boil the green grams until soft.','Fry onion and tomato, add the ndengu and a splash of coconut milk; simmer thick.','Serve with warm chapati.'],note:'Chapati with creamy green-gram stew — a hearty, meat-free everyday plate.'},
+});
+
+Object.assign(emojiOf, { 'chapati-beef-stew':'🫓','chapati-ndengu':'🫓' });
+Object.assign(catOf, { 'Green grams (ndengu)':'Pantry' });
+Object.assign(photoMap, {
+  'chapati-beef-stew':'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Kenyan_food-chapati_with_beef_stew.jpg/960px-Kenyan_food-chapati_with_beef_stew.jpg',
+  'chapati-ndengu':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Curry-sprouted-green_gram-chickpea.JPG/960px-Curry-sprouted-green_gram-chickpea.JPG',
+  muthokoi:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Beans_and_Corn_%28maize%29_porridge.jpg/960px-Beans_and_Corn_%28maize%29_porridge.jpg',
+});
+cuisineMains.Kenyan.push('chapati-beef-stew','chapati-ndengu');
+
+// Attach region to every recipe that has one.
+for (const [id, reg] of Object.entries(REGION)) { if (recipes[id]) recipes[id].region = reg; }
+export { REGION };

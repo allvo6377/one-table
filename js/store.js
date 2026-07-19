@@ -4,8 +4,8 @@ import { currentWeek } from './dates.js';
 
 const STORAGE_KEY = 'table-for-one:v1';
 // Profile-wide persisted keys. Day-keyed state lives per-week in `weekStore`.
-const PROFILE = ['have', 'prefs', 'planCuisine', 'planBudgetLocal', 'hideHave', 'layout'];
-const DEFAULT_PREFS = { cuisines: 'A mix of all', time: 'Balanced', budget: '$$', batch: 'Some', budgetLocal: null };
+const PROFILE = ['have', 'prefs', 'planCuisine', 'planBudgetLocal', 'planRegion', 'hideHave', 'layout'];
+const DEFAULT_PREFS = { cuisines: 'A mix of all', time: 'Balanced', budget: '$$', batch: 'Some', budgetLocal: null, region: 'All regions' };
 
 export const state = {
   week: currentWeek(),
@@ -31,6 +31,7 @@ export const state = {
   prefs: { ...DEFAULT_PREFS },
   planCuisine: null,
   planBudgetLocal: null,
+  planRegion: null,
 };
 
 // The active week's day-keyed state, snapshotted for storage.

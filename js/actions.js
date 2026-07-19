@@ -101,34 +101,36 @@ export const actions = {
   },
   pref(d) {
     const patch = { ...state.prefs, [d.key]: d.val };
-    if (d.key === 'cuisines') patch.budgetLocal = null;
+    if (d.key === 'cuisines') { patch.budgetLocal = null; patch.region = 'All regions'; }
     set({ prefs: patch });
   },
 
   regenerate() {
     const cz = state.prefs.cuisines;
     if (cz === 'A mix of all') {
-      set({ planCuisine: null, planBudgetLocal: null, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
+      set({ planCuisine: null, planBudgetLocal: null, planRegion: null, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
       set({ plan: currentPlan() });
       toast('Your fresh world tour is ready');
       return;
     }
     const cur = currency[cz];
     const budgetLocal = state.prefs.budgetLocal ?? cur.budgetDefault;
+    const region = state.prefs.region && state.prefs.region !== 'All regions' ? state.prefs.region : null;
     // Set the choice first, then derive the plan the same way a reload will
     // (seeded by the week key) so what you see now is what persists.
-    set({ planCuisine: cz, planBudgetLocal: budgetLocal, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
+    set({ planCuisine: cz, planBudgetLocal: budgetLocal, planRegion: region, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
     const plan = currentPlan();
     const actualCost = actualPlanCost(plan);
     const actualLocal = fmtLocal(actualCost, cz);
     const targetLocal = cur.symbol + Math.round(budgetLocal).toLocaleString('en-US');
     const ratio = localVal(actualCost, cur) / budgetLocal;
     set({ plan });
+    const who = region ? `${region} (${cz})` : `all-${cz}`;
     toast(ratio <= 1
-      ? `Your all-${cz} week is ready — ${actualLocal} of your ${targetLocal} budget.`
+      ? `Your ${who} week is ready — ${actualLocal} of your ${targetLocal} budget.`
       : ratio <= 1.2
-        ? `Closest all-${cz} week: ${actualLocal} — a touch over your ${targetLocal} target.`
-        : `The cheapest all-${cz} week costs ${actualLocal} — well over your ${targetLocal} target.`);
+        ? `Closest ${who} week: ${actualLocal} — a touch over your ${targetLocal} target.`
+        : `The cheapest ${who} week costs ${actualLocal} — well over your ${targetLocal} target.`);
   },
 };
 

@@ -70,18 +70,47 @@ function sequence(pool, n) {
   return out;
 }
 
+// Near-identical dishes that shouldn't both show in one week (they read as a
+// repeat). Keep the first, swap any others for an unused, non-twin dish.
+const TWINS = [['githeri', 'muthokoi']];
+function dedupeTwins(M, pool) {
+  const out = M.slice();
+  for (const group of TWINS) {
+    const present = group.filter(id => out.includes(id));
+    for (let k = 1; k < present.length; k++) {
+      const idx = out.indexOf(present[k]);
+      const repl = pool.find(p => !out.includes(p) && !group.includes(p));
+      if (repl) out[idx] = repl;
+    }
+  }
+  return out;
+}
+
 // "A mix of all" — 7 unique breakfasts and 10 distinct mains from the world.
 export function buildMixedPlan(seed) {
   const bf = shuffle(allBreakfasts(), seed).slice(0, 7);
-  const M = shuffle(allMains(), seed ^ 0x9e3779b9).slice(0, 10);
+  const pool = shuffle(allMains(), seed ^ 0x9e3779b9);
+  const M = dedupeTwins(pool.slice(0, 10), pool);
   return assemble(state.week.days, bf, M);
 }
 
-export function buildCuisinePlan(cuisine, budgetLocal, seed = 1) {
+// A tribe/region-narrowed week: the region's own dishes + the country's
+// shared ("Nationwide"/"Coastal") ones, so there are enough for seven days.
+export function buildCuisinePlan(cuisine, budgetLocal, seed = 1, region = null) {
   const cur = currency[cuisine];
+  const inRegion = id => {
+    const r = recipes[id].region;
+    return r === region || r === 'Nationwide' || r === 'Coastal';
+  };
+  let mainsPool = cuisineMains[cuisine], bfPool = cuisineBreakfasts[cuisine];
+  if (region && region !== 'All regions') {
+    const fm = mainsPool.filter(inRegion), fb = bfPool.filter(inRegion);
+    if (fm.length >= 4) mainsPool = fm; // enough distinct mains to build a week
+    if (fb.length >= 1) bfPool = fb;
+  }
   const byCost = a => a.slice().sort((x, y) => recipes[x].cost - recipes[y].cost);
-  const ms = byCost(cuisineMains[cuisine]);
-  const bfIds = byCost(cuisineBreakfasts[cuisine]).slice(0, 2);
+  const ms = byCost(mainsPool);
+  const bfIds = byCost(bfPool).slice(0, 2);
   const n = ms.length;
   const cheap6 = ms.slice(0, 6);
   const ultra = [ms[0], ms[1], ms[2], ms[3], ms[0], ms[1]];
@@ -95,21 +124,31 @@ export function buildCuisinePlan(cuisine, budgetLocal, seed = 1) {
   }
   // Pad the 6 budget mains up to 10 template slots with the cheapest extras,
   // so leftovers reuse but fresh cooks stay distinct where the cuisine allows.
-  const M = [...mainIds];
+  let M = [...mainIds];
   for (const id of ms) { if (M.length >= 10) break; if (!M.includes(id)) M.push(id); }
   while (M.length < 10) M.push(mainIds[M.length % mainIds.length]);
-  // Breakfasts: cycle through *all* the cuisine's breakfasts (seeded) so a
-  // single-cuisine week repeats them as little as the menu allows.
-  const bf = sequence(shuffle(cuisineBreakfasts[cuisine], seed), 7);
+  M = dedupeTwins(M, ms); // no near-twin dishes (githeri + muthokoi) in one week
+  // Breakfasts: cycle through the (region-narrowed) breakfast pool, seeded,
+  // so the week repeats them as little as the menu allows.
+  const bf = sequence(shuffle(bfPool, seed), 7);
   return assemble(state.week.days, bf, M);
 }
 
 // The plan is derived, never persisted: rebuilt deterministically from the
-// week key + the persisted cuisine/budget choice.
+// week key + the persisted cuisine/budget/region choice.
 export function currentPlan() {
   const seed = seedOf(state.week.key || 'w');
-  if (state.planCuisine) return buildCuisinePlan(state.planCuisine, state.planBudgetLocal, seed);
+  if (state.planCuisine) return buildCuisinePlan(state.planCuisine, state.planBudgetLocal, seed, state.planRegion);
   return buildMixedPlan(seed);
+}
+
+// Distinct regions/tribes available within a cuisine (for the plan picker).
+export function regionsForCuisine(cuisine) {
+  if (!cuisine || !cuisineMains[cuisine]) return [];
+  const ids = [...cuisineMains[cuisine], ...cuisineBreakfasts[cuisine]];
+  const set = new Set();
+  ids.forEach(id => { const r = recipes[id].region; if (r && r !== 'Nationwide' && r !== 'Coastal') set.add(r); });
+  return [...set].sort();
 }
 
 export function planTotals() {
