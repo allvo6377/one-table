@@ -2,7 +2,7 @@
 // week generator. Rendered into #overlays; empty string when closed.
 import { state } from './store.js';
 import { recipes, currency, emojiOf } from './data.js';
-import { fmtLocal } from './planner.js';
+import { fmtLocal, regionsForCuisine } from './planner.js';
 import { esc, photoUrl, thumb } from './ui.js';
 import { auth } from './sync.js';
 
@@ -12,7 +12,7 @@ const slotForTag = t => /breakfast/i.test(t) ? 'breakfast' : /lunch/i.test(t) ? 
 export function searchResultsHTML() {
   const q = (state.searchQuery || '').trim().toLowerCase();
   let list = Object.values(recipes);
-  if (q) list = list.filter(r => (r.name + ' ' + r.cuisine + ' ' + r.tagline).toLowerCase().includes(q));
+  if (q) list = list.filter(r => (r.name + ' ' + r.cuisine + ' ' + (r.region || '') + ' ' + r.tagline).toLowerCase().includes(q));
   list = list.sort((a, b) => a.name.localeCompare(b.name)).slice(0, 40);
   if (!list.length) return `<div class="search-empty">No meals match “${esc(state.searchQuery)}”. Try a cuisine or ingredient.</div>`;
   return list.map(r => `
@@ -20,7 +20,7 @@ export function searchResultsHTML() {
       <span class="search-thumb">${thumb(r.id, slotForTag(r.tagline), '', [140, 140])}</span>
       <span class="search-info">
         <span class="search-name">${esc(r.name)}</span>
-        <span class="search-meta">${r.cuisine ? esc(r.cuisine) + ' · ' : ''}${r.timeMin} min · ${r.protein}g · $${r.cost}</span>
+        <span class="search-meta">${r.region && r.region !== 'Nationwide' && r.region !== 'Coastal' ? esc(r.region) + ' · ' : ''}${r.cuisine ? esc(r.cuisine) + ' · ' : ''}${r.timeMin} min · ${r.protein}g · $${r.cost}</span>
       </span>
       <span class="search-go" aria-hidden="true">View →</span>
     </button>`).join('');
@@ -60,6 +60,7 @@ function recipeSheet() {
     <div class="sheet-body">
       <div class="sheet-kicker">${esc(r.tagline)}</div>
       <h2 class="sheet-title">${esc(r.name)}</h2>
+      ${r.cuisine ? `<div class="sheet-origin">${r.region && r.region !== 'Nationwide' && r.region !== 'Coastal' ? `<b>${esc(r.region)}</b> · ` : ''}${esc(r.cuisine)}</div>` : ''}
       <div class="meta-chips">
         <span class="meta-chip">⏱ ${r.timeMin} min</span>
         <span class="meta-chip">💪 ${r.protein}g protein</span>
@@ -168,6 +169,13 @@ function generator() {
   } else {
     budget = chipGroup('Weekly budget', 'budget', ['$', '$$', '$$$'], '');
   }
+  // Tribe/region narrowing — only shown for a specific country cuisine.
+  const regions = regionsForCuisine(cz);
+  const regionGroup = regions.length
+    ? chipGroup('Region / tribe', 'region', ['All regions', ...regions],
+        state.prefs.region && state.prefs.region !== 'All regions'
+          ? `Focusing on ${state.prefs.region} dishes, rounded out with everyday ${cz} favourites.` : '')
+    : '';
   return `
   <div class="scrim" data-act="closeGen"></div>
   <div class="modal" role="dialog" aria-modal="true" aria-label="Plan your week">
@@ -175,6 +183,7 @@ function generator() {
     <h2 class="sheet-title">Plan your week</h2>
     <p class="modal-blurb">A few taps and we’ll build seven days of meals sized for one — spanning your favourite cuisines, with smart leftovers so nothing spoils.</p>
     ${chipGroup('Cuisines', 'cuisines', CUISINE_OPTS, cuisineNote)}
+    ${regionGroup}
     ${chipGroup('Cook time', 'time', ['Quick ≤15m', 'Balanced', 'I like to cook'], '')}
     ${budget}
     ${chipGroup('Batch cooking', 'batch', ['Minimal', 'Some', 'Max leftovers'], '')}
