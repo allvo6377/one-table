@@ -183,14 +183,18 @@ breakpoint:
 - **No third-party requests on the critical path.** Fonts are self-hosted
   variable woff2 (the design's Google Fonts dependency inlined into the
   origin), so there's no extra DNS/TLS handshake blocking first paint.
-- **Food photos are progressive, not blocking.** Real dish photos load
-  lazily from a keyword image service (loremflickr) *over* a slot-tinted
-  emoji: the emoji paints instantly and the photo fades in when it arrives;
-  if the network is offline, slow, or the request fails, the emoji simply
-  stays (an `onerror` strips the `<img>`). So images never block render,
-  never shift layout, and the app stays fully usable with zero photos — the
-  one deliberate relaxation of "zero third-party requests," chosen because
-  the product wants real photography and the fallback makes it free of risk.
+- **Food photos are progressive, not blocking.** Each dish has a curated,
+  correctly-matched photo — 71 of the 85 come from a per-dish map of
+  Wikipedia/Wikimedia lead images (freely licensed, and the photo for
+  "Jollof rice" genuinely *is* jollof rice), pre-resolved at build time via
+  the `pageimages` API; the remaining handful (obscure dishes whose article
+  is only an ingredient shot) fall back to a keyword image service. Every
+  photo loads lazily *over* a slot-tinted emoji: the emoji paints instantly
+  and the photo fades in; if the network is offline, slow, or a request
+  fails, an `onerror` strips the `<img>` and the emoji stays. Images never
+  block render, never shift layout, and the app is fully usable with zero
+  photos — the one deliberate relaxation of "zero third-party requests,"
+  made safe by the fallback.
 - **Service worker** (`sw.js`) precaches the entire app cache-first: the
   second visit and every visit after loads from disk in milliseconds and
   works fully offline — it's an installable standalone PWA (manifest + SVG

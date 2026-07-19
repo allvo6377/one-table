@@ -1,6 +1,6 @@
 // Tiny view helpers. Views are template-literal functions returning HTML
 // strings; esc() is used on every interpolated data value.
-import { emojiOf, recipes } from './data.js';
+import { emojiOf, recipes, photoMap } from './data.js';
 
 export function esc(s) {
   return String(s).replace(/[&<>"']/g, c => (
@@ -12,13 +12,16 @@ export function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ---- real food photography, with the emoji as an offline fallback ----
 const STOP = new Set(['and', 'with', 'the', 'in', 'of', 'a', 'na', 'ya', 'wa', 'da', 'e', 'al', 'no', '&']);
-// A few dishes whose local names aren't good photo search terms.
+// Keyword fallback terms for the dishes without a curated Wikipedia photo, so
+// the loremflickr fallback still returns something dish-appropriate.
 const PHOTO_OVERRIDE = {
-  githeri: 'kenyan,beans,maize', 'nyama-choma': 'grilled,beef,steak', ugali: 'ugali,cornmeal',
-  'sukuma-ugali': 'collard,greens,ugali', matoke: 'plantain,stew', 'omena-ugali': 'sardines,ugali',
-  muthokoi: 'maize,beans,stew', 'tuwo-kuka': 'rice,soup', 'amala-ewedu': 'yam,soup',
-  'eshabwe-kalo': 'millet,bread', malakwang: 'greens,peanut,stew', 'nduma-eggs': 'arrowroot,eggs',
-  poha: 'poha,flattened,rice', 'viazi-karai': 'fried,potato,indian',
+  'chia-pudding': 'chia,pudding,breakfast', 'nduma-eggs': 'arrowroot,boiled,eggs',
+  'kenyan-sweet-potato-eggs': 'sweet,potato,eggs', 'ugandan-millet-porridge': 'millet,porridge,bowl',
+  'eshabwe-kalo': 'millet,bread,ghee', 'yam-egg-sauce': 'boiled,yam,egg,sauce',
+  'nigerian-fried-yam-eggs': 'fried,yam,egg', 'doodo-groundnut': 'greens,peanut,stew',
+  malakwang: 'greens,peanut,sesame', 'urojo-soup': 'zanzibar,urojo,soup',
+  'rolex-wrap': 'chapati,egg,wrap', 'kuku-wa-kupaka': 'grilled,chicken,coconut,curry',
+  'besan-chilla': 'besan,chilla,pancake',
 };
 
 function hash(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
@@ -32,8 +35,10 @@ function photoQuery(r) {
   return words.join(',');
 }
 
-// Keyword-matched real photo, stable per dish via `lock`. Free, no API key.
+// Prefer a curated, dish-matched Wikipedia photo; fall back to a keyword photo
+// for the handful without one. The emoji covers offline/failed loads.
 export function photoUrl(rid, w = 600, h = 400) {
+  if (photoMap[rid]) return photoMap[rid];
   const r = recipes[rid];
   if (!r) return '';
   return `https://loremflickr.com/${w}/${h}/${photoQuery(r)}?lock=${hash(rid) % 10000}`;
