@@ -270,3 +270,21 @@ export const photoMap = {
   'yogurt-granola':'https://upload.wikimedia.org/wikipedia/commons/9/94/Granola%2C_yogurt%2C_fruit._%2816696981528%29.jpg',
   'zanzibar-biryani':'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/%22Hyderabadi_Dum_Biryani%22.jpg/960px-%22Hyderabadi_Dum_Biryani%22.jpg',
 };
+
+// Curated Commons photos for the remaining dishes (no keyword fallback).
+Object.assign(photoMap, {
+  'besan-chilla':'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Besan_chilla.jpg/960px-Besan_chilla.jpg',
+  'chia-pudding':'https://upload.wikimedia.org/wikipedia/commons/9/90/Chia_seed_pudding_in_a_tea_cup.jpg',
+  'doodo-groundnut':'https://upload.wikimedia.org/wikipedia/commons/2/28/African_ugali_sukuma_and_potatoes.jpg',
+  'eshabwe-kalo':'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Kalo_%28African_Millet_Bread%29_1.jpg/960px-Kalo_%28African_Millet_Bread%29_1.jpg',
+  'kenyan-sweet-potato-eggs':'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Boiled_pumpkin_with_roasted_sweet_potato_and_vegetables.jpg/960px-Boiled_pumpkin_with_roasted_sweet_potato_and_vegetables.jpg',
+  'kuku-wa-kupaka':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Chicken_Coconut_Curry.jpg/960px-Chicken_Coconut_Curry.jpg',
+  'malakwang':'https://upload.wikimedia.org/wikipedia/commons/b/b8/Malakwang_dish.jpg',
+  'nduma-eggs':'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Arrowroot_%28Maranta_arundinacea%29_Boiled.jpg/960px-Arrowroot_%28Maranta_arundinacea%29_Boiled.jpg',
+  'nigerian-fried-yam-eggs':'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Fried_Yam_with_egg_and_Stew.jpg/960px-Fried_Yam_with_egg_and_Stew.jpg',
+  'rolex-wrap':'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Rolex_%28food%29_01.jpg/960px-Rolex_%28food%29_01.jpg',
+  'ugandan-groundnut-chicken':'https://upload.wikimedia.org/wikipedia/commons/0/01/Groundnut_Stew%28_Abom_%29.jpg',
+  'ugandan-millet-porridge':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Millet_porridge.png/960px-Millet_porridge.png',
+  'urojo-soup':'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Urojo_Zanzibar_112018.jpg/960px-Urojo_Zanzibar_112018.jpg',
+  'yam-egg-sauce':'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Boiled_yam_and_egg_sauce.jpg/960px-Boiled_yam_and_egg_sauce.jpg',
+});
