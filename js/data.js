@@ -357,6 +357,29 @@ Object.assign(photoMap, {
 });
 neutralBreakfasts.push('blueberry-muffins','cinnamon-rolls','cheese-danish','almond-croissant','banana-bread');
 
+// ---- Smoothies & drinks (user request) ----
+Object.assign(recipes, {
+  'berry-banana-smoothie':{id:'berry-banana-smoothie',name:'Berry Banana Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.6,protein:20,timeMin:5,ingredients:[{item:'Greek yogurt',qty:'½ cup'},{item:'Banana',qty:'1'},{item:'Blueberries',qty:'½ cup'},{item:'Milk',qty:'½ cup'},{item:'Honey',qty:'1 tsp'}],steps:['Add yogurt, banana, blueberries and milk to a blender.','Blend until smooth and thick.','Sweeten with honey to taste and pour.'],note:'A thick, berry-bright breakfast in a glass — 20g protein, no cooking.'},
+  'mango-lassi':{id:'mango-lassi',name:'Mango Lassi',cuisine:'',tagline:'Breakfast · Indian smoothie',cost:2.4,protein:14,timeMin:5,ingredients:[{item:'Mango',qty:'1'},{item:'Yogurt',qty:'1 cup'},{item:'Milk',qty:'¼ cup'},{item:'Cardamom',qty:'pinch'},{item:'Honey',qty:'1 tsp'}],steps:['Blend ripe mango with yogurt and milk until silky.','Add a pinch of cardamom and honey.','Blend again and serve chilled.'],note:'The classic Indian yogurt cooler — creamy, fragrant and naturally sweet.'},
+  'green-smoothie':{id:'green-smoothie',name:'Green Spinach Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.5,protein:16,timeMin:5,ingredients:[{item:'Spinach',qty:'1 handful'},{item:'Banana',qty:'1'},{item:'Greek yogurt',qty:'½ cup'},{item:'Pineapple',qty:'½ cup'},{item:'Chia seeds',qty:'1 tsp'}],steps:['Blend spinach with banana and a splash of water first, until no flecks remain.','Add yogurt, pineapple and chia.','Blend smooth and pour.'],note:'Greens you can’t taste — the pineapple and banana carry it, the chia thickens it.'},
+  'avocado-smoothie':{id:'avocado-smoothie',name:'Avocado Banana Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.8,protein:15,timeMin:5,ingredients:[{item:'Avocado',qty:'½'},{item:'Banana',qty:'1'},{item:'Milk',qty:'¾ cup'},{item:'Honey',qty:'1 tsp'},{item:'Chia seeds',qty:'1 tsp'}],steps:['Scoop the avocado in with banana and milk.','Blend until velvety and pale green.','Stir in honey and chia; serve cold.'],note:'Ultra-creamy and filling — good fats keep you full to lunch.'},
+  'tropical-smoothie':{id:'tropical-smoothie',name:'Tropical Pineapple Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.6,protein:12,timeMin:5,ingredients:[{item:'Pineapple',qty:'¾ cup'},{item:'Mango',qty:'½'},{item:'Coconut water',qty:'½ cup'},{item:'Banana',qty:'½'},{item:'Lime',qty:'½'}],steps:['Blend pineapple, mango and banana with coconut water.','Squeeze in the lime.','Blend until frothy and pour over ice.'],note:'Dairy-free and vegan — a holiday in a glass, bright with lime.'},
+  'beet-berry-smoothie':{id:'beet-berry-smoothie',name:'Beet & Berry Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.7,protein:14,timeMin:6,ingredients:[{item:'Beetroot',qty:'½ cooked'},{item:'Blueberries',qty:'½ cup'},{item:'Greek yogurt',qty:'½ cup'},{item:'Milk',qty:'½ cup'},{item:'Honey',qty:'1 tsp'}],steps:['Blend cooked beetroot with berries and milk.','Add yogurt and honey.','Blend until deep pink and smooth.'],note:'Earthy-sweet and vivid — beetroot brings colour, iron and a gentle sweetness.'},
+});
+Object.assign(emojiOf, {
+  'berry-banana-smoothie':'🫐','mango-lassi':'🥭','green-smoothie':'🥬','avocado-smoothie':'🥑','tropical-smoothie':'🍍','beet-berry-smoothie':'🥤',
+});
+Object.assign(catOf, { 'Pineapple':'Produce','Beetroot':'Produce','Coconut water':'Pantry' });
+Object.assign(photoMap, {
+  'berry-banana-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Fresh_fruit_smoothie_preparation_with_assorted_fruits_on_a_table.jpg/960px-Fresh_fruit_smoothie_preparation_with_assorted_fruits_on_a_table.jpg',
+  'mango-lassi':'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Mango_lassi_at_Everest_Dine_in_November_2022.jpg/960px-Mango_lassi_at_Everest_Dine_in_November_2022.jpg',
+  'green-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Kid_friendly_green_smoothie_in_a_personalized_glass_with_spinach%2C_Greek_yogurt%2C_frozen_blueberries%2C_blackberries_and_strawberries_and_berries%2C_banana_in_a_glass_bowl_on_a_wood_table_%2816225943125%29.jpg/960px-thumbnail.jpg',
+  'avocado-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Avocado%2C_milk%2C_condensed_milk_and_ice_smoothies_-_Amazing_Chef_food_processor.jpg/960px-Avocado%2C_milk%2C_condensed_milk_and_ice_smoothies_-_Amazing_Chef_food_processor.jpg',
+  'tropical-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Batido_de_pi%C3%B1a.jpg/960px-Batido_de_pi%C3%B1a.jpg',
+  'beet-berry-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Beet_juice-01.jpg/960px-Beet_juice-01.jpg',
+});
+neutralBreakfasts.push('berry-banana-smoothie','mango-lassi','green-smoothie','avocado-smoothie','tropical-smoothie','beet-berry-smoothie');
+
 // Merge detailed methods, prep times and tips over the concise base recipes.
 import { details } from './recipe-details.js';
 for (const [id, d] of Object.entries(details)) {

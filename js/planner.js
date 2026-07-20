@@ -3,6 +3,15 @@
 // each week differs but is stable.
 import { recipes, cuisineMains, cuisineBreakfasts, neutralBreakfasts, currency, SLOTS } from './data.js';
 import { state } from './store.js';
+import { matchesCategory } from './tags.js';
+
+// Narrow a pool of recipe ids to a dietary/category filter. Falls back to the
+// full pool if nothing matches, so a themed week can never come out empty.
+function dietFilter(ids, diet) {
+  if (!diet) return ids;
+  const f = ids.filter(id => matchesCategory(recipes[id], diet));
+  return f.length ? f : ids;
+}
 
 // ---- seeded shuffle (mulberry32) ----
 function rng(seed) {
@@ -106,16 +115,18 @@ function placeSingle(M) {
 }
 
 // "A mix of all" — 7 unique breakfasts and 10 distinct mains from the world.
-export function buildMixedPlan(seed) {
-  const bf = shuffle(allBreakfasts(), seed).slice(0, 7);
-  const pool = shuffle(allMains(), seed ^ 0x9e3779b9);
-  const M = placeSingle(resolveTwins(pool.slice(0, 10), pool));
+export function buildMixedPlan(seed, diet = state.planDiet) {
+  const bfPool = dietFilter(allBreakfasts(), diet);
+  const mainPool = dietFilter(allMains(), diet);
+  const bf = sequence(shuffle(bfPool, seed), 7);
+  const M0 = sequence(shuffle(mainPool, seed ^ 0x9e3779b9), 10);
+  const M = placeSingle(resolveTwins(M0, mainPool));
   return assemble(state.week.days, bf, M);
 }
 
 // A tribe/region-narrowed week: the region's own dishes + the country's
 // shared ("Nationwide"/"Coastal") ones, so there are enough for seven days.
-export function buildCuisinePlan(cuisine, budgetLocal, seed = 1, region = null) {
+export function buildCuisinePlan(cuisine, budgetLocal, seed = 1, region = null, diet = state.planDiet) {
   const cur = currency[cuisine];
   const inRegion = id => {
     const r = recipes[id].region;
@@ -127,6 +138,8 @@ export function buildCuisinePlan(cuisine, budgetLocal, seed = 1, region = null) 
     if (fm.length >= 4) mainsPool = fm; // enough distinct mains to build a week
     if (fb.length >= 1) bfPool = fb;
   }
+  mainsPool = dietFilter(mainsPool, diet);
+  bfPool = dietFilter(bfPool, diet);
   const byCost = a => a.slice().sort((x, y) => recipes[x].cost - recipes[y].cost);
   const ms = byCost(mainsPool);
   const bfIds = byCost(bfPool).slice(0, 2);
@@ -157,8 +170,8 @@ export function buildCuisinePlan(cuisine, budgetLocal, seed = 1, region = null) 
 // week key + the persisted cuisine/budget/region choice.
 export function currentPlan() {
   const seed = seedOf(state.week.key || 'w');
-  if (state.planCuisine) return buildCuisinePlan(state.planCuisine, state.planBudgetLocal, seed, state.planRegion);
-  return buildMixedPlan(seed);
+  if (state.planCuisine) return buildCuisinePlan(state.planCuisine, state.planBudgetLocal, seed, state.planRegion, state.planDiet);
+  return buildMixedPlan(seed, state.planDiet);
 }
 
 // Distinct regions/tribes available within a cuisine (for the plan picker).

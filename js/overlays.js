@@ -5,7 +5,7 @@ import { recipes, currency, emojiOf } from './data.js';
 import { fmtLocal, regionsForCuisine } from './planner.js';
 import { esc, photoUrl, thumb } from './ui.js';
 import { auth } from './sync.js';
-import { CATEGORIES, matchesCategory } from './tags.js';
+import { CATEGORIES, matchesCategory, DIET_OPTIONS } from './tags.js';
 
 const slotForTag = t => /breakfast/i.test(t) ? 'breakfast' : /lunch/i.test(t) ? 'lunch' : 'dinner';
 
@@ -218,6 +218,9 @@ function generator() {
     <p class="modal-blurb">A few taps and we’ll build seven days of meals sized for one — spanning your favourite cuisines, with smart leftovers so nothing spoils.</p>
     ${chipGroup('Cuisines', 'cuisines', CUISINE_OPTS, cuisineNote)}
     ${regionGroup}
+    ${chipGroup('Dietary', 'diet', DIET_OPTIONS.map(([l]) => l),
+      state.prefs.diet && state.prefs.diet !== 'Anything'
+        ? `Every meal this week is ${state.prefs.diet.toLowerCase()} — breakfasts, lunches and dinners.` : '')}
     ${chipGroup('Cook time', 'time', ['Quick ≤15m', 'Balanced', 'I like to cook'], '')}
     ${budget}
     ${chipGroup('Batch cooking', 'batch', ['Minimal', 'Some', 'Max leftovers'], '')}

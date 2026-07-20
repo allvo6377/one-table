@@ -8,6 +8,7 @@ import { weekByOffset } from './dates.js';
 import { toast } from './ui.js';
 import { sendCode, verifyCode, signOut, resetPending, auth } from './sync.js';
 import { toggle as timerToggle, reset as timerReset } from './timer.js';
+import { dietId } from './tags.js';
 
 export const actions = {
   view(d) { set({ view: d.view }); },
@@ -113,10 +114,11 @@ export const actions = {
 
   regenerate() {
     const cz = state.prefs.cuisines;
+    const diet = dietId(state.prefs.diet);
     if (cz === 'A mix of all') {
-      set({ planCuisine: null, planBudgetLocal: null, planRegion: null, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
+      set({ planCuisine: null, planBudgetLocal: null, planRegion: null, planDiet: diet, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
       set({ plan: currentPlan() });
-      toast('Your fresh world tour is ready');
+      toast(diet ? `Your ${state.prefs.diet.toLowerCase()} week is ready` : 'Your fresh world tour is ready');
       return;
     }
     const cur = currency[cz];
@@ -124,7 +126,7 @@ export const actions = {
     const region = state.prefs.region && state.prefs.region !== 'All regions' ? state.prefs.region : null;
     // Set the choice first, then derive the plan the same way a reload will
     // (seeded by the week key) so what you see now is what persists.
-    set({ planCuisine: cz, planBudgetLocal: budgetLocal, planRegion: region, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
+    set({ planCuisine: cz, planBudgetLocal: budgetLocal, planRegion: region, planDiet: diet, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
     const plan = currentPlan();
     const actualCost = actualPlanCost(plan);
     const actualLocal = fmtLocal(actualCost, cz);

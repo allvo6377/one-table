@@ -53,7 +53,7 @@ const DEFS = [
   { id: 'dairy-free', label: 'Dairy-free', emoji: '🥛', test: r => !hasDairy(r) },
   { id: 'special', label: 'Special occasion', emoji: '🎉', test: r => IDS.special.has(r.id) },
   { id: 'dessert', label: 'Desserts & sweet bakes', emoji: '🍰', test: r => IDS.dessert.has(r.id) },
-  { id: 'drinks', label: 'Drinks & smoothies', emoji: '🥤', test: r => /smoothie|juice/i.test(r.name + ' ' + r.tagline) },
+  { id: 'drinks', label: 'Drinks & smoothies', emoji: '🥤', test: r => /\b(smoothie|juice|lassi|shake)\b/i.test(r.name + ' ' + r.tagline) },
   { id: 'one-pot', label: 'One-pot meals', emoji: '🍲', test: onePot },
   { id: 'meal-prep', label: 'Meal-prep', emoji: '📦', test: mealPrep },
 ];
@@ -70,3 +70,16 @@ export function matchesCategory(r, id) {
   const c = BY_ID[id];
   return c ? c.test(r) : true;
 }
+
+// Dietary themes offered when planning a week: [label, category id]. Only the
+// diets that make sense (and have enough recipes) to fill seven days.
+export const DIET_OPTIONS = [
+  ['Anything', ''],
+  ['Vegetarian', 'vegetarian'],
+  ['Vegan', 'vegan'],
+  ['High-protein', 'high-protein'],
+  ['Gluten-free', 'gluten-free'],
+  ['Dairy-free', 'dairy-free'],
+  ['Budget', 'budget'],
+];
+export const dietId = label => (DIET_OPTIONS.find(([l]) => l === label) || [, ''])[1];

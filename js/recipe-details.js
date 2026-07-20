@@ -213,6 +213,37 @@ export const details = {
     'Fold in 1½ cups flour, 1 tsp baking powder and a pinch of salt until just combined.',
     'Pour into the tin and bake 45–50 minutes until a skewer comes out clean; cool before slicing.',
   ], tips: ['The blacker the bananas, the sweeter and moister the loaf.', 'Add a handful of walnuts or chocolate chips with the flour for texture.'], storage: 'Keeps 4 days wrapped at room temperature and freezes beautifully in slices — toast straight from frozen.' },
+  // ---------- smoothies & drinks ----------
+  'berry-banana-smoothie': { prep: 5, steps: [
+    'Add ½ cup Greek yogurt, 1 banana, ½ cup blueberries and ½ cup milk to the blender.',
+    'Blend 30–40 seconds until completely smooth and thick.',
+    'Taste, add 1 tsp honey if the berries are tart, and pour.',
+  ], tips: ['Use frozen banana and berries for a thick, milkshake texture without ice.', 'Too thick? Loosen with a splash more milk; too thin? Add a spoon of oats.'], storage: 'Best within the hour. Pre-portion the fruit into freezer bags so a fresh smoothie is a 2-minute job on busy mornings.' },
+  'mango-lassi': { prep: 5, steps: [
+    'Peel and cube 1 ripe mango (or use ¾ cup frozen mango).',
+    'Blend with 1 cup yogurt and ¼ cup milk until silky.',
+    'Add a pinch of cardamom and 1 tsp honey; blend and serve chilled.',
+  ], tips: ['A pinch of cardamom is what makes it taste like the restaurant version.', 'Frozen mango gives a thicker, more refreshing lassi than fresh.'], storage: 'Drink fresh; keeps a few hours chilled but thickens — stir or loosen with milk before serving.' },
+  'green-smoothie': { prep: 5, steps: [
+    'Blend a handful of spinach with 1 banana and a splash of water first, until no green flecks remain.',
+    'Add ½ cup Greek yogurt, ½ cup pineapple and 1 tsp chia seeds.',
+    'Blend smooth and pour.',
+  ], tips: ['Blending the greens with liquid first gives a smooth, not gritty, drink.', 'Pineapple and banana completely mask the spinach — good for greens-sceptics.'], storage: 'Best fresh; the chia will keep thickening, so drink within the hour or add more liquid.' },
+  'avocado-smoothie': { prep: 5, steps: [
+    'Scoop ½ avocado into the blender with 1 banana and ¾ cup milk.',
+    'Blend until velvety and pale green.',
+    'Stir in 1 tsp honey and 1 tsp chia; serve cold.',
+  ], tips: ['The avocado makes it luxuriously creamy and keeps you full to lunch.', 'A few mint leaves or a squeeze of lime lifts it.'], storage: 'Drink straight away — avocado browns and thickens on standing.' },
+  'tropical-smoothie': { prep: 5, steps: [
+    'Blend ¾ cup pineapple, ½ mango and ½ banana with ½ cup coconut water.',
+    'Squeeze in the juice of ½ lime.',
+    'Blend until frothy and pour over ice.',
+  ], tips: ['Coconut water keeps it dairy-free and light — swap for coconut milk if you want it richer.', 'Frozen tropical fruit means you can skip the ice.'], storage: 'Best fresh and cold; separates on standing, so give it a stir.' },
+  'beet-berry-smoothie': { prep: 6, steps: [
+    'Blend ½ cooked beetroot with ½ cup blueberries and ½ cup milk.',
+    'Add ½ cup Greek yogurt and 1 tsp honey.',
+    'Blend until deep pink and smooth.',
+  ], tips: ['Use pre-cooked (vacuum-packed) beetroot to skip the boiling.', 'Berries balance the earthiness — add more if the beet is strong.'], storage: 'Best fresh; keeps half a day chilled. Freeze cooked beetroot in chunks for quick blends.' },
 };
 
 // ---------- Swahili (coastal) ----------
