@@ -32,7 +32,11 @@ export const auth = {
   get error() { return lastError; },
 };
 
-async function api(base, path, opts = {}) {
+export { REST };
+// Signed-in access token (or null) — lets the content module authorise admin writes.
+export function accessToken() { return session?.access_token || null; }
+
+export async function api(base, path, opts = {}) {
   const headers = { apikey: SUPABASE_KEY, 'Content-Type': 'application/json', ...opts.headers };
   if (session && base === REST) {
     if (session.expires_at * 1000 - Date.now() < 60_000) await refresh();

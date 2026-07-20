@@ -10,6 +10,7 @@ import { overlays, cookFoot, searchBodyHTML } from './overlays.js';
 import { actions, onBudgetInput, closeTopLayer } from './actions.js';
 import { initSync } from './sync.js';
 import { syncToStep as timerSync, stop as timerStop } from './timer.js';
+import { loadCachedContent, fetchContent } from './content.js';
 
 const $ = id => document.getElementById(id);
 let lastView = null;
@@ -183,10 +184,13 @@ addEventListener('focus', refreshWeek);
 
 // ---- boot ----
 load();
+loadCachedContent();            // apply any cached CMS overrides (theme + data) before first paint
 set({ plan: currentPlan() }, { silent: true });
 onChange(invalidate);
 render();
 initSync();
+// Pull the latest published content; if it changed, rebuild the plan + repaint.
+fetchContent().then(changed => { if (changed) set({ plan: currentPlan() }); });
 
 // Offline + instant repeat visits; registered after first paint so it never
 // competes with the initial load.
