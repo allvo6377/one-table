@@ -9,6 +9,7 @@ import { toast } from './ui.js';
 import { sendCode, verifyCode, signOut, resetPending, auth } from './sync.js';
 import { toggle as timerToggle, reset as timerReset } from './timer.js';
 import { dietId } from './tags.js';
+import { openAdmin as adminOpen, adminAction } from './admin.js';
 
 export const actions = {
   view(d) { set({ view: d.view }); },
@@ -27,6 +28,20 @@ export const actions = {
   closeSearch() { set({ showSearch: false }); },
   // Toggle a browse category; tapping the active one clears it.
   searchCat(d) { set({ searchCat: state.searchCat === d.val ? '' : d.val }); },
+
+  // ---- admin content editor ----
+  editSite() { adminOpen(); set({ showAdmin: true, adminTab: 'theme' }); },
+  closeAdmin() { set({ showAdmin: false }); },
+  adminTab(d) { adminAction('adminTab', d); },
+  adminRecipeOpen(d) { adminAction('adminRecipeOpen', d); },
+  adminRecipeBack() { adminAction('adminRecipeBack', {}); },
+  adminRecipeAdd() { adminAction('adminRecipeAdd', {}); },
+  adminRecipeDelete(d) { adminAction('adminRecipeDelete', d); },
+  adminReset(d) { adminAction('adminReset', d); },
+  adminPreview() { adminAction('adminPreview', {}); },
+  adminPublish() { adminAction('adminPublish', {}); },
+  adminRemoveEmail(d) { adminAction('adminRemoveEmail', d); },
+  adminAddEmail() { const el = document.getElementById('admin-new-email'); adminAction('adminAddEmail', { email: el ? el.value : '' }); },
   servings(d) {
     const next = Math.min(4, Math.max(1, state.servings + Number(d.dir)));
     if (next !== state.servings) set({ servings: next });
@@ -158,6 +173,7 @@ export function onBudgetInput(input) {
 // Escape closes the topmost layer only.
 export function closeTopLayer() {
   if (state.cooking) set({ cooking: null });
+  else if (state.showAdmin) set({ showAdmin: false });
   else if (state.showAccount) set({ showAccount: false });
   else if (state.selId) set({ selId: null });
   else if (state.showSearch) set({ showSearch: false });

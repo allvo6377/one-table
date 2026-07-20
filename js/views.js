@@ -8,6 +8,7 @@ import { esc, cap, thumb, cuisineChip, steam } from './ui.js';
 import { auth } from './sync.js';
 import { upcomingWeeks } from './dates.js';
 import { CATEGORIES } from './tags.js';
+import { brand, copy, isAdminUser } from './content.js';
 
 // Pill for the active dietary theme on the plan header, e.g. "🥗 Vegetarian week".
 function dietBadge() {
@@ -43,14 +44,15 @@ function glanceHTML() {
 export function sidebar() {
   return `
     <div class="brand">
-      <div class="brand-name">Table for One</div>
-      <div class="brand-sub">Party of one · eat the world</div>
+      <div class="brand-name">${esc(brand().name)}</div>
+      <div class="brand-sub">${esc(brand().sub)}</div>
     </div>
     <nav class="side-nav" aria-label="Sections">
       ${NAV.map(([label, v]) => `<button class="nav-btn${state.view === v ? ' is-active' : ''}"${state.view === v ? ' aria-current="page"' : ''} data-act="view" data-view="${v}">${label}</button>`).join('')}
       <button class="nav-btn nav-search" data-act="openSearch">🔍 Search meals</button>
     </nav>
     <button class="new-plan" data-act="openGen">＋ Plan a new week</button>
+    ${isAdminUser() ? '<button class="edit-site" data-act="editSite">✎ Edit site content</button>' : ''}
     <button class="sync-row" data-act="openAccount">
       <span class="sync-dot${auth.user ? ' is-on' : ''}" aria-hidden="true"></span>
       ${auth.user ? `Syncing · ${esc(auth.user.email)}` : 'Sign in to sync'}
@@ -144,7 +146,7 @@ export function todayView() {
     <header class="page-head">
       <div>
         <div class="kicker">${esc(state.week.todayLabel)}</div>
-        <h1 class="page-title">Today’s table</h1>
+        <h1 class="page-title">${esc(copy('todayTitle', 'Today’s table'))}</h1>
       </div>
       <div class="prot-box">
         <div class="prot-row"><b>${t.eatenProt}g of ${t.todayProt}g protein</b><span>${t.eatenCount}/3 meals</span></div>

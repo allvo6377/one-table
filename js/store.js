@@ -21,6 +21,8 @@ export const state = {
   showGen: false,
   showAccount: false,
   showSearch: false,
+  showAdmin: false,
+  adminTab: 'theme',
   searchQuery: '',
   searchCat: '',
   hideHave: false,
