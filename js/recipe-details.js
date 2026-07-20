@@ -80,7 +80,7 @@ export const details = {
   githeri: { prep: 10, steps: [
     'Heat oil in a pot and fry 1 chopped onion until soft and translucent.',
     'Add 2 chopped tomatoes, 1 diced carrot and 1 tsp cumin; cook down 5 minutes.',
-    'Drain and rinse 1 can maize and 1 can kidney beans, then tip them in.',
+    'Drain and rinse 1 can of maize and 1 can of kidney beans, then tip them in.',
     'Add a splash of water, season with salt, and simmer 20 minutes, stirring now and then.',
     'Mash a few beans against the side to thicken, and serve hot.',
   ], tips: ['A cubed potato added with the beans makes it more filling.', 'Leftovers fry up beautifully the next day with a little more onion — that’s githeri special.'] },
@@ -250,7 +250,7 @@ export const details = {
 Object.assign(details, {
   'coconut-fish-curry': { prep: 8, steps: [
     'Soften ½ chopped onion and 2 chopped tomatoes in a pan until jammy.',
-    'Pour in ½ can coconut milk and bring to a gentle simmer — don’t let it boil hard or it splits.',
+    'Pour in ½ can of coconut milk and bring to a gentle simmer — don’t let it boil hard or it splits.',
     'Slide in 1 white fish fillet and spoon sauce over it.',
     'Simmer gently 8 minutes until the fish flakes but still holds together.',
     'Finish with lime juice and chopped cilantro; serve with rice.',
@@ -271,8 +271,8 @@ Object.assign(details, {
   ], tips: ['Soak wooden skewers first so they don’t burn.', 'Don’t crowd the pan — the meat should sear, not steam.'] },
   'maharagwe-nazi': { prep: 8, steps: [
     'Fry 1 chopped onion and 2 tomatoes to a soft base.',
-    'Pour in ½ can coconut milk and bring to a gentle simmer.',
-    'Add 1 can drained kidney beans and cook 12–15 minutes until the sauce thickens.',
+    'Pour in ½ can of coconut milk and bring to a gentle simmer.',
+    'Add 1 can of drained kidney beans and cook 12–15 minutes until the sauce thickens.',
     'Mash a few beans to thicken further and season.',
     'Serve scooped up with warm chapati.',
   ], tips: ['Simmer gently once the coconut milk is in so it doesn’t split.', 'Freezes perfectly — make double.'] },
@@ -320,7 +320,7 @@ Object.assign(details, {
   ], tips: ['Parboil first so the inside is fluffy by the time the shell crisps.', 'Turmeric gives the classic golden colour — don’t leave it out.'] },
   'kuku-wa-kupaka': { prep: 12, steps: [
     'Season 2 chicken thighs and grill or sear until charred and nearly cooked through.',
-    'Simmer ½ can coconut milk with 2 crushed garlic cloves, lime juice and chopped chilli 5 minutes.',
+    'Simmer ½ can of coconut milk with 2 crushed garlic cloves, lime juice and chopped chilli 5 minutes.',
     'Nestle the chicken into the sauce and spoon it over the top.',
     'Simmer gently 8–10 minutes until the chicken is cooked and coated.',
     'Serve with rice, spooning the sauce generously.',
@@ -514,7 +514,7 @@ Object.assign(details, {
   'chana-masala': { prep: 10, steps: [
     'Fry 1 onion, 1 thumb ginger and 2 garlic cloves into a soft paste.',
     'Add 2 chopped tomatoes and 1 tbsp garam masala; cook down 8 minutes until the oil separates.',
-    'Tip in 1 can chickpeas with a splash of water.',
+    'Tip in 1 can of chickpeas with a splash of water.',
     'Simmer 15 minutes, mashing a few chickpeas to thicken the sauce.',
     'Finish with a squeeze of lemon and serve with rice or roti.',
   ], tips: ['Cooking the masala until the oil separates is the key flavour step.', 'A pinch of amchur (mango powder) or lemon gives the classic tang.'] },
@@ -591,7 +591,7 @@ Object.assign(details, {
   'rajma-rice': { prep: 10, steps: [
     'Fry 1 onion until golden, then add 2 blended tomatoes and 1 tbsp garam masala.',
     'Cook down 8–10 minutes until the masala is thick and the oil separates.',
-    'Add 1 can kidney beans with a splash of water.',
+    'Add 1 can of kidney beans with a splash of water.',
     'Simmer 15 minutes, mashing a few beans to thicken the gravy.',
     'Serve over steamed rice.',
   ], tips: ['Mashing some beans is the trick to a thick, clingy rajma gravy.', 'A knob of butter stirred in at the end rounds it out.'] },
@@ -616,7 +616,7 @@ Object.assign(details, {
   'minestrone-crostini': { prep: 12, steps: [
     'Soften 1 diced onion and 1 carrot in oil.',
     'Add 2 chopped tomatoes and a splash of stock; simmer 10 minutes.',
-    'Add 1 can kidney beans and ½ cup small pasta; cook until the pasta is tender.',
+    'Add 1 can of kidney beans and ½ cup small pasta; cook until the pasta is tender.',
     'Season and loosen with more stock to a soup consistency.',
     'Toast bread, top with parmesan, and serve the crostini alongside.',
   ], tips: ['Any odd vegetables in the fridge belong in minestrone.', 'It thickens as it sits — keep a little stock to loosen leftovers.'] },
@@ -649,7 +649,7 @@ Object.assign(details, {
   ], tips: ['Off the heat is essential — too hot and the cheese clumps.', 'Finely grate the pecorino so it melts into a smooth sauce.'] },
   ribollita: { prep: 12, steps: [
     'Soften 1 onion and 1 carrot in oil.',
-    'Add 2 chopped tomatoes and 1 can kidney beans with a splash of water.',
+    'Add 2 chopped tomatoes and 1 can of kidney beans with a splash of water.',
     'Simmer 20 minutes, mashing some beans to thicken.',
     'Tear in 2 slices of stale bread and stir until it breaks down and thickens the soup.',
     'Rest 5 minutes, drizzle with oil, and serve.',
@@ -662,7 +662,7 @@ Object.assign(details, {
     'Finish with a spoon of ricotta and a little basil if you have it.',
   ], tips: ['Fry the eggplant until truly golden — pale eggplant stays bitter and spongy.', 'Salted ricotta (ricotta salata) is the classic finish.'] },
   'pasta-e-fagioli': { prep: 8, steps: [
-    'Soften 1 garlic clove in oil, then add 2 chopped tomatoes and 1 can kidney beans with water.',
+    'Soften 1 garlic clove in oil, then add 2 chopped tomatoes and 1 can of kidney beans with water.',
     'Simmer 15 minutes, mashing some beans to thicken the broth.',
     'Add 60g small pasta directly to the pot with a little more water.',
     'Cook until the pasta is tender and the whole thing is thick and stewy.',
@@ -682,7 +682,7 @@ Object.assign(details, {
     'Drizzle with 1 tsp honey and serve.',
   ], tips: ['Add the granola just before eating so it stays crunchy.', 'Toast the walnuts for a minute to bring out their flavour.'] },
   'tuna-white-bean-salad': { prep: 8, steps: [
-    'Drain 1 can tuna and 1 can kidney beans and add to a bowl.',
+    'Drain 1 can of tuna and 1 can of kidney beans and add to a bowl.',
     'Thinly slice ½ red onion and add with a handful of chopped cilantro or parsley.',
     'Dress with the juice of ½ lemon, a good glug of olive oil, salt and pepper.',
     'Toss gently so the beans don’t break.',
@@ -709,12 +709,12 @@ Object.assign(details, {
   'chickpea-cauliflower-curry': { prep: 8, steps: [
     'Soften 1 chopped onion and 2 tomatoes in a pan.',
     'Add ½ cauliflower in florets with a splash of water and cook 5 minutes.',
-    'Tip in 1 can drained chickpeas and ½ cup coconut milk; simmer 12–15 minutes until the cauliflower is tender.',
+    'Tip in 1 can of drained chickpeas and ½ cup coconut milk; simmer 12–15 minutes until the cauliflower is tender.',
     'Season well and serve over steamed rice.',
   ], tips: ['A squeeze of lime at the end brightens the coconut.', 'Use the starchy chickpea liquid (aquafaba) instead of water for a richer sauce.'], storage: 'Keeps 4 days chilled and reheats beautifully — a strong batch-cook. Freeze without the rice.' },
   'beans-matoke': { prep: 12, steps: [
     'Peel 4 green bananas (matoke) and steam or boil until soft, 20–25 minutes.',
-    'Meanwhile fry 1 onion and 2 tomatoes, add 1 can kidney beans and ¼ cup coconut milk.',
+    'Meanwhile fry 1 onion and 2 tomatoes, add 1 can of kidney beans and ¼ cup coconut milk.',
     'Simmer 15 minutes, mashing a few beans to thicken the stew.',
     'Serve the beans spooned over the matoke.',
   ], tips: ['A little mashed matoke stirred into the beans thickens everything nicely.', 'Rub oil on your hands before peeling matoke — the sap stains.'], storage: 'Beans keep 4 days and freeze well; steam fresh matoke to serve.' },
