@@ -290,6 +290,9 @@ a { color: #A84C32; text-decoration: none; }
 .page-slim { max-width: 840px; }
 .page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 4px; }
 .kicker { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--sand); margin-bottom: 8px; }
+.kicker-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+.kicker-row .kicker { margin-bottom: 0; }
+.plan-diet-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: var(--rust); color: #fff; font-size: 12px; font-weight: 600; }
 .page-title { font-family: var(--serif); font-weight: 500; font-size: 42px; margin: 0; letter-spacing: -.02em; line-height: 1; }
 .page-blurb { margin: 12px 0 20px; color: var(--ink-mute); font-size: 14.5px; line-height: 1.5; max-width: 560px; }
 .page-head-main { min-width: 280px; }

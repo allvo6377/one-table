@@ -380,6 +380,25 @@ Object.assign(photoMap, {
 });
 neutralBreakfasts.push('berry-banana-smoothie','mango-lassi','green-smoothie','avocado-smoothie','tropical-smoothie','beet-berry-smoothie');
 
+// ---- More plant-based mains (vegan + gluten-free), for themed weeks ----
+Object.assign(recipes, {
+  'aloo-gobi':{id:'aloo-gobi',name:'Aloo Gobi & Rice',cuisine:'Indian',region:'Punjabi',tagline:'Dinner · vegan & gluten-free',cost:2.8,protein:12,timeMin:30,ingredients:[{item:'Potato',qty:'2'},{item:'Cauliflower',qty:'½ head'},{item:'Tomato',qty:'2'},{item:'Turmeric',qty:'1 tsp'},{item:'Rice',qty:'½ cup'}],steps:['Fry cubed potato until half-cooked, then add cauliflower florets.','Add tomato, turmeric and a splash of water; cover and steam until tender.','Serve the dry curry over steamed rice.'],note:'A dry North-Indian potato-and-cauliflower curry — naturally vegan and gluten-free.'},
+  'baingan-bharta':{id:'baingan-bharta',name:'Baingan Bharta & Rice',cuisine:'Indian',region:'Punjabi',tagline:'Dinner · smoky & vegan',cost:2.6,protein:12,timeMin:35,ingredients:[{item:'Eggplant',qty:'1 large'},{item:'Onion',qty:'1'},{item:'Tomato',qty:'2'},{item:'Garlic',qty:'2 cloves'},{item:'Rice',qty:'½ cup'}],steps:['Char the eggplant over a flame or under the grill until collapsed, then peel and mash.','Fry onion, garlic and tomato into a soft masala.','Stir the smoky eggplant through, season, and serve with rice.'],note:'Fire-roasted eggplant mashed into a smoky masala — deeply savoury and plant-based.'},
+  'chickpea-cauliflower-curry':{id:'chickpea-cauliflower-curry',name:'Chickpea & Cauliflower Curry',cuisine:'Swahili',region:'Coastal',tagline:'Lunch · coconut & vegan',cost:3.0,protein:16,timeMin:30,ingredients:[{item:'Chickpeas (canned)',qty:'1 can'},{item:'Cauliflower',qty:'½ head'},{item:'Coconut milk',qty:'½ cup'},{item:'Tomato',qty:'2'},{item:'Rice',qty:'½ cup'}],steps:['Soften onion and tomato, then add cauliflower florets and a splash of water.','Add the chickpeas and coconut milk; simmer until the cauliflower is tender.','Serve over steamed rice.'],note:'A coastal coconut curry — creamy, filling and completely plant-based.'},
+  'beans-matoke':{id:'beans-matoke',name:'Beans & Matoke',cuisine:'Ugandan',region:'Nationwide',tagline:'Dinner · vegan & gluten-free',cost:2.6,protein:18,timeMin:40,ingredients:[{item:'Kidney beans',qty:'1 can'},{item:'Green banana (matoke)',qty:'4'},{item:'Onion',qty:'1'},{item:'Tomato',qty:'2'},{item:'Coconut milk',qty:'¼ cup'}],steps:['Steam or boil the green bananas (matoke) until soft.','Simmer kidney beans with onion, tomato and a little coconut milk into a thick stew.','Spoon the beans over the matoke and serve.'],note:'Uganda’s comfort plate — soft steamed matoke under a rich bean stew.'},
+});
+Object.assign(emojiOf, { 'aloo-gobi':'🥔','baingan-bharta':'🍆','chickpea-cauliflower-curry':'🥘','beans-matoke':'🍌' });
+Object.assign(catOf, { 'Cauliflower':'Produce' });
+Object.assign(photoMap, {
+  'aloo-gobi':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Aloo_Gobi_Sabzi.jpg/960px-Aloo_Gobi_Sabzi.jpg',
+  'baingan-bharta':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Baingan_Ka_Bharta.JPG/960px-Baingan_Ka_Bharta.JPG',
+  'chickpea-cauliflower-curry':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Curried_cauliflower_and_chickpea_stew.jpg/960px-Curried_cauliflower_and_chickpea_stew.jpg',
+  'beans-matoke':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Matoke.JPG/960px-Matoke.JPG',
+});
+cuisineMains.Indian.push('aloo-gobi','baingan-bharta');
+cuisineMains.Swahili.push('chickpea-cauliflower-curry');
+cuisineMains.Ugandan.push('beans-matoke');
+
 // Merge detailed methods, prep times and tips over the concise base recipes.
 import { details } from './recipe-details.js';
 for (const [id, d] of Object.entries(details)) {

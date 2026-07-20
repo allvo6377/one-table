@@ -690,6 +690,36 @@ Object.assign(details, {
   ], tips: ['Let it sit a few minutes — the beans soak up the lemon and oil.', 'A pinch of chilli or some capers lifts it further.'] },
 });
 
+// ---------- more plant-based mains ----------
+Object.assign(details, {
+  'aloo-gobi': { prep: 10, steps: [
+    'Cube 2 potatoes and break ½ a cauliflower into small florets.',
+    'Fry the potato in a little oil with 1 tsp cumin seeds until the edges turn golden.',
+    'Add the cauliflower, 2 chopped tomatoes, 1 tsp turmeric, chilli and salt.',
+    'Cover and steam on low 15–18 minutes, stirring gently, until both are tender but not mushy.',
+    'Finish with fresh coriander and serve over steamed rice.',
+  ], tips: ['Keep it dry — add water a splash at a time only if it catches.', 'Cut the potato slightly smaller than the cauliflower so they finish together.'], storage: 'Keeps 3 days chilled and reheats well; the flavours deepen overnight. Freeze without the rice.' },
+  'baingan-bharta': { prep: 12, steps: [
+    'Char 1 large eggplant whole over a gas flame or under the grill, turning, until the skin blackens and the flesh collapses.',
+    'Cool, peel off the skin and mash the smoky flesh.',
+    'Fry 1 chopped onion, 2 cloves garlic and 2 tomatoes into a soft masala with cumin and chilli.',
+    'Stir the mashed eggplant through and cook 5 minutes to bring it together.',
+    'Serve with steamed rice.',
+  ], tips: ['The flame-charring is what gives bharta its signature smoke — don’t skip it.', 'No gas hob? Roast the whole eggplant at 220°C until collapsed.'], storage: 'Keeps 3 days chilled; reheat gently. Freezes well for a month.' },
+  'chickpea-cauliflower-curry': { prep: 8, steps: [
+    'Soften 1 chopped onion and 2 tomatoes in a pan.',
+    'Add ½ cauliflower in florets with a splash of water and cook 5 minutes.',
+    'Tip in 1 can drained chickpeas and ½ cup coconut milk; simmer 12–15 minutes until the cauliflower is tender.',
+    'Season well and serve over steamed rice.',
+  ], tips: ['A squeeze of lime at the end brightens the coconut.', 'Use the starchy chickpea liquid (aquafaba) instead of water for a richer sauce.'], storage: 'Keeps 4 days chilled and reheats beautifully — a strong batch-cook. Freeze without the rice.' },
+  'beans-matoke': { prep: 12, steps: [
+    'Peel 4 green bananas (matoke) and steam or boil until soft, 20–25 minutes.',
+    'Meanwhile fry 1 onion and 2 tomatoes, add 1 can kidney beans and ¼ cup coconut milk.',
+    'Simmer 15 minutes, mashing a few beans to thicken the stew.',
+    'Serve the beans spooned over the matoke.',
+  ], tips: ['A little mashed matoke stirred into the beans thickens everything nicely.', 'Rub oil on your hands before peeling matoke — the sap stains.'], storage: 'Beans keep 4 days and freeze well; steam fresh matoke to serve.' },
+});
+
 // ---- Make-ahead & storage notes, merged into details above ----
 const STORAGE = {
   // neutral breakfasts

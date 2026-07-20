@@ -7,6 +7,15 @@ import { todayData, weekDays, fridgeData, radarChartData, nudgeData, shoppingDat
 import { esc, cap, thumb, cuisineChip, steam } from './ui.js';
 import { auth } from './sync.js';
 import { upcomingWeeks } from './dates.js';
+import { CATEGORIES } from './tags.js';
+
+// Pill for the active dietary theme on the plan header, e.g. "🥗 Vegetarian week".
+function dietBadge() {
+  if (!state.planDiet) return '';
+  const c = CATEGORIES.find(x => x.id === state.planDiet);
+  if (!c) return '';
+  return `<span class="plan-diet-pill">${c.emoji} ${esc(c.label)} week</span>`;
+}
 
 const NAV = [['Today', 'today'], ['Weekly plan', 'plan'], ['Shopping list', 'shopping'], ['Pantry', 'pantry']];
 
@@ -250,7 +259,7 @@ export function planView() {
   <div class="page page-wide anim-in">
     <header class="page-head">
       <div class="page-head-main">
-        <div class="kicker">Your meal plan</div>
+        <div class="kicker-row"><span class="kicker">Your meal plan</span>${dietBadge()}</div>
         <div class="week-picker">
           <select class="week-select" data-act="selectWeek" aria-label="Choose week">
             ${weeks.map(w => `<option value="${w.offset}"${w.offset === state.weekOffset ? ' selected' : ''}>${esc(w.label)}</option>`).join('')}
