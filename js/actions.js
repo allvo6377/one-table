@@ -7,6 +7,8 @@ import { effId, swapCandidate, actualPlanCost, fmtLocal, localVal, currentPlan }
 import { weekByOffset } from './dates.js';
 import { toast } from './ui.js';
 import { sendCode, verifyCode, signOut, resetPending, auth } from './sync.js';
+import { toggle as timerToggle, reset as timerReset } from './timer.js';
+import { dietId } from './tags.js';
 
 export const actions = {
   view(d) { set({ view: d.view }); },
@@ -21,8 +23,10 @@ export const actions = {
   open(d) { set({ selId: d.id, servings: 1, showSearch: false }); },
   closeRecipe() { set({ selId: null }); },
 
-  openSearch() { set({ showSearch: true, searchQuery: '' }); },
+  openSearch() { set({ showSearch: true, searchQuery: '', searchCat: '' }); },
   closeSearch() { set({ showSearch: false }); },
+  // Toggle a browse category; tapping the active one clears it.
+  searchCat(d) { set({ searchCat: state.searchCat === d.val ? '' : d.val }); },
   servings(d) {
     const next = Math.min(4, Math.max(1, state.servings + Number(d.dir)));
     if (next !== state.servings) set({ servings: next });
@@ -60,6 +64,9 @@ export const actions = {
   },
   cookBack() { set({ cookStep: Math.max(0, state.cookStep - 1) }); },
   cookClose() { set({ cooking: null }); },
+  // Timer buttons paint themselves — no state render (which would replay the step).
+  cookTimer() { timerToggle(); },
+  cookTimerReset() { timerReset(); },
   cookFinish() {
     const r = recipes[state.cooking];
     const td = state.plan[state.week.todayIdx];
@@ -107,10 +114,11 @@ export const actions = {
 
   regenerate() {
     const cz = state.prefs.cuisines;
+    const diet = dietId(state.prefs.diet);
     if (cz === 'A mix of all') {
-      set({ planCuisine: null, planBudgetLocal: null, planRegion: null, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
+      set({ planCuisine: null, planBudgetLocal: null, planRegion: null, planDiet: diet, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
       set({ plan: currentPlan() });
-      toast('Your fresh world tour is ready');
+      toast(diet ? `Your ${state.prefs.diet.toLowerCase()} week is ready` : 'Your fresh world tour is ready');
       return;
     }
     const cur = currency[cz];
@@ -118,7 +126,7 @@ export const actions = {
     const region = state.prefs.region && state.prefs.region !== 'All regions' ? state.prefs.region : null;
     // Set the choice first, then derive the plan the same way a reload will
     // (seeded by the week key) so what you see now is what persists.
-    set({ planCuisine: cz, planBudgetLocal: budgetLocal, planRegion: region, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
+    set({ planCuisine: cz, planBudgetLocal: budgetLocal, planRegion: region, planDiet: diet, showGen: false, view: 'plan', overrides: {}, eaten: {}, nudgeDone: false });
     const plan = currentPlan();
     const actualCost = actualPlanCost(plan);
     const actualLocal = fmtLocal(actualCost, cz);

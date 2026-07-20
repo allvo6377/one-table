@@ -357,6 +357,70 @@ Object.assign(photoMap, {
 });
 neutralBreakfasts.push('blueberry-muffins','cinnamon-rolls','cheese-danish','almond-croissant','banana-bread');
 
+// ---- Smoothies & drinks (user request) ----
+Object.assign(recipes, {
+  'berry-banana-smoothie':{id:'berry-banana-smoothie',name:'Berry Banana Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.6,protein:20,timeMin:5,ingredients:[{item:'Greek yogurt',qty:'½ cup'},{item:'Banana',qty:'1'},{item:'Blueberries',qty:'½ cup'},{item:'Milk',qty:'½ cup'},{item:'Honey',qty:'1 tsp'}],steps:['Add yogurt, banana, blueberries and milk to a blender.','Blend until smooth and thick.','Sweeten with honey to taste and pour.'],note:'A thick, berry-bright breakfast in a glass — 20g protein, no cooking.'},
+  'mango-lassi':{id:'mango-lassi',name:'Mango Lassi',cuisine:'',tagline:'Breakfast · Indian smoothie',cost:2.4,protein:14,timeMin:5,ingredients:[{item:'Mango',qty:'1'},{item:'Yogurt',qty:'1 cup'},{item:'Milk',qty:'¼ cup'},{item:'Cardamom',qty:'pinch'},{item:'Honey',qty:'1 tsp'}],steps:['Blend ripe mango with yogurt and milk until silky.','Add a pinch of cardamom and honey.','Blend again and serve chilled.'],note:'The classic Indian yogurt cooler — creamy, fragrant and naturally sweet.'},
+  'green-smoothie':{id:'green-smoothie',name:'Green Spinach Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.5,protein:16,timeMin:5,ingredients:[{item:'Spinach',qty:'1 handful'},{item:'Banana',qty:'1'},{item:'Greek yogurt',qty:'½ cup'},{item:'Pineapple',qty:'½ cup'},{item:'Chia seeds',qty:'1 tsp'}],steps:['Blend spinach with banana and a splash of water first, until no flecks remain.','Add yogurt, pineapple and chia.','Blend smooth and pour.'],note:'Greens you can’t taste — the pineapple and banana carry it, the chia thickens it.'},
+  'avocado-smoothie':{id:'avocado-smoothie',name:'Avocado Banana Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.8,protein:15,timeMin:5,ingredients:[{item:'Avocado',qty:'½'},{item:'Banana',qty:'1'},{item:'Milk',qty:'¾ cup'},{item:'Honey',qty:'1 tsp'},{item:'Chia seeds',qty:'1 tsp'}],steps:['Scoop the avocado in with banana and milk.','Blend until velvety and pale green.','Stir in honey and chia; serve cold.'],note:'Ultra-creamy and filling — good fats keep you full to lunch.'},
+  'tropical-smoothie':{id:'tropical-smoothie',name:'Tropical Pineapple Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.6,protein:12,timeMin:5,ingredients:[{item:'Pineapple',qty:'¾ cup'},{item:'Mango',qty:'½'},{item:'Coconut water',qty:'½ cup'},{item:'Banana',qty:'½'},{item:'Lime',qty:'½'}],steps:['Blend pineapple, mango and banana with coconut water.','Squeeze in the lime.','Blend until frothy and pour over ice.'],note:'Dairy-free and vegan — a holiday in a glass, bright with lime.'},
+  'beet-berry-smoothie':{id:'beet-berry-smoothie',name:'Beet & Berry Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.7,protein:14,timeMin:6,ingredients:[{item:'Beetroot',qty:'½ cooked'},{item:'Blueberries',qty:'½ cup'},{item:'Greek yogurt',qty:'½ cup'},{item:'Milk',qty:'½ cup'},{item:'Honey',qty:'1 tsp'}],steps:['Blend cooked beetroot with berries and milk.','Add yogurt and honey.','Blend until deep pink and smooth.'],note:'Earthy-sweet and vivid — beetroot brings colour, iron and a gentle sweetness.'},
+});
+Object.assign(emojiOf, {
+  'berry-banana-smoothie':'🫐','mango-lassi':'🥭','green-smoothie':'🥬','avocado-smoothie':'🥑','tropical-smoothie':'🍍','beet-berry-smoothie':'🥤',
+});
+Object.assign(catOf, { 'Pineapple':'Produce','Beetroot':'Produce','Coconut water':'Pantry' });
+Object.assign(photoMap, {
+  'berry-banana-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Fresh_fruit_smoothie_preparation_with_assorted_fruits_on_a_table.jpg/960px-Fresh_fruit_smoothie_preparation_with_assorted_fruits_on_a_table.jpg',
+  'mango-lassi':'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Mango_lassi_at_Everest_Dine_in_November_2022.jpg/960px-Mango_lassi_at_Everest_Dine_in_November_2022.jpg',
+  'green-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Kid_friendly_green_smoothie_in_a_personalized_glass_with_spinach%2C_Greek_yogurt%2C_frozen_blueberries%2C_blackberries_and_strawberries_and_berries%2C_banana_in_a_glass_bowl_on_a_wood_table_%2816225943125%29.jpg/960px-thumbnail.jpg',
+  'avocado-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Avocado%2C_milk%2C_condensed_milk_and_ice_smoothies_-_Amazing_Chef_food_processor.jpg/960px-Avocado%2C_milk%2C_condensed_milk_and_ice_smoothies_-_Amazing_Chef_food_processor.jpg',
+  'tropical-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Batido_de_pi%C3%B1a.jpg/960px-Batido_de_pi%C3%B1a.jpg',
+  'beet-berry-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Beet_juice-01.jpg/960px-Beet_juice-01.jpg',
+});
+neutralBreakfasts.push('berry-banana-smoothie','mango-lassi','green-smoothie','avocado-smoothie','tropical-smoothie','beet-berry-smoothie');
+
+// ---- More plant-based mains (vegan + gluten-free), for themed weeks ----
+Object.assign(recipes, {
+  'aloo-gobi':{id:'aloo-gobi',name:'Aloo Gobi & Rice',cuisine:'Indian',region:'Punjabi',tagline:'Dinner · vegan & gluten-free',cost:2.8,protein:12,timeMin:30,ingredients:[{item:'Potato',qty:'2'},{item:'Cauliflower',qty:'½ head'},{item:'Tomato',qty:'2'},{item:'Turmeric',qty:'1 tsp'},{item:'Rice',qty:'½ cup'}],steps:['Fry cubed potato until half-cooked, then add cauliflower florets.','Add tomato, turmeric and a splash of water; cover and steam until tender.','Serve the dry curry over steamed rice.'],note:'A dry North-Indian potato-and-cauliflower curry — naturally vegan and gluten-free.'},
+  'baingan-bharta':{id:'baingan-bharta',name:'Baingan Bharta & Rice',cuisine:'Indian',region:'Punjabi',tagline:'Dinner · smoky & vegan',cost:2.6,protein:12,timeMin:35,ingredients:[{item:'Eggplant',qty:'1 large'},{item:'Onion',qty:'1'},{item:'Tomato',qty:'2'},{item:'Garlic',qty:'2 cloves'},{item:'Rice',qty:'½ cup'}],steps:['Char the eggplant over a flame or under the grill until collapsed, then peel and mash.','Fry onion, garlic and tomato into a soft masala.','Stir the smoky eggplant through, season, and serve with rice.'],note:'Fire-roasted eggplant mashed into a smoky masala — deeply savoury and plant-based.'},
+  'chickpea-cauliflower-curry':{id:'chickpea-cauliflower-curry',name:'Chickpea & Cauliflower Curry',cuisine:'Swahili',region:'Coastal',tagline:'Lunch · coconut & vegan',cost:3.0,protein:16,timeMin:30,ingredients:[{item:'Chickpeas (canned)',qty:'1 can'},{item:'Cauliflower',qty:'½ head'},{item:'Coconut milk',qty:'½ cup'},{item:'Tomato',qty:'2'},{item:'Rice',qty:'½ cup'}],steps:['Soften onion and tomato, then add cauliflower florets and a splash of water.','Add the chickpeas and coconut milk; simmer until the cauliflower is tender.','Serve over steamed rice.'],note:'A coastal coconut curry — creamy, filling and completely plant-based.'},
+  'beans-matoke':{id:'beans-matoke',name:'Beans & Matoke',cuisine:'Ugandan',region:'Nationwide',tagline:'Dinner · vegan & gluten-free',cost:2.6,protein:18,timeMin:40,ingredients:[{item:'Kidney beans',qty:'1 can'},{item:'Green banana (matoke)',qty:'4'},{item:'Onion',qty:'1'},{item:'Tomato',qty:'2'},{item:'Coconut milk',qty:'¼ cup'}],steps:['Steam or boil the green bananas (matoke) until soft.','Simmer kidney beans with onion, tomato and a little coconut milk into a thick stew.','Spoon the beans over the matoke and serve.'],note:'Uganda’s comfort plate — soft steamed matoke under a rich bean stew.'},
+});
+Object.assign(emojiOf, { 'aloo-gobi':'🥔','baingan-bharta':'🍆','chickpea-cauliflower-curry':'🥘','beans-matoke':'🍌' });
+Object.assign(catOf, { 'Cauliflower':'Produce' });
+Object.assign(photoMap, {
+  'aloo-gobi':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Aloo_Gobi_Sabzi.jpg/960px-Aloo_Gobi_Sabzi.jpg',
+  'baingan-bharta':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Baingan_Ka_Bharta.JPG/960px-Baingan_Ka_Bharta.JPG',
+  'chickpea-cauliflower-curry':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Curried_cauliflower_and_chickpea_stew.jpg/960px-Curried_cauliflower_and_chickpea_stew.jpg',
+  'beans-matoke':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Matoke.JPG/960px-Matoke.JPG',
+});
+cuisineMains.Indian.push('aloo-gobi','baingan-bharta');
+cuisineMains.Swahili.push('chickpea-cauliflower-curry');
+cuisineMains.Ugandan.push('beans-matoke');
+
+// ---- More pastries + smoothies/drinks (user request) ----
+Object.assign(recipes, {
+  'pain-au-chocolat':{id:'pain-au-chocolat',name:'Pain au Chocolat',cuisine:'',tagline:'Breakfast · café-style',cost:2.8,protein:8,timeMin:20,ingredients:[{item:'Puff pastry',qty:'1 sheet'},{item:'Dark chocolate',qty:'40g'},{item:'Eggs',qty:'1'},{item:'Butter',qty:'1 tbsp'},{item:'Sugar',qty:'1 tsp'}],steps:['Cut puff pastry into rectangles and lay a line of chopped chocolate along one edge.','Roll up around the chocolate and set seam-down; brush with beaten egg.','Bake at 200°C for 16–18 min until puffed and deep golden.'],note:'The bakery classic — buttery pastry wrapped around a seam of dark chocolate.'},
+  'cream-scones':{id:'cream-scones',name:'Cream Scones',cuisine:'',tagline:'Breakfast · bakery-style',cost:2.4,protein:9,timeMin:25,ingredients:[{item:'Flour',qty:'2 cups'},{item:'Butter',qty:'¼ cup'},{item:'Milk',qty:'½ cup'},{item:'Sugar',qty:'2 tbsp'},{item:'Baking powder',qty:'1 tbsp'}],steps:['Rub cold butter into flour, sugar and baking powder until crumbly.','Stir in just enough milk to bring it together; pat out and cut rounds.','Bake at 210°C for 12–14 min until risen and golden. Serve with jam.'],note:'Tender, just-sweet scones — split warm with butter or jam and a cup of tea.'},
+  'puff-puff':{id:'puff-puff',name:'Puff Puff',cuisine:'Nigerian',region:'Nationwide',tagline:'Breakfast · fried & sweet',cost:1.6,protein:6,timeMin:30,ingredients:[{item:'Flour',qty:'2 cups'},{item:'Yeast',qty:'1 tsp'},{item:'Sugar',qty:'⅓ cup'},{item:'Nutmeg',qty:'pinch'},{item:'Oil',qty:'for frying'}],steps:['Mix flour, yeast, sugar and nutmeg with warm water into a soft, sticky batter.','Cover and leave to rise about 1 hour until bubbly.','Scoop rounds into hot oil and fry until deep golden, turning; drain and dust with sugar.'],note:'Nigeria’s beloved fried dough balls — crisp outside, fluffy within, lightly sweet.'},
+  'chocolate-peanut-smoothie':{id:'chocolate-peanut-smoothie',name:'Chocolate Peanut Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.9,protein:22,timeMin:5,ingredients:[{item:'Milk',qty:'1 cup'},{item:'Banana',qty:'1'},{item:'Peanut butter',qty:'2 tbsp'},{item:'Cocoa powder',qty:'1 tbsp'},{item:'Honey',qty:'1 tsp'}],steps:['Add milk, banana, peanut butter and cocoa to the blender.','Blend until smooth and frothy.','Sweeten with honey and pour over ice.'],note:'Tastes like a milkshake, works like breakfast — 22g protein from milk and peanut.'},
+  'orange-carrot-juice':{id:'orange-carrot-juice',name:'Carrot Orange Juice',cuisine:'',tagline:'Breakfast · fresh juice',cost:2.2,protein:3,timeMin:6,ingredients:[{item:'Carrot',qty:'2'},{item:'Orange',qty:'2'},{item:'Ginger',qty:'small knob'},{item:'Lemon',qty:'½'}],steps:['Juice or blend the carrot with a little water, then strain if blending.','Squeeze in the oranges and lemon.','Add a little grated ginger, stir and serve cold.'],note:'Bright, vitamin-packed and dairy-free — a fresh start to the day.'},
+  'strawberry-shake':{id:'strawberry-shake',name:'Strawberry Yogurt Shake',cuisine:'',tagline:'Breakfast · shake',cost:2.6,protein:16,timeMin:5,ingredients:[{item:'Greek yogurt',qty:'½ cup'},{item:'Strawberries',qty:'1 cup'},{item:'Milk',qty:'½ cup'},{item:'Rolled oats',qty:'2 tbsp'},{item:'Honey',qty:'1 tsp'}],steps:['Blend yogurt, strawberries, milk and oats until smooth.','Sweeten with honey to taste.','Pour and drink chilled.'],note:'Creamy strawberry shake thickened with oats — dessert energy, breakfast substance.'},
+});
+Object.assign(emojiOf, { 'pain-au-chocolat':'🍫','cream-scones':'🧈','puff-puff':'🍩','chocolate-peanut-smoothie':'🥤','orange-carrot-juice':'🥕','strawberry-shake':'🍓' });
+Object.assign(catOf, { 'Dark chocolate':'Pantry','Nutmeg':'Pantry','Oil':'Pantry','Cocoa powder':'Pantry','Orange':'Produce','Strawberries':'Produce' });
+Object.assign(photoMap, {
+  'pain-au-chocolat':'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Pain_au_chocolat_Luc_Viatour.jpg/960px-Pain_au_chocolat_Luc_Viatour.jpg',
+  'cream-scones':'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Scone_varieties.jpg/960px-Scone_varieties.jpg',
+  'puff-puff':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Puff_puff_for_sell.jpg/960px-Puff_puff_for_sell.jpg',
+  'chocolate-peanut-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/DFC_0816_A_close-up_of_a_hand_holding_a_plastic_cup_while_a_chocolatey_smoothie_is_poured_over_ice_from_a_blender.jpg/960px-DFC_0816_A_close-up_of_a_hand_holding_a_plastic_cup_while_a_chocolatey_smoothie_is_poured_over_ice_from_a_blender.jpg',
+  'orange-carrot-juice':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/GlassOfJuice_and_carrots.JPG/960px-GlassOfJuice_and_carrots.JPG',
+  'strawberry-shake':'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Strawberry_milk_shake_%28cropped%29.jpg/960px-Strawberry_milk_shake_%28cropped%29.jpg',
+});
+neutralBreakfasts.push('pain-au-chocolat','cream-scones','chocolate-peanut-smoothie','orange-carrot-juice','strawberry-shake');
+cuisineBreakfasts.Nigerian.push('puff-puff');
+
 // Merge detailed methods, prep times and tips over the concise base recipes.
 import { details } from './recipe-details.js';
 for (const [id, d] of Object.entries(details)) {

@@ -5,16 +5,33 @@ import { recipes, currency, emojiOf } from './data.js';
 import { fmtLocal, regionsForCuisine } from './planner.js';
 import { esc, photoUrl, thumb } from './ui.js';
 import { auth } from './sync.js';
+import { CATEGORIES, matchesCategory, DIET_OPTIONS } from './tags.js';
 
 const slotForTag = t => /breakfast/i.test(t) ? 'breakfast' : /lunch/i.test(t) ? 'lunch' : 'dinner';
+
+// Browse-by-category chips + results, re-rendered together so a category tap
+// updates both the active chip and the list. Lives in #search-body; the input
+// sits in the header and keeps focus while typing.
+export function searchBodyHTML() {
+  const cat = state.searchCat;
+  const chip = (id, emoji, label, count) =>
+    `<button class="cat-chip${cat === id ? ' is-on' : ''}" aria-pressed="${cat === id}" data-act="searchCat" data-val="${id}">${emoji} ${esc(label)}${count != null ? `<i>${count}</i>` : ''}</button>`;
+  const cats = `
+    <div class="search-cats" role="group" aria-label="Browse by category">
+      ${chip('', '✳️', 'All meals', null)}
+      ${CATEGORIES.map(c => chip(c.id, c.emoji, c.label, c.count)).join('')}
+    </div>`;
+  return cats + `<div id="search-results" class="search-results">${searchResultsHTML()}</div>`;
+}
 
 // Results list, regenerated on its own as the query changes (keeps input focus).
 export function searchResultsHTML() {
   const q = (state.searchQuery || '').trim().toLowerCase();
   let list = Object.values(recipes);
+  if (state.searchCat) list = list.filter(r => matchesCategory(r, state.searchCat));
   if (q) list = list.filter(r => (r.name + ' ' + r.cuisine + ' ' + (r.region || '') + ' ' + r.tagline).toLowerCase().includes(q));
   list = list.sort((a, b) => a.name.localeCompare(b.name)).slice(0, 40);
-  if (!list.length) return `<div class="search-empty">No meals match “${esc(state.searchQuery)}”. Try a cuisine or ingredient.</div>`;
+  if (!list.length) return `<div class="search-empty">No meals match ${q ? `“${esc(state.searchQuery)}”` : 'that filter'}. Try another category or ingredient.</div>`;
   return list.map(r => `
     <button class="search-row" data-act="open" data-id="${r.id}">
       <span class="search-thumb">${thumb(r.id, slotForTag(r.tagline), '', [140, 140])}</span>
@@ -35,8 +52,8 @@ function searchModal() {
              placeholder="Search ${Object.keys(recipes).length}+ meals — name, cuisine, ingredient…" data-act="search" value="${esc(state.searchQuery)}">
       <button class="btn-ghost search-close" data-act="closeSearch">Close</button>
     </div>
-    <div id="search-results" class="search-results">${searchResultsHTML()}</div>
-    <div class="search-foot">Tap a meal to see the recipe and add its ingredients to your shopping list.</div>
+    <div id="search-body" class="search-body">${searchBodyHTML()}</div>
+    <div class="search-foot">Tap a category to browse, or a meal to see the recipe and add its ingredients to your shopping list.</div>
   </div>`;
 }
 
@@ -136,6 +153,17 @@ function cookMode() {
       <div class="cook-count">Step ${n} of ${total}</div>
       <div class="cook-step anim-in" data-key="${n}">${esc(r.steps[state.cookStep])}</div>
     </div>
+    <div class="cook-timer is-empty" role="group" aria-label="Step timer">
+      <span class="cook-timer-ic" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M12 5V3M9.5 3h5"/></svg>
+      </span>
+      <div class="cook-timer-body">
+        <div class="cook-timer-top"><span class="cook-timer-label">Step timer</span><span class="cook-timer-time"></span></div>
+        <div class="cook-timer-track"><div class="cook-timer-fill"></div></div>
+      </div>
+      <button class="cook-timer-toggle" data-act="cookTimer" aria-label="Start timer">▶</button>
+      <button class="cook-timer-reset" data-act="cookTimerReset" aria-label="Reset timer">↺</button>
+    </div>
     <div class="cook-foot">${cookFoot()}</div>
   </div>`;
 }
@@ -190,6 +218,9 @@ function generator() {
     <p class="modal-blurb">A few taps and we’ll build seven days of meals sized for one — spanning your favourite cuisines, with smart leftovers so nothing spoils.</p>
     ${chipGroup('Cuisines', 'cuisines', CUISINE_OPTS, cuisineNote)}
     ${regionGroup}
+    ${chipGroup('Dietary', 'diet', DIET_OPTIONS.map(([l]) => l),
+      state.prefs.diet && state.prefs.diet !== 'Anything'
+        ? `Every meal this week is ${state.prefs.diet.toLowerCase()} — breakfasts, lunches and dinners.` : '')}
     ${chipGroup('Cook time', 'time', ['Quick ≤15m', 'Balanced', 'I like to cook'], '')}
     ${budget}
     ${chipGroup('Batch cooking', 'batch', ['Minimal', 'Some', 'Max leftovers'], '')}

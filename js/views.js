@@ -3,10 +3,19 @@
 import { state } from './store.js';
 import { planTotals, fmtLocal, localVal } from './planner.js';
 import { currency } from './data.js';
-import { todayData, weekDays, fridgeData, radarData, nudgeData, shoppingData } from './derive.js';
+import { todayData, weekDays, fridgeData, radarChartData, nudgeData, shoppingData } from './derive.js';
 import { esc, cap, thumb, cuisineChip, steam } from './ui.js';
 import { auth } from './sync.js';
 import { upcomingWeeks } from './dates.js';
+import { CATEGORIES } from './tags.js';
+
+// Pill for the active dietary theme on the plan header, e.g. "🥗 Vegetarian week".
+function dietBadge() {
+  if (!state.planDiet) return '';
+  const c = CATEGORIES.find(x => x.id === state.planDiet);
+  if (!c) return '';
+  return `<span class="plan-diet-pill">${c.emoji} ${esc(c.label)} week</span>`;
+}
 
 const NAV = [['Today', 'today'], ['Weekly plan', 'plan'], ['Shopping list', 'shopping'], ['Pantry', 'pantry']];
 
@@ -84,11 +93,52 @@ function mealCard(m, i) {
   </article>`;
 }
 
+// A radial "use-it-up" chart: concentric rings = time horizon, each fresh
+// ingredient a dot placed by how soon it's needed (centre = tonight) at a
+// stable angle hashed from its name. Pure SVG so it rides the string render.
+const RADAR_TONE = { today: '#bb4a2e', soon: '#8a6d3b', fresh: '#9db2c0' };
+function radarChart(rc) {
+  const C = 130, size = 260;
+  const hash = s => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); };
+  // Ring radius by horizon; "today" sits on a tight inner ring (not the exact
+  // centre) so multiple same-day items spread out instead of stacking.
+  const ringR = away => away === 0 ? 22 : away <= 2 ? 74 : 112;
+  const rings = [22, 74, 112].map(r => `<circle cx="${C}" cy="${C}" r="${r}" class="radar-ring"/>`).join('');
+  const spokes = [0, 45, 90, 135].map(deg => {
+    const a = deg * Math.PI / 180, dx = 118 * Math.cos(a), dy = 118 * Math.sin(a);
+    return `<line x1="${(C - dx).toFixed(1)}" y1="${(C - dy).toFixed(1)}" x2="${(C + dx).toFixed(1)}" y2="${(C + dy).toFixed(1)}" class="radar-spoke"/>`;
+  }).join('');
+  const dots = rc.items.map((it, i) => {
+    const h = hash(it.name);
+    const a = ((h % 360) + i * 9) * Math.PI / 180;
+    const jitter = it.away === 0 ? (h % 9) - 4 : (h % 15) - 7;
+    const rr = ringR(it.away) + jitter;
+    return { x: C + rr * Math.cos(a), y: C + rr * Math.sin(a), c: RADAR_TONE[it.tone], urgent: it.away === 0 };
+  });
+  const dotEls = dots.map(d =>
+    `<circle cx="${d.x.toFixed(1)}" cy="${d.y.toFixed(1)}" r="${d.urgent ? 5 : 4}" fill="${d.c}"/>`).join('');
+  const aria = `Ingredient urgency radar — ${rc.total} fresh items, ${rc.soon} to use in the next day.`;
+  return `
+    <div class="radar-chart">
+      <svg viewBox="0 0 ${size} ${size}" class="radar-svg" role="img" aria-label="${aria}">
+        <circle cx="${C}" cy="${C}" r="40" class="radar-zone"/>
+        ${rings}${spokes}
+        ${dotEls}
+        <circle cx="${C}" cy="${C}" r="2.5" class="radar-core"/>
+      </svg>
+      <div class="radar-legend">
+        <span><i style="background:${RADAR_TONE.today}"></i>Use today</span>
+        <span><i style="background:${RADAR_TONE.soon}"></i>Within 2 days</span>
+        <span><i style="background:${RADAR_TONE.fresh}"></i>Later this week</span>
+      </div>
+    </div>`;
+}
+
 export function todayView() {
   const t = todayData();
   const n = nudgeData();
   const f = fridgeData();
-  const radar = radarData();
+  const rc = radarChartData();
   return `
   <div class="page page-narrow anim-in">
     <header class="page-head">
@@ -126,17 +176,19 @@ export function todayView() {
           <div class="freezer-note">Freezer stash: <b>${f.freezerCount} portions</b> — ${esc(f.freezerNote)}</div>
         </div>
       </section>
-      <section class="panel">
+      <section class="panel panel-radar">
         <div class="panel-head"><h3>Use-it-up radar</h3><span class="panel-tag tag-sand">Zero waste</span></div>
-        ${radar.map(r => `
-          <div class="radar-row">
-            <span class="radar-dot tone-${r.tone}"></span>
-            <div class="radar-info">
-              <div class="radar-name">${esc(r.name)} <em class="tone-${r.tone}">· ${esc(r.status)}</em></div>
-              <div class="radar-plan">${esc(r.plan)}</div>
+        <div class="radar-layout">
+          ${radarChart(rc)}
+          <div class="radar-side">
+            <div class="radar-stats">
+              <div class="radar-stat"><span class="radar-stat-n">${rc.total}</span><span class="radar-stat-l">fresh items</span></div>
+              <div class="radar-stat"><span class="radar-stat-n c-alert">${rc.soon}</span><span class="radar-stat-l">use soon</span></div>
+              <div class="radar-stat"><span class="radar-stat-n">${rc.fresh}</span><span class="radar-stat-l">time to spare</span></div>
             </div>
-          </div>`).join('')}
-        <div class="radar-foot">Fresh herbs rarely survive a whole week — we split them across two shops or suggest dried swaps.</div>
+            <div class="radar-foot">Dots nearer the centre need cooking sooner — shop so the perishables land in that order.</div>
+          </div>
+        </div>
       </section>
     </div>
   </div>`;
@@ -207,7 +259,7 @@ export function planView() {
   <div class="page page-wide anim-in">
     <header class="page-head">
       <div class="page-head-main">
-        <div class="kicker">Your meal plan</div>
+        <div class="kicker-row"><span class="kicker">Your meal plan</span>${dietBadge()}</div>
         <div class="week-picker">
           <select class="week-select" data-act="selectWeek" aria-label="Choose week">
             ${weeks.map(w => `<option value="${w.offset}"${w.offset === state.weekOffset ? ' selected' : ''}>${esc(w.label)}</option>`).join('')}
