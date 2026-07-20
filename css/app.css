@@ -33,7 +33,7 @@
   --ink: #1a1c1c;        /* primary text (on-surface) */
   --ink-soft: #43474b;   /* secondary text (on-surface-variant) */
   --ink-mute: #6b7075;   /* muted labels */
-  --ink-faint: #898e93;  /* faint meta */
+  --ink-faint: #6f757a;  /* faint meta — darkened for outdoor readability */
   --card: #ffffff;       /* white content cards */
   --card-2: #ffffff;     /* raised card */
   --line: #e2e2e2;       /* 1px static borders */
@@ -207,7 +207,7 @@ a { color: #A84C32; text-decoration: none; }
   display: none;
   position: fixed;
   right: 18px;
-  bottom: calc(var(--tabbar-h) + 16px);
+  bottom: calc(var(--tabbar-h) + 30px);
   z-index: 29;
   width: 56px; height: 56px;
   border-radius: 50%;
@@ -279,6 +279,7 @@ a { color: #A84C32; text-decoration: none; }
 .search-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .search-name { font-family: var(--serif); font-size: 16.5px; font-weight: 500; color: var(--ink); line-height: 1.1; }
 .search-meta { font-size: 12px; color: var(--ink-mute); }
+.s-price { color: var(--ink); font-weight: 700; }
 .search-go { flex: none; font-size: 12.5px; font-weight: 600; color: var(--rust); }
 .search-empty { padding: 40px 12px; text-align: center; color: var(--ink-mute); font-size: 14px; }
 .search-foot { flex: none; padding: 10px 6px 4px; font-size: 11.5px; color: var(--sand); border-top: 1px solid var(--line-soft); margin-top: 6px; }
@@ -1068,6 +1069,11 @@ em.tone-red { color: #B3432B; }
   }
   [data-entering] .modal { animation: slideUp .32s cubic-bezier(.32, .72, 0, 1); }
   .modal-search { width: 100%; max-width: 100%; max-height: 90dvh; padding: 18px 16px 6px; }
+  /* Collapse the category filters into one horizontally-scrolling row so they
+     don't eat the screen above the keyboard; results get the vertical space. */
+  .search-cats { flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 10px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .search-cats::-webkit-scrollbar { display: none; }
+  .cat-chip { flex: none; }
   .week-select { font-size: 28px; }
   .head-tools { align-self: flex-start; }
 

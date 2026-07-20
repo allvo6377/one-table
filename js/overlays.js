@@ -38,7 +38,7 @@ export function searchResultsHTML() {
       <span class="search-thumb">${thumb(r.id, slotForTag(r.tagline), '', [140, 140])}</span>
       <span class="search-info">
         <span class="search-name">${esc(r.name)}</span>
-        <span class="search-meta">${r.region && r.region !== 'Nationwide' && r.region !== 'Coastal' ? esc(r.region) + ' · ' : ''}${r.cuisine ? esc(r.cuisine) + ' · ' : ''}${r.timeMin} min · ${r.protein}g · $${r.cost}</span>
+        <span class="search-meta">${r.region && r.region !== 'Nationwide' && r.region !== 'Coastal' ? esc(r.region) + ' · ' : ''}${r.cuisine ? esc(r.cuisine) + ' · ' : ''}${r.timeMin} min · ${r.protein}g · <b class="s-price">$${r.cost}</b></span>
       </span>
       <span class="search-go" aria-hidden="true">View →</span>
     </button>`).join('');
