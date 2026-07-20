@@ -97,6 +97,30 @@ export function radarData() {
   }).filter(r => r.daysAway >= 0).sort((a, b) => a.daysAway - b.daysAway).slice(0, 3);
 }
 
+// Full perishable inventory for the radar chart: every fresh ingredient the
+// week actually cooks, placed by how soon it is first needed (0 = today).
+export function radarChartData() {
+  const perishCats = new Set(['Produce', 'Protein']);
+  const soonest = {};
+  state.plan.forEach((d, di) => SLOTS.forEach(slot => {
+    const e = d[slot];
+    if (e.leftover) return;
+    const r = recipes[effId(d, slot)];
+    r.ingredients.forEach(ing => {
+      if (!perishCats.has(catOf[ing.item] || 'Pantry')) return;
+      const away = di - focusIdx();
+      if (away < 0) return;
+      if (soonest[ing.item] == null || away < soonest[ing.item]) soonest[ing.item] = away;
+    });
+  }));
+  const items = Object.entries(soonest).map(([name, away]) => ({
+    name, away,
+    tone: away === 0 ? 'today' : away <= 2 ? 'soon' : 'fresh',
+  })).sort((a, b) => a.away - b.away);
+  const soon = items.filter(i => i.away <= 1).length;
+  return { items, total: items.length, soon, fresh: items.length - soon };
+}
+
 // ---- Tonight's head-start nudge ----
 export function nudgeData() {
   const tomorrow = state.plan[(focusIdx() + 1) % 7];
