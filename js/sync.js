@@ -48,7 +48,11 @@ export async function api(base, path, opts = {}) {
     try { const j = await res.json(); msg = j.msg || j.message || j.error_description || msg; } catch { /* not json */ }
     throw new Error(msg);
   }
-  return res.status === 204 ? null : res.json();
+  // Tolerate empty bodies (e.g. a 201 with Prefer: return=minimal) — parsing
+  // an empty response as JSON would otherwise throw "Unexpected end of JSON".
+  if (res.status === 204) return null;
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }
 
 async function refresh() {
