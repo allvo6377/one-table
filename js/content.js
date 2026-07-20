@@ -11,6 +11,7 @@ const CACHE_KEY = 'table-for-one:content';
 
 // Font pairings offered in the theme editor (all render offline, no new files).
 export const FONT_PAIRS = {
+  architect: { label: 'Architect — Source Serif + Hanken', serif: "'Source Serif 4', Georgia, serif", sans: "'Hanken Grotesk', system-ui, -apple-system, sans-serif" },
   editorial: { label: 'Editorial — Playfair + Inter', serif: "'Playfair Display', Georgia, serif", sans: "'Inter', system-ui, -apple-system, sans-serif" },
   classic:   { label: 'Classic — Georgia',            serif: "Georgia, 'Times New Roman', serif",   sans: "system-ui, -apple-system, 'Segoe UI', sans-serif" },
   clean:     { label: 'Clean — all Inter',            serif: "'Inter', system-ui, sans-serif",       sans: "'Inter', system-ui, -apple-system, sans-serif" },
