@@ -6,7 +6,7 @@ import { weekByOffset } from './dates.js';
 import { currentPlan } from './planner.js';
 import { pantryPool, recipes } from './data.js';
 import { sidebar, tabbar, todayView, planView, shoppingView, pantryView } from './views.js';
-import { overlays, cookFoot, searchResultsHTML } from './overlays.js';
+import { overlays, cookFoot, searchBodyHTML } from './overlays.js';
 import { actions, onBudgetInput, closeTopLayer } from './actions.js';
 import { initSync } from './sync.js';
 import { syncToStep as timerSync, stop as timerStop } from './timer.js';
@@ -97,8 +97,8 @@ function render() {
   const overlayChanged = key !== lastOverlayKey;
   if (key && !overlayChanged && state.cooking && ovEl.querySelector('.cook')) {
     patchCookStep(ovEl);
-  } else if (key === 'search' && !overlayChanged && ovEl.querySelector('#search-results')) {
-    ovEl.querySelector('#search-results').innerHTML = searchResultsHTML();
+  } else if (key === 'search' && !overlayChanged && ovEl.querySelector('#search-body')) {
+    ovEl.querySelector('#search-body').innerHTML = searchBodyHTML();
   } else {
     setEntering(ovEl, overlayChanged);
     ovEl.innerHTML = overlays();
@@ -142,10 +142,10 @@ document.addEventListener('input', e => {
   const act = e.target.dataset.act;
   if (act === 'budget') onBudgetInput(e.target);
   else if (act === 'search') {
-    // Patch results in place so the input keeps focus (no full re-render).
+    // Patch the body in place so the input keeps focus (no full re-render).
     set({ searchQuery: e.target.value }, { silent: true });
-    const box = document.getElementById('search-results');
-    if (box) box.innerHTML = searchResultsHTML();
+    const box = document.getElementById('search-body');
+    if (box) box.innerHTML = searchBodyHTML();
   }
 });
 document.addEventListener('change', e => {

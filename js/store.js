@@ -22,6 +22,7 @@ export const state = {
   showAccount: false,
   showSearch: false,
   searchQuery: '',
+  searchCat: '',
   hideHave: false,
   nudgeDone: false,
   have: ['Olive oil', 'Eggs', 'Honey', 'Rolled oats', 'Rice', 'Chia seeds', 'Cumin', 'Garam masala'],

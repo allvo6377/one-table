@@ -22,8 +22,10 @@ export const actions = {
   open(d) { set({ selId: d.id, servings: 1, showSearch: false }); },
   closeRecipe() { set({ selId: null }); },
 
-  openSearch() { set({ showSearch: true, searchQuery: '' }); },
+  openSearch() { set({ showSearch: true, searchQuery: '', searchCat: '' }); },
   closeSearch() { set({ showSearch: false }); },
+  // Toggle a browse category; tapping the active one clears it.
+  searchCat(d) { set({ searchCat: state.searchCat === d.val ? '' : d.val }); },
   servings(d) {
     const next = Math.min(4, Math.max(1, state.servings + Number(d.dir)));
     if (next !== state.servings) set({ servings: next });
