@@ -10,12 +10,15 @@ import { overlays, cookFoot, searchBodyHTML } from './overlays.js';
 import { actions, onBudgetInput, closeTopLayer } from './actions.js';
 import { initSync } from './sync.js';
 import { syncToStep as timerSync, stop as timerStop } from './timer.js';
-import { loadCachedContent, fetchContent } from './content.js';
+import { loadCachedContent, fetchContent, refreshAdmin } from './content.js';
+import { adminInput, adminUpload, adminListHTML } from './admin.js';
+import { auth } from './sync.js';
 
 const $ = id => document.getElementById(id);
 let lastView = null;
 let lastOverlayKey = '';
 let lastPlan = null;
+let lastAuthEmail = null;
 
 // Entry animations only run on regions carrying [data-entering]; in-place
 // re-renders drop the attribute first so nothing replays mid-interaction.
@@ -68,6 +71,11 @@ function refocus(root, sig) {
 const FOCUSABLE = 'button:not([disabled]), input, [href], [tabindex]:not([tabindex="-1"])';
 
 function render() {
+  // Re-check admin status when the signed-in user changes (shows/hides the editor).
+  if ((auth.user?.email || '') !== lastAuthEmail) {
+    lastAuthEmail = auth.user?.email || '';
+    refreshAdmin().then(() => invalidate());
+  }
   const active = document.activeElement;
   const sig = focusSignature(active && active.closest ? active.closest('[data-act]') : null);
   const focusRegion = active ? active.closest('#view, #sidebar, #tabbar, #overlays') : null;
@@ -91,10 +99,11 @@ function render() {
 
   const ovEl = $('overlays');
   const key = state.cooking ? 'cook:' + state.cooking
-    : state.showAccount ? 'account'
-      : state.showSearch ? 'search'
-        : state.showGen ? 'gen'
-          : state.selId ? 'sheet:' + state.selId : '';
+    : state.showAdmin ? 'admin'
+      : state.showAccount ? 'account'
+        : state.showSearch ? 'search'
+          : state.showGen ? 'gen'
+            : state.selId ? 'sheet:' + state.selId : '';
   const overlayChanged = key !== lastOverlayKey;
   if (key && !overlayChanged && state.cooking && ovEl.querySelector('.cook')) {
     patchCookStep(ovEl);
@@ -148,11 +157,19 @@ document.addEventListener('input', e => {
     const box = document.getElementById('search-body');
     if (box) box.innerHTML = searchBodyHTML();
   }
+  else if (act === 'adminSearch') {
+    set({ searchQuery: e.target.value }, { silent: true });
+    const box = document.querySelector('.admin-rlist');
+    if (box) box.innerHTML = adminListHTML();
+  }
+  else if (act === 'adminInput') adminInput(e.target); // live theme + silent draft edits
 });
 document.addEventListener('change', e => {
   const act = e.target.dataset.act;
   if (act === 'budget') invalidate();
   else if (act === 'selectWeek') actions.selectWeek(e.target.dataset, e, e.target);
+  else if (act === 'adminInput') adminInput(e.target);            // <select> fires change
+  else if (act === 'adminUpload') adminUpload(e.target.files && e.target.files[0]);
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeTopLayer(); return; }

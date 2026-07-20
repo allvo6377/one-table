@@ -8,7 +8,7 @@ import { esc, cap, thumb, cuisineChip, steam } from './ui.js';
 import { auth } from './sync.js';
 import { upcomingWeeks } from './dates.js';
 import { CATEGORIES } from './tags.js';
-import { brand, copy } from './content.js';
+import { brand, copy, isAdminUser } from './content.js';
 
 // Pill for the active dietary theme on the plan header, e.g. "🥗 Vegetarian week".
 function dietBadge() {
@@ -52,6 +52,7 @@ export function sidebar() {
       <button class="nav-btn nav-search" data-act="openSearch">🔍 Search meals</button>
     </nav>
     <button class="new-plan" data-act="openGen">＋ Plan a new week</button>
+    ${isAdminUser() ? '<button class="edit-site" data-act="editSite">✎ Edit site content</button>' : ''}
     <button class="sync-row" data-act="openAccount">
       <span class="sync-dot${auth.user ? ' is-on' : ''}" aria-hidden="true"></span>
       ${auth.user ? `Syncing · ${esc(auth.user.email)}` : 'Sign in to sync'}

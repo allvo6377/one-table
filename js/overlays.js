@@ -6,6 +6,7 @@ import { fmtLocal, regionsForCuisine } from './planner.js';
 import { esc, photoUrl, thumb } from './ui.js';
 import { auth } from './sync.js';
 import { CATEGORIES, matchesCategory, DIET_OPTIONS } from './tags.js';
+import { adminPanel } from './admin.js';
 
 const slotForTag = t => /breakfast/i.test(t) ? 'breakfast' : /lunch/i.test(t) ? 'lunch' : 'dinner';
 
@@ -276,9 +277,10 @@ function accountModal() {
   </div>`;
 }
 
-// Cook > account > search > generator > recipe sheet.
+// Cook > admin > account > search > generator > recipe sheet.
 export function overlays() {
   if (state.cooking) return cookMode();
+  if (state.showAdmin) return adminPanel();
   if (state.showAccount) return accountModal();
   if (state.showSearch) return searchModal();
   if (state.showGen) return generator();

@@ -1,7 +1,7 @@
 // Service worker: precache the whole (static) app for offline use. App code
 // is served network-first so online visits always get the latest deploy;
 // fonts/icons are cache-first. Bump VERSION on any deploy to invalidate.
-const VERSION = 'tfo-nordic-v7';
+const VERSION = 'tfo-nordic-v8';
 const ASSETS = [
   './',
   'index.html',
@@ -21,6 +21,7 @@ const ASSETS = [
   'js/tags.js',
   'js/config.js',
   'js/content.js',
+  'js/admin.js',
   'js/recipe-details.js',
   'fonts/playfair-var.woff2',
   'fonts/playfair-italic-var.woff2',
