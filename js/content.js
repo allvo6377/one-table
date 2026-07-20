@@ -5,6 +5,7 @@
 // so a malformed document can never break the app for visitors.
 import { api, REST, accessToken } from './sync.js';
 import { recipes, emojiOf, photoMap, neutralBreakfasts, cuisineMains, cuisineBreakfasts } from './data.js';
+import { applyCategoryOverrides } from './tags.js';
 
 const CACHE_KEY = 'table-for-one:content';
 
@@ -54,6 +55,7 @@ export function applyContent(next) {
   doc = (next && typeof next === 'object') ? next : {};
   try { applyTheme(doc.theme); } catch { /* never break paint */ }
   try { applyRecipes(doc); } catch { /* ignore malformed recipe data */ }
+  try { applyCategoryOverrides(doc.categories); } catch { /* ignore malformed categories */ }
 }
 
 function applyTheme(theme) {
