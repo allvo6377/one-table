@@ -2,7 +2,29 @@
    restructured as classes + custom properties, with a mobile-first layer. */
 
 /* ---- fonts (self-hosted variable woff2, latin subset) ----
-   Nordic Hearth: Playfair Display for editorial headlines, Inter for UI/body. */
+   Culinary Architect: Source Serif 4 for editorial headlines, Hanken Grotesk
+   for UI/body. Playfair + Inter kept for the CMS "Editorial" font option. */
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 200 900;
+  src: url(../fonts/source-serif-var.woff2) format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: italic;
+  font-weight: 200 900;
+  src: url(../fonts/source-serif-italic-var.woff2) format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 300 800;
+  src: url(../fonts/hanken-var.woff2) format('woff2');
+  font-display: swap;
+}
 @font-face {
   font-family: 'Playfair Display';
   font-style: normal;
@@ -61,8 +83,8 @@
   --shadow-sm: 0 2px 8px rgba(28, 27, 27, .05);
   --shadow-md: 0 6px 20px rgba(28, 27, 27, .06);
   --shadow-lg: 0 18px 44px rgba(28, 27, 27, .09);
-  --serif: 'Playfair Display', Georgia, serif;
-  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --serif: 'Source Serif 4', Georgia, serif;
+  --sans: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
   --tabbar-h: calc(60px + env(safe-area-inset-bottom));
 }
 
@@ -329,7 +351,7 @@ a { color: var(--alert); text-decoration: none; }
 .kicker-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
 .kicker-row .kicker { margin-bottom: 0; }
 .plan-diet-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: var(--rust); color: #fff; font-size: 12px; font-weight: 600; }
-.page-title { font-family: var(--serif); font-weight: 500; font-size: 42px; margin: 0; letter-spacing: -.02em; line-height: 1; }
+.page-title { font-family: var(--serif); font-weight: 600; font-size: 42px; margin: 0; letter-spacing: -.02em; line-height: 1; }
 .page-blurb { margin: 12px 0 20px; color: var(--ink-mute); font-size: 14.5px; line-height: 1.5; max-width: 560px; }
 .page-head-main { min-width: 280px; }
 
@@ -341,7 +363,7 @@ a { color: var(--alert); text-decoration: none; }
 }
 .week-select {
   appearance: none; -webkit-appearance: none;
-  font-family: var(--serif); font-weight: 500; font-size: 34px; letter-spacing: -.02em;
+  font-family: var(--serif); font-weight: 600; font-size: 34px; letter-spacing: -.02em;
   color: var(--ink); background: transparent; border: none;
   padding: 0 26px 0 0; margin: 0; cursor: pointer; line-height: 1.05; max-width: 100%;
 }
@@ -366,8 +388,25 @@ a { color: var(--alert); text-decoration: none; }
 .prot-box { min-width: 230px; }
 .prot-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-mute); margin-bottom: 6px; }
 
-/* glance strip (mobile only) */
+/* week-at-a-glance strip — a light card on desktop (it replaces the numbers
+   the old sidebar used to carry), a compact dark strip on mobile (below). */
 .glance-strip { display: none; }
+@media (min-width: 901px) {
+  .glance-strip {
+    display: flex;
+    gap: 46px;
+    align-items: center;
+    margin: 22px 0 2px;
+    padding: 20px 30px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .glance-strip .glance-row { align-items: baseline; gap: 12px; }
+  .glance-strip .glance-num { font-size: 30px; color: var(--rust); }
+  .glance-strip .glance-sub { color: var(--ink-mute); }
+}
 
 /* ---- nudge ---- */
 .nudge {
