@@ -6,6 +6,7 @@
 // silently so typing never loses focus to a re-render.
 import { contentDoc, publishContent, applyContent, THEME_FIELDS, FONT_PAIRS } from './content.js';
 import { recipes, emojiOf, photoMap, neutralBreakfasts, cuisineMains, cuisineBreakfasts, CATEGORY_ORDER } from './data.js';
+import { allCategories, CURATED_DEFAULTS } from './tags.js';
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
 import { api, REST, accessToken } from './sync.js';
 import { state, set } from './store.js';
@@ -16,6 +17,7 @@ let draft = null;      // working copy of the content document
 let status = '';       // status line under Publish
 let busy = false;      // publish/upload in flight
 let editId = null;     // recipe open in the editor
+let editCat = null;    // category whose membership is being edited
 let admins = [];       // loaded admin emails
 
 const clone = o => (typeof structuredClone === 'function' ? structuredClone(o) : JSON.parse(JSON.stringify(o)));
@@ -25,7 +27,10 @@ export function openAdmin() {
   draft.theme = draft.theme || {}; draft.theme.tokens = draft.theme.tokens || {};
   draft.branding = draft.branding || {}; draft.copy = draft.copy || {};
   draft.recipes = draft.recipes || {}; draft.added = draft.added || {}; draft.removed = draft.removed || [];
-  status = ''; editId = null;
+  draft.categories = draft.categories || {};
+  draft.categories.labels = draft.categories.labels || {}; draft.categories.emoji = draft.categories.emoji || {};
+  draft.categories.hidden = draft.categories.hidden || []; draft.categories.members = draft.categories.members || {};
+  status = ''; editId = null; editCat = null;
   loadAdmins();
 }
 
@@ -47,6 +52,7 @@ export function adminInput(el) {
     else { draft.theme.tokens[key] = v; root(key, v); if (key === '--rust') root('--rust-deep', v); }
   } else if (scope === 'brand') { draft.branding[key] = v; }
   else if (scope === 'copy') { draft.copy[key] = v; }
+  else if (scope === 'cat') { const [bucket, id] = key.split(':'); (draft.categories[bucket] = draft.categories[bucket] || {})[id] = v; }
   else if (scope === 'recipe' && editId) {
     const o = (draft.recipes[editId] = draft.recipes[editId] || {});
     if (key === 'protein' || key === 'cost' || key === 'timeMin') o[key] = Number(v) || 0;
@@ -71,6 +77,17 @@ export function adminAction(act, d) {
   else if (act === 'adminPreview') { applyContent(clone(draft)); set({ plan: currentPlan() }); status = 'Previewing unsaved changes'; set({}); }
   else if (act === 'adminAddEmail') addAdminEmail(d);
   else if (act === 'adminRemoveEmail') removeAdminEmail(d.email);
+  else if (act === 'adminCatOpen') { editCat = d.id; set({}); }
+  else if (act === 'adminCatBack') { editCat = null; set({}); }
+  else if (act === 'adminCatHide') { const h = draft.categories.hidden, i = h.indexOf(d.id); if (i >= 0) h.splice(i, 1); else h.push(d.id); set({}); }
+}
+
+// Toggle a recipe in/out of a curated category (checkbox change — no re-render).
+export function adminCatMember(el) {
+  if (!editCat || !draft) return;
+  const cur = new Set(draft.categories.members[editCat] || CURATED_DEFAULTS[editCat] || []);
+  if (el.checked) cur.add(el.dataset.id); else cur.delete(el.dataset.id);
+  draft.categories.members[editCat] = [...cur];
 }
 
 function resetField(scope, key) {
@@ -145,7 +162,7 @@ async function publish() {
 export function adminPanel() {
   if (!draft) openAdmin();
   const tab = state.adminTab || 'theme';
-  const tabs = [['theme', 'Theme'], ['branding', 'Branding'], ['recipes', 'Recipes'], ['admins', 'Admins']];
+  const tabs = [['theme', 'Theme'], ['branding', 'Branding'], ['recipes', 'Recipes'], ['categories', 'Categories'], ['admins', 'Admins']];
   return `
   <div class="scrim" data-act="closeAdmin"></div>
   <div class="modal modal-admin" role="dialog" aria-modal="true" aria-label="Edit site content">
@@ -156,7 +173,7 @@ export function adminPanel() {
     <div class="admin-tabs" role="tablist">
       ${tabs.map(([id, label]) => `<button class="admin-tab${tab === id ? ' is-on' : ''}" role="tab" aria-selected="${tab === id}" data-act="adminTab" data-tab="${id}">${label}</button>`).join('')}
     </div>
-    <div class="admin-body">${tab === 'theme' ? themeTab() : tab === 'branding' ? brandingTab() : tab === 'recipes' ? recipesTab() : adminsTab()}</div>
+    <div class="admin-body">${tab === 'theme' ? themeTab() : tab === 'branding' ? brandingTab() : tab === 'recipes' ? recipesTab() : tab === 'categories' ? categoriesTab() : adminsTab()}</div>
     <div class="admin-foot">
       <span class="admin-status${/failed|valid|not/i.test(status) ? ' is-err' : ''}">${esc(status)}</span>
       <div class="admin-foot-btns">
@@ -245,6 +262,48 @@ function recipeEditor(id) {
     ${field('Ingredients (one per line — “item | quantity”)', `<textarea rows="5" data-act="adminInput" data-scope="recipe" data-key="ingredients">${esc(ing)}</textarea>`)}
     ${field('Method (one step per line)', `<textarea rows="6" data-act="adminInput" data-scope="recipe" data-key="steps">${esc(steps)}</textarea>`)}
     <button class="admin-rdel-lg" data-act="adminRecipeDelete" data-id="${id}">Delete this recipe</button>`;
+}
+
+function categoriesTab() {
+  if (editCat) return categoryMembers(editCat);
+  const cats = allCategories();
+  return `<p class="admin-note">Rename a browse section, change its icon, hide it, or — for hand-picked sections — choose which meals appear. Sections with fewer than 3 meals hide themselves.</p>
+    <div class="admin-clist">
+      ${cats.map(c => `
+        <div class="admin-crow${c.hidden ? ' is-hidden' : ''}">
+          <input type="text" class="admin-cemoji" maxlength="4" data-act="adminInput" data-scope="cat" data-key="emoji:${c.id}" value="${esc(draft.categories.emoji[c.id] ?? c.emoji)}">
+          <input type="text" class="admin-clabel" data-act="adminInput" data-scope="cat" data-key="labels:${c.id}" value="${esc(draft.categories.labels[c.id] ?? c.label)}">
+          ${c.curated ? `<button class="btn-mini" data-act="adminCatOpen" data-id="${c.id}">Meals…</button>` : '<span class="admin-cauto" title="Worked out automatically from the recipes">auto</span>'}
+          <button class="admin-chide" data-act="adminCatHide" data-id="${c.id}">${c.hidden ? 'Show' : 'Hide'}</button>
+        </div>`).join('')}
+    </div>`;
+}
+
+function categoryMembers(cat) {
+  const c = allCategories().find(x => x.id === cat) || { label: cat, emoji: '' };
+  return `
+    <button class="admin-back" data-act="adminCatBack">← All sections</button>
+    <p class="admin-note">Tick the meals that belong in <b>${esc(c.emoji)} ${esc(c.label)}</b>.</p>
+    <input type="search" class="sync-input" placeholder="Search meals…" data-act="adminCatSearch" value="${esc(state.searchQuery)}">
+    <div class="admin-mlist">${adminMemberListHTML()}</div>`;
+}
+
+// Checklist rows for the open curated category — patched in place on search.
+export function adminMemberListHTML() {
+  if (!draft || !editCat) return '';
+  const set = new Set(draft.categories.members[editCat] || CURATED_DEFAULTS[editCat] || []);
+  const q = (state.searchQuery || '').toLowerCase();
+  const ids = [...Object.keys(recipes), ...Object.keys(draft.added)].filter((v, i, a) => a.indexOf(v) === i)
+    .filter(id => !draft.removed.includes(id))
+    .filter(id => !q || (recById(id)?.name || '').toLowerCase().includes(q))
+    .sort((a, b) => (set.has(b) - set.has(a)) || (recById(a)?.name || '').localeCompare(recById(b)?.name || ''))
+    .slice(0, 80);
+  return ids.map(id => { const r = recById(id) || {}; return `
+    <label class="admin-mrow">
+      <input type="checkbox" data-act="adminCatMember" data-id="${id}"${set.has(id) ? ' checked' : ''}>
+      <span class="admin-remoji">${esc(effRecipe(id).emoji || '🍽️')}</span>
+      <span class="admin-rname">${esc(r.name || id)}</span>
+    </label>`; }).join('');
 }
 
 function adminsTab() {

@@ -42,6 +42,9 @@ export const actions = {
   adminPublish() { adminAction('adminPublish', {}); },
   adminRemoveEmail(d) { adminAction('adminRemoveEmail', d); },
   adminAddEmail() { const el = document.getElementById('admin-new-email'); adminAction('adminAddEmail', { email: el ? el.value : '' }); },
+  adminCatOpen(d) { adminAction('adminCatOpen', d); },
+  adminCatBack() { adminAction('adminCatBack', {}); },
+  adminCatHide(d) { adminAction('adminCatHide', d); },
   servings(d) {
     const next = Math.min(4, Math.max(1, state.servings + Number(d.dir)));
     if (next !== state.servings) set({ servings: next });

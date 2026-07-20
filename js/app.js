@@ -11,7 +11,7 @@ import { actions, onBudgetInput, closeTopLayer } from './actions.js';
 import { initSync } from './sync.js';
 import { syncToStep as timerSync, stop as timerStop } from './timer.js';
 import { loadCachedContent, fetchContent, refreshAdmin } from './content.js';
-import { adminInput, adminUpload, adminListHTML } from './admin.js';
+import { adminInput, adminUpload, adminListHTML, adminMemberListHTML, adminCatMember } from './admin.js';
 import { auth } from './sync.js';
 
 const $ = id => document.getElementById(id);
@@ -162,6 +162,11 @@ document.addEventListener('input', e => {
     const box = document.querySelector('.admin-rlist');
     if (box) box.innerHTML = adminListHTML();
   }
+  else if (act === 'adminCatSearch') {
+    set({ searchQuery: e.target.value }, { silent: true });
+    const box = document.querySelector('.admin-mlist');
+    if (box) box.innerHTML = adminMemberListHTML();
+  }
   else if (act === 'adminInput') adminInput(e.target); // live theme + silent draft edits
 });
 document.addEventListener('change', e => {
@@ -170,6 +175,7 @@ document.addEventListener('change', e => {
   else if (act === 'selectWeek') actions.selectWeek(e.target.dataset, e, e.target);
   else if (act === 'adminInput') adminInput(e.target);            // <select> fires change
   else if (act === 'adminUpload') adminUpload(e.target.files && e.target.files[0]);
+  else if (act === 'adminCatMember') adminCatMember(e.target);    // membership checkbox
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeTopLayer(); return; }

@@ -23,49 +23,90 @@ const ONE_POT = /stew|curry|soup|pilau|biryani|jollof|khichdi|rajma|githeri|muth
 const onePot = r => ONE_POT.test(r.name + ' ' + r.tagline);
 const mealPrep = r => onePot(r) || /freezer|make-ahead|batch|freezer-friendly|meal-prep/i.test(r.tagline);
 
-// Curated groupings (ids that don't exist simply never match — harmless).
-const IDS = {
-  family: new Set(['spaghetti-bolognese', 'chicken-parmigiana', 'jollof-chicken', 'chapati-beef-stew',
+// Curated groupings — hand-picked membership the owner can edit in the CMS.
+// `members` is mutable so a published override can replace a set; ids that
+// don't exist simply never match.
+export const CURATED_DEFAULTS = {
+  family: ['spaghetti-bolognese', 'chicken-parmigiana', 'jollof-chicken', 'chapati-beef-stew',
     'pilau', 'zanzibar-biryani', 'mukimo-beef', 'kenyan-wet-fry-beef', 'ugandan-groundnut-chicken',
-    'pesto-chicken-pasta', 'rajma-rice', 'githeri', 'matoke-groundnut', 'sukuma-ugali', 'beef-posho']),
-  kids: new Set(['banana-pancakes', 'banana-bread', 'blueberry-muffins', 'cinnamon-rolls', 'spaghetti-bolognese',
+    'pesto-chicken-pasta', 'rajma-rice', 'githeri', 'matoke-groundnut', 'sukuma-ugali', 'beef-posho'],
+  kids: ['banana-pancakes', 'banana-bread', 'blueberry-muffins', 'cinnamon-rolls', 'spaghetti-bolognese',
     'pesto-chicken-pasta', 'chapati-beef-stew', 'mahamri-mbaazi', 'kabalagala', 'mango-fruit-bowl',
-    'chicken-parmigiana', 'mukimo-beef', 'viazi-karai', 'cheese-danish', 'banana-oat-pancakes']),
-  special: new Set(['nyama-choma', 'zanzibar-biryani', 'pilau', 'jollof-chicken', 'kuku-wa-kupaka',
+    'chicken-parmigiana', 'mukimo-beef', 'viazi-karai', 'cheese-danish'],
+  special: ['nyama-choma', 'zanzibar-biryani', 'pilau', 'jollof-chicken', 'kuku-wa-kupaka',
     'luwombo-chicken', 'ofada-stew', 'chicken-parmigiana', 'suya-skewers', 'mishkaki-skewers',
-    'mukimo-beef', 'chapati-beef-stew']),
-  dessert: new Set(['blueberry-muffins', 'cinnamon-rolls', 'cheese-danish', 'almond-croissant', 'banana-bread',
-    'mandazi-chai', 'mahamri-mbaazi', 'vitumbua-chai', 'kabalagala', 'pain-au-chocolat', 'cream-scones', 'puff-puff']),
+    'mukimo-beef', 'chapati-beef-stew'],
+  dessert: ['blueberry-muffins', 'cinnamon-rolls', 'cheese-danish', 'almond-croissant', 'banana-bread',
+    'mandazi-chai', 'mahamri-mbaazi', 'vitumbua-chai', 'kabalagala', 'pain-au-chocolat', 'cream-scones', 'puff-puff'],
 };
+const CURATED = Object.keys(CURATED_DEFAULTS);
+const members = {};
+CURATED.forEach(k => (members[k] = new Set(CURATED_DEFAULTS[k])));
 
-// Each category: id, label, emoji, and a test(recipe) → boolean. Cuisines
-// ("Kenyan traditional", "International") are intentionally absent — the app
-// already filters by cuisine everywhere.
+// Each category: id, label, emoji, and a test(recipe) → boolean. `curated`
+// categories have editable membership. Cuisines are intentionally absent — the
+// app already filters by cuisine everywhere.
 const DEFS = [
   { id: 'vegetarian', label: 'Vegetarian', emoji: '🥗', test: r => !hasMeat(r) },
   { id: 'vegan', label: 'Vegan', emoji: '🌱', test: r => !hasMeat(r) && !hasDairy(r) && !has(r, 'Eggs') && !has(r, 'Honey') },
   { id: 'high-protein', label: 'High-protein', emoji: '🍗', test: r => r.protein >= 25 },
   { id: 'budget', label: 'Budget-friendly', emoji: '💰', test: r => r.cost <= 3 },
   { id: 'quick', label: '30-min & quick', emoji: '⚡', test: r => r.timeMin <= 30 },
-  { id: 'family', label: 'Family meals', emoji: '👨‍👩‍👧‍👦', test: r => IDS.family.has(r.id) },
-  { id: 'kids', label: 'Kids’ meals', emoji: '👶', test: r => IDS.kids.has(r.id) },
+  { id: 'family', label: 'Family meals', emoji: '👨‍👩‍👧‍👦', curated: true, test: r => members.family.has(r.id) },
+  { id: 'kids', label: 'Kids’ meals', emoji: '👶', curated: true, test: r => members.kids.has(r.id) },
   { id: 'gluten-free', label: 'Gluten-free', emoji: '🌾', test: r => !hasGluten(r) },
   { id: 'dairy-free', label: 'Dairy-free', emoji: '🥛', test: r => !hasDairy(r) },
-  { id: 'special', label: 'Special occasion', emoji: '🎉', test: r => IDS.special.has(r.id) },
-  { id: 'dessert', label: 'Desserts & sweet bakes', emoji: '🍰', test: r => IDS.dessert.has(r.id) },
+  { id: 'special', label: 'Special occasion', emoji: '🎉', curated: true, test: r => members.special.has(r.id) },
+  { id: 'dessert', label: 'Desserts & sweet bakes', emoji: '🍰', curated: true, test: r => members.dessert.has(r.id) },
   { id: 'drinks', label: 'Drinks & smoothies', emoji: '🥤', test: r => /\b(smoothie|juice|lassi|shake)\b/i.test(r.name + ' ' + r.tagline) },
   { id: 'one-pot', label: 'One-pot meals', emoji: '🍲', test: onePot },
   { id: 'meal-prep', label: 'Meal-prep', emoji: '📦', test: mealPrep },
 ];
 
-const all = Object.values(recipes);
-// Attach a live count and drop sparse categories (needs at least this many).
-const MIN = 3;
-export const CATEGORIES = DEFS
-  .map(c => ({ ...c, count: all.filter(c.test).length }))
-  .filter(c => c.count >= MIN);
+const MIN = 3; // hide categories with too few recipes
+let overrides = {}; // { labels, emoji, hidden, members } from the CMS
 
-const BY_ID = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+export let CATEGORIES = [];
+let BY_ID = {};
+function rebuild() {
+  const all = Object.values(recipes);
+  const hidden = new Set(overrides.hidden || []);
+  CATEGORIES = DEFS
+    .filter(c => !hidden.has(c.id))
+    .map(c => ({
+      id: c.id,
+      label: (overrides.labels && overrides.labels[c.id]) || c.label,
+      emoji: (overrides.emoji && overrides.emoji[c.id]) || c.emoji,
+      curated: !!c.curated,
+      test: c.test,
+      count: all.filter(c.test).length,
+    }))
+    .filter(c => c.count >= MIN);
+  BY_ID = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+}
+
+// Apply CMS category overrides (labels/emoji/hidden/membership) and rebuild.
+export function applyCategoryOverrides(catDoc) {
+  overrides = catDoc || {};
+  for (const k of CURATED) {
+    const ov = overrides.members && overrides.members[k];
+    members[k] = new Set(Array.isArray(ov) ? ov : CURATED_DEFAULTS[k]);
+  }
+  rebuild();
+}
+rebuild(); // initial build from defaults
+
+// Full category list (including hidden) for the CMS editor.
+export function allCategories() {
+  return DEFS.map(c => ({
+    id: c.id,
+    label: (overrides.labels && overrides.labels[c.id]) || c.label,
+    emoji: (overrides.emoji && overrides.emoji[c.id]) || c.emoji,
+    curated: !!c.curated,
+    hidden: (overrides.hidden || []).includes(c.id),
+  }));
+}
+
 export function matchesCategory(r, id) {
   const c = BY_ID[id];
   return c ? c.test(r) : true;
