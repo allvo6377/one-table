@@ -3,7 +3,7 @@
 import { state } from './store.js';
 import { planTotals, fmtLocal, localVal } from './planner.js';
 import { currency } from './data.js';
-import { todayData, weekDays, fridgeData, radarChartData, nudgeData, shoppingData } from './derive.js';
+import { todayData, weekDays, weekStats, fridgeData, radarChartData, nudgeData, shoppingData } from './derive.js';
 import { esc, cap, thumb, cuisineChip, steam } from './ui.js';
 import { auth } from './sync.js';
 import { upcomingWeeks } from './dates.js';
@@ -41,25 +41,22 @@ function glanceHTML() {
     <div class="glance-row"><span class="glance-num c-clay">${cuisines.size}</span><span class="glance-sub">${cuisines.size === 1 ? 'cuisine' : 'cuisines'}<br>on the menu</span></div>`;
 }
 
+const ACCOUNT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="10" r="3.3"/><path d="M5.6 19a6.6 6.6 0 0 1 12.8 0"/></svg>';
+
+// Horizontal top app bar: brand · section nav · search / new-week / account.
 export function sidebar() {
   return `
-    <div class="brand">
-      <div class="brand-name">${esc(brand().name)}</div>
-      <div class="brand-sub">${esc(brand().sub)}</div>
-    </div>
+    <button class="brand-name" data-act="view" data-view="today" aria-label="${esc(brand().name)} — home">${esc(brand().name)}</button>
     <nav class="side-nav" aria-label="Sections">
       ${NAV.map(([label, v]) => `<button class="nav-btn${state.view === v ? ' is-active' : ''}"${state.view === v ? ' aria-current="page"' : ''} data-act="view" data-view="${v}">${label}</button>`).join('')}
-      <button class="nav-btn nav-search" data-act="openSearch">🔍 Search meals</button>
     </nav>
-    <button class="new-plan" data-act="openGen">＋ Plan a new week</button>
-    ${isAdminUser() ? '<button class="edit-site" data-act="editSite">✎ Edit site content</button>' : ''}
-    <button class="sync-row" data-act="openAccount">
-      <span class="sync-dot${auth.user ? ' is-on' : ''}" aria-hidden="true"></span>
-      ${auth.user ? `Syncing · ${esc(auth.user.email)}` : 'Sign in to sync'}
-    </button>
-    <div class="glance">
-      <div class="glance-title">This week at a glance</div>
-      ${glanceHTML()}
+    <div class="bar-right">
+      <button class="bar-search" data-act="openSearch" aria-label="Search meals">${SEARCH_ICON}<span>Search meals</span></button>
+      <button class="new-plan" data-act="openGen">＋ Plan a new week</button>
+      ${isAdminUser() ? '<button class="edit-site-bar" data-act="editSite">✎ Edit site</button>' : ''}
+      <button class="bar-icon" data-act="openAccount" aria-label="${auth.user ? 'Account · ' + esc(auth.user.email) : 'Sign in to sync'}">
+        ${ACCOUNT_ICON}<span class="sync-dot${auth.user ? ' is-on' : ''}" aria-hidden="true"></span>
+      </button>
     </div>`;
 }
 
@@ -199,33 +196,52 @@ export function todayView() {
 // ---------- Weekly plan ----------
 function badges(m) {
   return `
-    ${m.isLeftover ? `<span class="badge b-leftover">↺ ${m.leftoverFrom ? 'from ' + esc(m.leftoverFrom) : 'Leftover'}</span>` : ''}
+    ${m.quick ? '<span class="badge b-quick">Quick</span>' : ''}
     ${m.batch ? `<span class="badge b-batch">Batch ${m.batch}</span>` : ''}
-    ${m.freezer ? '<span class="badge b-freezer">❄ +1 freezer</span>' : ''}
-    ${m.quick ? '<span class="badge b-quick">Quick</span>' : ''}`;
+    ${m.isLeftover ? `<span class="badge b-leftover">↺ ${m.leftoverFrom ? 'from ' + esc(m.leftoverFrom) : 'Leftover'}</span>` : ''}
+    ${m.freezer ? '<span class="badge b-freezer">❄ +1 freezer</span>' : ''}`;
 }
 
+// A full-width day-row card: day label + date + cooking time on the left,
+// breakfast/lunch/dinner as three photo-led columns on the right.
 function gridDay(d, di) {
   return `
-  <div class="day-col anim-in" style="--d:${(di * 0.05).toFixed(2)}s">
-    <div class="day-head${d.isToday ? ' is-today' : ''}">
+  <section class="day-row${d.isToday ? ' is-today' : ''} anim-in" style="--d:${(di * 0.05).toFixed(2)}s">
+    <div class="day-side">
       <div class="day-title"><span class="day-name">${d.name}</span>${d.isToday ? '<span class="today-pill">Today</span>' : ''}</div>
-      <div class="day-sub">${esc(d.date)} · ${esc(d.timeLabel)}</div>
+      <div class="day-side-meta">
+        <span class="day-date">${esc(d.date)}</span>
+        <span class="day-cook">${esc(d.timeLabel)}</span>
+      </div>
     </div>
-    ${d.meals.map(m => `
-      <div class="cell-wrap">
-        <button class="day-cell slot-${m.slot}" data-act="open" data-id="${m.rid}">
-          <span class="cell-thumb">${thumb(m.rid, m.slot)}${cuisineChip(m.recipe.cuisine, 'sm')}</span>
-          <span class="cell-body">
-            <span class="slot-label">${cap(m.slot)}</span>
-            <span class="cell-name">${esc(m.recipe.name)}</span>
-            <span class="cell-meta">${esc(m.timeLabel)} · ${m.recipe.protein}g protein</span>
-            <span class="badge-row">${badges(m)}</span>
-          </span>
-        </button>
-        ${m.swappable ? `<button class="swap-btn" title="Swap this meal" aria-label="Swap ${esc(m.recipe.name)}" data-act="swap" data-day="${m.dayName}" data-slot="${m.slot}">⇄</button>` : ''}
-      </div>`).join('')}
-  </div>`;
+    <div class="day-meals">
+      ${d.meals.map(m => `
+        <div class="meal-slot cell-wrap slot-${m.slot}">
+          <button class="meal-slot-btn" data-act="open" data-id="${m.rid}" aria-label="Open ${esc(m.recipe.name)}">
+            <span class="meal-photo${m.isLeftover ? ' is-leftover' : ''}">${thumb(m.rid, m.slot)}</span>
+            <span class="meal-slot-body">
+              <span class="slot-label">${cap(m.slot)}${m.recipe.cuisine ? `<i> · ${esc(m.recipe.cuisine)}</i>` : ''}</span>
+              <span class="cell-name">${esc(m.recipe.name)}</span>
+              <span class="cell-meta">${esc(m.timeLabel)} · ${m.recipe.protein}g protein</span>
+              <span class="badge-row">${badges(m)}</span>
+            </span>
+          </button>
+          ${m.swappable ? `<button class="swap-btn" title="Swap this meal" aria-label="Swap ${esc(m.recipe.name)}" data-act="swap" data-day="${m.dayName}" data-slot="${m.slot}">⇄</button>` : ''}
+        </div>`).join('')}
+    </div>
+  </section>`;
+}
+
+function planStats() {
+  const s = weekStats();
+  return `
+    <div class="plan-stats">
+      <div class="plan-stat"><span class="plan-stat-n">${s.protPerDay}g</span><span class="plan-stat-l">protein per day avg.</span></div>
+      <span class="plan-stat-div" aria-hidden="true"></span>
+      <div class="plan-stat"><span class="plan-stat-n">${s.kcalPerDay.toLocaleString('en-US')}</span><span class="plan-stat-l">kcal per day avg.</span></div>
+      <span class="plan-stat-div" aria-hidden="true"></span>
+      <div class="plan-stat"><span class="plan-stat-n">${esc(s.costLabel)}</span><span class="plan-stat-l">estimated groc. cost</span></div>
+    </div>`;
 }
 
 function agendaDay(d, di) {
@@ -270,9 +286,6 @@ export function planView() {
         <p class="page-blurb">${esc(blurb)}</p>
       </div>
       <div class="head-tools">
-        <button class="tool-btn" data-act="openSearch" aria-label="Search meals">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
-        </button>
         <div class="seg" role="group" aria-label="Layout">
           <button class="seg-btn${state.layout === 'grid' ? ' is-on' : ''}" aria-pressed="${state.layout === 'grid'}" data-act="layout" data-layout="grid">Grid</button>
           <button class="seg-btn${state.layout === 'agenda' ? ' is-on' : ''}" aria-pressed="${state.layout === 'agenda'}" data-act="layout" data-layout="agenda">Agenda</button>
@@ -280,8 +293,9 @@ export function planView() {
       </div>
     </header>
     ${state.layout === 'grid'
-      ? `<div class="plan-grid">${days.map(gridDay).join('')}</div>`
+      ? `<div class="plan-rows">${days.map(gridDay).join('')}</div>`
       : `<div class="plan-agenda">${days.map(agendaDay).join('')}</div>`}
+    ${planStats()}
   </div>`;
 }
 
