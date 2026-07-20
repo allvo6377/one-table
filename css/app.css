@@ -1,59 +1,66 @@
 /* Table for One — design system lifted 1:1 from the Claude Design source,
    restructured as classes + custom properties, with a mobile-first layer. */
 
-/* ---- fonts (self-hosted variable woff2, latin subset) ---- */
+/* ---- fonts (self-hosted variable woff2, latin subset) ----
+   Nordic Hearth: Playfair Display for editorial headlines, Inter for UI/body. */
 @font-face {
-  font-family: 'Newsreader';
+  font-family: 'Playfair Display';
   font-style: normal;
-  font-weight: 200 800;
-  src: url(../fonts/newsreader-var.woff2) format('woff2');
+  font-weight: 400 700;
+  src: url(../fonts/playfair-var.woff2) format('woff2');
   font-display: swap;
 }
 @font-face {
-  font-family: 'Newsreader';
+  font-family: 'Playfair Display';
   font-style: italic;
-  font-weight: 200 800;
-  src: url(../fonts/newsreader-italic-var.woff2) format('woff2');
+  font-weight: 400 700;
+  src: url(../fonts/playfair-italic-var.woff2) format('woff2');
   font-display: swap;
 }
 @font-face {
-  font-family: 'DM Sans';
+  font-family: 'Inter';
   font-style: normal;
-  font-weight: 100 1000;
-  src: url(../fonts/dm-sans-var.woff2) format('woff2');
+  font-weight: 300 700;
+  src: url(../fonts/inter-var.woff2) format('woff2');
   font-display: swap;
 }
 
-/* ---- tokens ---- */
+/* ---- tokens: "Nordic Hearth" — Scandi-kitchen palette ----
+   Cool, light-driven neutrals; muted-blue primary; light-wood accents.
+   Token *names* are unchanged so the whole stylesheet re-skins from here. */
 :root {
-  --bg: #F1E7D6;
-  --ink: #29211B;
-  --ink-soft: #5A5044;
-  --ink-mute: #736757;
-  --ink-faint: #71675B;
-  --card: #FBF6EC;
-  --card-2: #FDFAF2;
-  --line: #E4D7C0;
-  --line-soft: #EADEC8;
-  --dark: #2B2620;
-  --dark-2: #241F1A;
-  --dark-soft: #3D362C;
-  --dark-line: #453E33;
-  --cream: #EDE4D3;
-  --cream-mute: #9C8F79;
-  --cream-dim: #B7A98F;
-  --rust: #BE5638;
-  --rust-deep: #a8482c;
-  --gold: #E9B04A;
-  --ochre: #B8892B;
-  --olive: #5E7141;
-  --sage: #8FB06A;
-  --sand: #786442;
-  --bf: #B8892B;   --bf-soft: #F0E4C8;
-  --ln: #5E7141;   --ln-soft: #E4EAD6;
-  --dn: #BE5638;   --dn-soft: #F3E1D6;
-  --serif: 'Newsreader', Georgia, serif;
-  --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --bg: #edeef0;         /* app canvas — cool light grey */
+  --ink: #1a1c1c;        /* primary text (on-surface) */
+  --ink-soft: #43474b;   /* secondary text (on-surface-variant) */
+  --ink-mute: #6b7075;   /* muted labels */
+  --ink-faint: #898e93;  /* faint meta */
+  --card: #ffffff;       /* white content cards */
+  --card-2: #ffffff;     /* raised card */
+  --line: #e2e2e2;       /* 1px static borders */
+  --line-soft: #ededed;  /* subtle dividers */
+  --dark: #2f3131;       /* charcoal sidebar (inverse-surface) */
+  --dark-2: #292b2b;     /* darker charcoal */
+  --dark-soft: #3a3d3d;  /* raised surface on dark */
+  --dark-line: #474a4a;  /* divider on dark */
+  --cream: #f1f1f1;      /* light text on charcoal (inverse-on-surface) */
+  --cream-mute: #a7abab; /* muted light text */
+  --cream-dim: #c6c9c9;  /* dim light text */
+  --rust: #4f616e;       /* PRIMARY action (muted blue) — app-wide accent */
+  --rust-deep: #3f4e59;  /* primary hover */
+  --alert: #bb4a2e;      /* warm alert — over-budget / destructive only */
+  --gold: #d9bd85;       /* light-wood highlight (glance numbers on charcoal) */
+  --ochre: #8a6d3b;      /* wood accent */
+  --olive: #4f616e;      /* muted-blue primary (progress fills) */
+  --sage: #9db2c0;       /* cool blue-grey highlight */
+  --sand: #715b32;       /* wood secondary */
+  --bf: #7a5f34;   --bf-soft: #f2e8d6;   /* breakfast · wood */
+  --ln: #52606b;   --ln-soft: #e7ecef;   /* lunch · slate */
+  --dn: #4f616e;   --dn-soft: #e3ebf1;   /* dinner · blue */
+  --shadow-sm: 0 2px 8px rgba(112, 126, 137, .08);
+  --shadow-md: 0 8px 24px rgba(112, 126, 137, .10);
+  --shadow-lg: 0 18px 40px rgba(112, 126, 137, .14);
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
   --tabbar-h: calc(60px + env(safe-area-inset-bottom));
 }
 
@@ -166,8 +173,8 @@ a { color: #A84C32; text-decoration: none; }
 .glance-sub { font-size: 12px; color: var(--cream-dim); line-height: 1.3; }
 .c-gold { color: var(--gold); }
 .c-sage { color: var(--sage); }
-.c-clay { color: #D98A6B; }
-.c-rust { color: var(--rust); }
+.c-clay { color: #c69a63; }
+.c-rust { color: var(--alert); }
 
 /* ---- mobile tab bar + fab ---- */
 .tabbar {
@@ -355,9 +362,9 @@ a { color: #A84C32; text-decoration: none; }
 .nudge-btn:hover { background: #FBF3E2; }
 
 /* ---- slot accents ---- */
-.slot-breakfast { --accent: var(--bf); --accent-soft: var(--bf-soft); --accent-text: #84631F; }
-.slot-lunch { --accent: var(--ln); --accent-soft: var(--ln-soft); --accent-text: #5B6E3F; }
-.slot-dinner { --accent: var(--dn); --accent-soft: var(--dn-soft); --accent-text: #A84C32; }
+.slot-breakfast { --accent: var(--bf); --accent-soft: var(--bf-soft); }
+.slot-lunch { --accent: var(--ln); --accent-soft: var(--ln-soft); }
+.slot-dinner { --accent: var(--dn); --accent-soft: var(--dn-soft); }
 .slot-label { font-size: 10px; letter-spacing: .13em; text-transform: uppercase; color: var(--accent-text, var(--accent)); font-weight: 700; }
 .slot-label i { font-style: normal; color: var(--sand); }
 
@@ -437,15 +444,17 @@ a { color: #A84C32; text-decoration: none; }
   align-items: center;
   justify-content: center;
   gap: 7px;
-  border: 1.5px solid #D6C7AC;
-  color: var(--ink-soft);
+  border: 1.5px solid var(--sand);
+  background: var(--sand);
+  color: #fff;
   font-size: 12.5px;
   font-weight: 600;
   padding: 9px;
   border-radius: 9px;
   transition: background .2s, color .2s, border-color .2s;
 }
-.eat-btn.is-on { background: var(--olive); border-color: var(--olive); color: #fff; }
+.eat-btn:hover { background: #5f4c29; border-color: #5f4c29; }
+.eat-btn.is-on { background: var(--ln-soft); border-color: var(--line); color: var(--ink-soft); }
 .cook-btn {
   flex: 1.4;
   background: var(--rust);
