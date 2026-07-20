@@ -167,15 +167,19 @@ export function todayView() {
           <div class="freezer-note">Freezer stash: <b>${f.freezerCount} portions</b> — ${esc(f.freezerNote)}</div>
         </div>
       </section>
-      <section class="panel">
+      <section class="panel panel-radar">
         <div class="panel-head"><h3>Use-it-up radar</h3><span class="panel-tag tag-sand">Zero waste</span></div>
-        ${radarChart(rc)}
-        <div class="radar-stats">
-          <div class="radar-stat"><span class="radar-stat-n">${rc.total}</span><span class="radar-stat-l">fresh items</span></div>
-          <div class="radar-stat"><span class="radar-stat-n c-alert">${rc.soon}</span><span class="radar-stat-l">use soon</span></div>
-          <div class="radar-stat"><span class="radar-stat-n">${rc.fresh}</span><span class="radar-stat-l">time to spare</span></div>
+        <div class="radar-layout">
+          ${radarChart(rc)}
+          <div class="radar-side">
+            <div class="radar-stats">
+              <div class="radar-stat"><span class="radar-stat-n">${rc.total}</span><span class="radar-stat-l">fresh items</span></div>
+              <div class="radar-stat"><span class="radar-stat-n c-alert">${rc.soon}</span><span class="radar-stat-l">use soon</span></div>
+              <div class="radar-stat"><span class="radar-stat-n">${rc.fresh}</span><span class="radar-stat-l">time to spare</span></div>
+            </div>
+            <div class="radar-foot">Dots nearer the centre need cooking sooner — shop so the perishables land in that order.</div>
+          </div>
         </div>
-        <div class="radar-foot">Dots nearer the centre need cooking sooner — shop so the perishables land in that order.</div>
       </section>
     </div>
   </div>`;

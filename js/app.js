@@ -9,6 +9,7 @@ import { sidebar, tabbar, todayView, planView, shoppingView, pantryView } from '
 import { overlays, cookFoot, searchResultsHTML } from './overlays.js';
 import { actions, onBudgetInput, closeTopLayer } from './actions.js';
 import { initSync } from './sync.js';
+import { syncToStep as timerSync, stop as timerStop } from './timer.js';
 
 const $ = id => document.getElementById(id);
 let lastView = null;
@@ -35,6 +36,7 @@ function patchCookStep(root) {
   void step.offsetWidth;
   step.classList.add('anim-in');
   root.querySelector('.cook-foot').innerHTML = cookFoot();
+  timerSync(); // reset the timer to the new step's suggested duration
 }
 
 // ---- focus management ----
@@ -101,6 +103,9 @@ function render() {
     setEntering(ovEl, overlayChanged);
     ovEl.innerHTML = overlays();
   }
+  // Cook-mode timer lifecycle: init on open / recipe switch, stop on close.
+  if (state.cooking && overlayChanged) timerSync();
+  else if (!state.cooking && lastOverlayKey.startsWith('cook')) timerStop();
   document.documentElement.classList.toggle('locked', !!key);
   $('fab').hidden = !!key;
 

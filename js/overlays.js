@@ -136,6 +136,17 @@ function cookMode() {
       <div class="cook-count">Step ${n} of ${total}</div>
       <div class="cook-step anim-in" data-key="${n}">${esc(r.steps[state.cookStep])}</div>
     </div>
+    <div class="cook-timer is-empty" role="group" aria-label="Step timer">
+      <span class="cook-timer-ic" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M12 5V3M9.5 3h5"/></svg>
+      </span>
+      <div class="cook-timer-body">
+        <div class="cook-timer-top"><span class="cook-timer-label">Step timer</span><span class="cook-timer-time"></span></div>
+        <div class="cook-timer-track"><div class="cook-timer-fill"></div></div>
+      </div>
+      <button class="cook-timer-toggle" data-act="cookTimer" aria-label="Start timer">▶</button>
+      <button class="cook-timer-reset" data-act="cookTimerReset" aria-label="Reset timer">↺</button>
+    </div>
     <div class="cook-foot">${cookFoot()}</div>
   </div>`;
 }

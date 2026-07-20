@@ -7,6 +7,7 @@ import { effId, swapCandidate, actualPlanCost, fmtLocal, localVal, currentPlan }
 import { weekByOffset } from './dates.js';
 import { toast } from './ui.js';
 import { sendCode, verifyCode, signOut, resetPending, auth } from './sync.js';
+import { toggle as timerToggle, reset as timerReset } from './timer.js';
 
 export const actions = {
   view(d) { set({ view: d.view }); },
@@ -60,6 +61,9 @@ export const actions = {
   },
   cookBack() { set({ cookStep: Math.max(0, state.cookStep - 1) }); },
   cookClose() { set({ cooking: null }); },
+  // Timer buttons paint themselves — no state render (which would replay the step).
+  cookTimer() { timerToggle(); },
+  cookTimerReset() { timerReset(); },
   cookFinish() {
     const r = recipes[state.cooking];
     const td = state.plan[state.week.todayIdx];
