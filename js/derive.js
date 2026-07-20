@@ -162,6 +162,28 @@ export function todayData() {
   return { day: td, meals, eatenProt, todayProt, eatenCount, pct: todayProt ? Math.round(eatenProt / todayProt * 100) : 0 };
 }
 
+// Per-meal calorie estimate. Recipes carry protein but not calories, so this
+// is a deliberately rough proxy (protein grams + a mixed carb/fat base) — good
+// enough for the "per day avg." glance stat, never presented as exact.
+export function kcalOf(r) { return Math.round(r.protein * 9 + 400); }
+
+// ---- Weekly plan summary stats (bottom "at a glance" row) ----
+export function weekStats() {
+  let prot = 0, kcal = 0, cost = 0;
+  state.plan.forEach(d => SLOTS.forEach(slot => {
+    const e = d[slot], r = recipes[effId(d, slot)];
+    prot += r.protein;
+    kcal += kcalOf(r);
+    if (!e.leftover) cost += r.cost * (e.batch || 1);
+  }));
+  return {
+    protPerDay: Math.round(prot / 7),
+    kcalPerDay: Math.round(kcal / 7),
+    cost,
+    costLabel: '$' + cost.toFixed(2),
+  };
+}
+
 // ---- Week grid/agenda rows ----
 export function weekDays() {
   return state.plan.map((d, di) => {
