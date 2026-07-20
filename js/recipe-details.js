@@ -720,6 +720,43 @@ Object.assign(details, {
   ], tips: ['A little mashed matoke stirred into the beans thickens everything nicely.', 'Rub oil on your hands before peeling matoke — the sap stains.'], storage: 'Beans keep 4 days and freeze well; steam fresh matoke to serve.' },
 });
 
+// ---------- more pastries + drinks ----------
+Object.assign(details, {
+  'pain-au-chocolat': { prep: 8, steps: [
+    'Heat the oven to 200°C and line a tray with baking paper.',
+    'Cut 1 sheet puff pastry into rectangles and lay a line of chopped dark chocolate (about 40g total) along one short edge of each.',
+    'Roll up around the chocolate and set seam-side down.',
+    'Brush with beaten egg and a little sugar, and bake 16–18 minutes until puffed and deep golden.',
+  ], tips: ['Keep the pastry cold until it hits the oven — that’s what makes it flaky.', 'Two thin bars of chocolate spaced apart give the classic double-spiral.'], storage: 'Best warm the day they’re baked; re-crisp in a hot oven for a few minutes. Freeze shaped and unbaked, then bake from frozen.' },
+  'cream-scones': { prep: 10, steps: [
+    'Heat the oven to 210°C. Rub ¼ cup cold butter into 2 cups flour, 2 tbsp sugar and 1 tbsp baking powder until it looks like breadcrumbs.',
+    'Stir in just enough milk (about ½ cup) to bring it to a soft dough — don’t overwork it.',
+    'Pat out 3cm thick and cut rounds with a floured cutter.',
+    'Brush the tops with milk and bake 12–14 minutes until risen and golden. Serve with jam.',
+  ], tips: ['Handle the dough as little as possible for a light, tall scone.', 'Push the cutter straight down without twisting so they rise evenly.'], storage: 'Best the day they’re made; refresh next-day scones for 5 minutes in a warm oven. Freeze well.' },
+  'puff-puff': { prep: 12, steps: [
+    'Whisk 2 cups flour, 1 tsp yeast, ⅓ cup sugar and a pinch of nutmeg with warm water into a thick, sticky batter.',
+    'Cover and leave somewhere warm about 1 hour, until bubbly and risen.',
+    'Heat oil for deep-frying. Scoop rounds of batter in with a wet hand or spoon.',
+    'Fry, turning, until deep golden all over; drain and dust with a little sugar.',
+  ], tips: ['The batter should be thicker than pancake batter but still drop from a spoon.', 'Medium heat — too hot and they brown before the middle cooks.'], storage: 'Best eaten warm and fresh; they soften as they sit. Re-crisp briefly in a hot oven.' },
+  'chocolate-peanut-smoothie': { prep: 5, steps: [
+    'Add 1 cup milk, 1 banana, 2 tbsp peanut butter and 1 tbsp cocoa to the blender.',
+    'Blend 30 seconds until smooth and frothy.',
+    'Sweeten with 1 tsp honey and pour over ice.',
+  ], tips: ['A frozen banana turns it into a thick shake.', 'A pinch of salt makes the peanut and chocolate pop.'], storage: 'Best fresh; pre-portion banana and peanut butter into the freezer for a 2-minute blend.' },
+  'orange-carrot-juice': { prep: 6, steps: [
+    'Blend 2 chopped carrots with a splash of water until fine, then strain through a sieve.',
+    'Squeeze in the juice of 2 oranges and ½ lemon.',
+    'Grate in a little ginger, stir and serve cold.',
+  ], tips: ['No juicer needed — blend and strain works fine.', 'Chill the fruit first for a colder, fresher juice.'], storage: 'Drink within a few hours; fresh juice separates and dulls on standing — stir before serving.' },
+  'strawberry-shake': { prep: 5, steps: [
+    'Add ½ cup Greek yogurt, 1 cup strawberries, ½ cup milk and 2 tbsp oats to the blender.',
+    'Blend until completely smooth.',
+    'Sweeten with 1 tsp honey and drink chilled.',
+  ], tips: ['The oats thicken it and add staying power without changing the flavour.', 'Frozen strawberries make it thick and frosty — skip the ice.'], storage: 'Best fresh; the oats keep thickening, so drink within the hour or loosen with milk.' },
+});
+
 // ---- Make-ahead & storage notes, merged into details above ----
 const STORAGE = {
   // neutral breakfasts

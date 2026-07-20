@@ -399,6 +399,28 @@ cuisineMains.Indian.push('aloo-gobi','baingan-bharta');
 cuisineMains.Swahili.push('chickpea-cauliflower-curry');
 cuisineMains.Ugandan.push('beans-matoke');
 
+// ---- More pastries + smoothies/drinks (user request) ----
+Object.assign(recipes, {
+  'pain-au-chocolat':{id:'pain-au-chocolat',name:'Pain au Chocolat',cuisine:'',tagline:'Breakfast · café-style',cost:2.8,protein:8,timeMin:20,ingredients:[{item:'Puff pastry',qty:'1 sheet'},{item:'Dark chocolate',qty:'40g'},{item:'Eggs',qty:'1'},{item:'Butter',qty:'1 tbsp'},{item:'Sugar',qty:'1 tsp'}],steps:['Cut puff pastry into rectangles and lay a line of chopped chocolate along one edge.','Roll up around the chocolate and set seam-down; brush with beaten egg.','Bake at 200°C for 16–18 min until puffed and deep golden.'],note:'The bakery classic — buttery pastry wrapped around a seam of dark chocolate.'},
+  'cream-scones':{id:'cream-scones',name:'Cream Scones',cuisine:'',tagline:'Breakfast · bakery-style',cost:2.4,protein:9,timeMin:25,ingredients:[{item:'Flour',qty:'2 cups'},{item:'Butter',qty:'¼ cup'},{item:'Milk',qty:'½ cup'},{item:'Sugar',qty:'2 tbsp'},{item:'Baking powder',qty:'1 tbsp'}],steps:['Rub cold butter into flour, sugar and baking powder until crumbly.','Stir in just enough milk to bring it together; pat out and cut rounds.','Bake at 210°C for 12–14 min until risen and golden. Serve with jam.'],note:'Tender, just-sweet scones — split warm with butter or jam and a cup of tea.'},
+  'puff-puff':{id:'puff-puff',name:'Puff Puff',cuisine:'Nigerian',region:'Nationwide',tagline:'Breakfast · fried & sweet',cost:1.6,protein:6,timeMin:30,ingredients:[{item:'Flour',qty:'2 cups'},{item:'Yeast',qty:'1 tsp'},{item:'Sugar',qty:'⅓ cup'},{item:'Nutmeg',qty:'pinch'},{item:'Oil',qty:'for frying'}],steps:['Mix flour, yeast, sugar and nutmeg with warm water into a soft, sticky batter.','Cover and leave to rise about 1 hour until bubbly.','Scoop rounds into hot oil and fry until deep golden, turning; drain and dust with sugar.'],note:'Nigeria’s beloved fried dough balls — crisp outside, fluffy within, lightly sweet.'},
+  'chocolate-peanut-smoothie':{id:'chocolate-peanut-smoothie',name:'Chocolate Peanut Smoothie',cuisine:'',tagline:'Breakfast · smoothie',cost:2.9,protein:22,timeMin:5,ingredients:[{item:'Milk',qty:'1 cup'},{item:'Banana',qty:'1'},{item:'Peanut butter',qty:'2 tbsp'},{item:'Cocoa powder',qty:'1 tbsp'},{item:'Honey',qty:'1 tsp'}],steps:['Add milk, banana, peanut butter and cocoa to the blender.','Blend until smooth and frothy.','Sweeten with honey and pour over ice.'],note:'Tastes like a milkshake, works like breakfast — 22g protein from milk and peanut.'},
+  'orange-carrot-juice':{id:'orange-carrot-juice',name:'Carrot Orange Juice',cuisine:'',tagline:'Breakfast · fresh juice',cost:2.2,protein:3,timeMin:6,ingredients:[{item:'Carrot',qty:'2'},{item:'Orange',qty:'2'},{item:'Ginger',qty:'small knob'},{item:'Lemon',qty:'½'}],steps:['Juice or blend the carrot with a little water, then strain if blending.','Squeeze in the oranges and lemon.','Add a little grated ginger, stir and serve cold.'],note:'Bright, vitamin-packed and dairy-free — a fresh start to the day.'},
+  'strawberry-shake':{id:'strawberry-shake',name:'Strawberry Yogurt Shake',cuisine:'',tagline:'Breakfast · shake',cost:2.6,protein:16,timeMin:5,ingredients:[{item:'Greek yogurt',qty:'½ cup'},{item:'Strawberries',qty:'1 cup'},{item:'Milk',qty:'½ cup'},{item:'Rolled oats',qty:'2 tbsp'},{item:'Honey',qty:'1 tsp'}],steps:['Blend yogurt, strawberries, milk and oats until smooth.','Sweeten with honey to taste.','Pour and drink chilled.'],note:'Creamy strawberry shake thickened with oats — dessert energy, breakfast substance.'},
+});
+Object.assign(emojiOf, { 'pain-au-chocolat':'🍫','cream-scones':'🧈','puff-puff':'🍩','chocolate-peanut-smoothie':'🥤','orange-carrot-juice':'🥕','strawberry-shake':'🍓' });
+Object.assign(catOf, { 'Dark chocolate':'Pantry','Nutmeg':'Pantry','Oil':'Pantry','Cocoa powder':'Pantry','Orange':'Produce','Strawberries':'Produce' });
+Object.assign(photoMap, {
+  'pain-au-chocolat':'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Pain_au_chocolat_Luc_Viatour.jpg/960px-Pain_au_chocolat_Luc_Viatour.jpg',
+  'cream-scones':'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Scone_varieties.jpg/960px-Scone_varieties.jpg',
+  'puff-puff':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Puff_puff_for_sell.jpg/960px-Puff_puff_for_sell.jpg',
+  'chocolate-peanut-smoothie':'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/DFC_0816_A_close-up_of_a_hand_holding_a_plastic_cup_while_a_chocolatey_smoothie_is_poured_over_ice_from_a_blender.jpg/960px-DFC_0816_A_close-up_of_a_hand_holding_a_plastic_cup_while_a_chocolatey_smoothie_is_poured_over_ice_from_a_blender.jpg',
+  'orange-carrot-juice':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/GlassOfJuice_and_carrots.JPG/960px-GlassOfJuice_and_carrots.JPG',
+  'strawberry-shake':'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Strawberry_milk_shake_%28cropped%29.jpg/960px-Strawberry_milk_shake_%28cropped%29.jpg',
+});
+neutralBreakfasts.push('pain-au-chocolat','cream-scones','chocolate-peanut-smoothie','orange-carrot-juice','strawberry-shake');
+cuisineBreakfasts.Nigerian.push('puff-puff');
+
 // Merge detailed methods, prep times and tips over the concise base recipes.
 import { details } from './recipe-details.js';
 for (const [id, d] of Object.entries(details)) {

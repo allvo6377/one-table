@@ -35,7 +35,7 @@ const IDS = {
     'luwombo-chicken', 'ofada-stew', 'chicken-parmigiana', 'suya-skewers', 'mishkaki-skewers',
     'mukimo-beef', 'chapati-beef-stew']),
   dessert: new Set(['blueberry-muffins', 'cinnamon-rolls', 'cheese-danish', 'almond-croissant', 'banana-bread',
-    'mandazi-chai', 'mahamri-mbaazi', 'vitumbua-chai', 'kabalagala']),
+    'mandazi-chai', 'mahamri-mbaazi', 'vitumbua-chai', 'kabalagala', 'pain-au-chocolat', 'cream-scones', 'puff-puff']),
 };
 
 // Each category: id, label, emoji, and a test(recipe) → boolean. Cuisines
