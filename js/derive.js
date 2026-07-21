@@ -146,20 +146,25 @@ export function nudgeData() {
 // ---- Today's meals ----
 export function todayData() {
   const td = state.plan[focusIdx()];
-  let eatenProt = 0, todayProt = 0, eatenCount = 0;
+  let eatenProt = 0, todayProt = 0, eatenKcal = 0, todayKcal = 0, eatenCount = 0;
   const meals = SLOTS.map(slot => {
     const e = td[slot], rid = effId(td, slot), r = recipes[rid];
     const key = td.name + '-' + slot, isEaten = !!state.eaten[key], lo = !!e.leftover;
-    todayProt += r.protein;
-    if (isEaten) { eatenProt += r.protein; eatenCount++; }
+    const kcal = kcalOf(r);
+    todayProt += r.protein; todayKcal += kcal;
+    if (isEaten) { eatenProt += r.protein; eatenKcal += kcal; eatenCount++; }
     return {
-      slot, rid, recipe: r, key, isEaten,
+      slot, rid, recipe: r, key, isEaten, kcal,
       timeLabel: lo ? 'reheat · 2 min' : r.timeMin + ' min',
       showSteam: slot === 'dinner' && !isEaten,
       canCook: slot === 'dinner' && !isEaten,
     };
   });
-  return { day: td, meals, eatenProt, todayProt, eatenCount, pct: todayProt ? Math.round(eatenProt / todayProt * 100) : 0 };
+  return {
+    day: td, meals, eatenProt, todayProt, eatenCount,
+    pct: todayProt ? Math.round(eatenProt / todayProt * 100) : 0,
+    eatenKcal, todayKcal, kcalPct: todayKcal ? Math.round(eatenKcal / todayKcal * 100) : 0,
+  };
 }
 
 // Per-meal calorie estimate. Recipes carry protein but not calories, so this

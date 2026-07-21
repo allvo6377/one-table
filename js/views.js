@@ -83,7 +83,7 @@ function mealCard(m, i) {
     <div class="meal-body">
       <div class="slot-label">${cap(m.slot)}</div>
       <button class="meal-name as-link" data-act="open" data-id="${m.rid}">${esc(r.name)}</button>
-      <div class="meal-meta"><span>${esc(m.timeLabel)}</span><span>·</span><span>${r.protein}g protein</span></div>
+      <div class="meal-meta"><span>${esc(m.timeLabel)}</span><span>·</span><span>${r.protein}g protein</span><span>·</span><span>${m.kcal} kcal</span></div>
       <div class="meal-actions">
         <button class="eat-btn${m.isEaten ? ' is-on' : ''}" aria-pressed="${m.isEaten}" data-act="eat" data-key="${m.key}" data-id="${m.rid}">${m.isEaten ? 'Eaten ✓' : 'Mark eaten'}</button>
         ${m.canCook ? `<button class="cook-btn" data-act="cook" data-id="${m.rid}">Cook · ${r.timeMin} min →</button>` : ''}
@@ -148,6 +148,8 @@ export function todayView() {
       <div class="prot-box">
         <div class="prot-row"><b>${t.eatenProt}g of ${t.todayProt}g protein</b><span>${t.eatenCount}/3 meals</span></div>
         <div class="bar" role="progressbar" aria-label="Protein eaten today" aria-valuemin="0" aria-valuemax="${t.todayProt}" aria-valuenow="${t.eatenProt}"><div class="bar-fill fill-ochre" style="width:${t.pct}%"></div></div>
+        <div class="prot-row cal-row"><b>${t.eatenKcal.toLocaleString('en-US')} of ${t.todayKcal.toLocaleString('en-US')} kcal</b><span>calories today</span></div>
+        <div class="bar" role="progressbar" aria-label="Calories eaten today" aria-valuemin="0" aria-valuemax="${t.todayKcal}" aria-valuenow="${t.eatenKcal}"><div class="bar-fill fill-olive" style="width:${t.kcalPct}%"></div></div>
       </div>
     </header>
 
