@@ -442,5 +442,7 @@ Object.assign(photoMap, {
 // Owner-supplied dish photos, self-hosted in the repo (same-origin, no external
 // dependency). These run last, so they override any stock photo above.
 Object.assign(photoMap, {
-  'sukuma-ugali':'img/sukuma-ugali.webp',
+  'sukuma-ugali':'img/sukuma-ugali.jpg',
+  'nduma-eggs':'img/nduma-eggs.webp',
+  'kenyan-uji':'img/kenyan-uji.webp',
 });
