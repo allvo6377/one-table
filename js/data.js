@@ -446,4 +446,8 @@ Object.assign(photoMap, {
   'nduma-eggs':'img/nduma-eggs.webp',
   'kenyan-uji':'img/kenyan-uji.webp',
   'chapati-ndengu':'img/chapati-ndengu.webp',
+  'ingokho-stew':'img/ingokho-stew.jpg',
+  'omena-ugali':'img/omena-ugali.jpg',
+  'beef-posho':'img/beef-posho.jpg',
+  'chapati-beef-stew':'img/chapati-beef-stew.jpg',
 });
