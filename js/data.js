@@ -481,3 +481,9 @@ Object.assign(emojiOf, { 'eggs-avocado-tea':'🥑','sausage-eggs':'🌭','smokie
 Object.assign(catOf, { 'Sausages':'Protein','Smokies':'Protein','Tilapia':'Protein','Avocado':'Produce' });
 cuisineBreakfasts.Kenyan.push('eggs-avocado-tea', 'sausage-eggs');
 cuisineMains.Kenyan.push('smokies-kachumbari', 'tilapia-ugali', 'fish-stew-rice');
+
+Object.assign(recipes, {
+  'beef-samosas':{id:'beef-samosas',name:'Beef Samosas',cuisine:'Kenyan',region:'Nationwide',tagline:'Lunch · fried snack, make-ahead',cost:2.5,protein:18,timeMin:40,prep:20,ingredients:[{item:'Flour',qty:'1½ cups'},{item:'Ground beef',qty:'200g'},{item:'Onion',qty:'1'},{item:'Garlic',qty:'2 cloves'},{item:'Cumin',qty:'1 tsp'},{item:'Chili',qty:'1'}],steps:['Make a stiff dough with the flour and a little water and oil; rest it, then roll and cut into strips.','Brown the ground beef with onion, garlic, cumin and chili until dry and fragrant.','Fold the strips into triangular pockets, seal with a flour paste, fill, and deep-fry until golden and crisp.'],note:'Kenya’s go-to snack — crisp pastry triangles packed with spiced beef. Make a batch and freeze them raw to fry on demand.',storage:'Freeze uncooked for up to a month and fry straight from frozen.'},
+});
+Object.assign(emojiOf, { 'beef-samosas':'🥟' });
+cuisineMains.Kenyan.push('beef-samosas');
