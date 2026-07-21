@@ -8,7 +8,7 @@ import { contentDoc, publishContent, applyContent, THEME_FIELDS, FONT_PAIRS } fr
 import { recipes, emojiOf, photoMap, neutralBreakfasts, cuisineMains, cuisineBreakfasts, CATEGORY_ORDER } from './data.js';
 import { allCategories, CURATED_DEFAULTS } from './tags.js';
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
-import { api, REST, accessToken } from './sync.js';
+import { api, REST, freshAccessToken } from './sync.js';
 import { state, set } from './store.js';
 import { esc, cap } from './ui.js';
 import { currentPlan } from './planner.js';
@@ -116,14 +116,25 @@ export async function adminUpload(file) {
   if (!file || !editId) return;
   busy = true; status = 'Uploading image…'; set({});
   try {
+    // Refresh first: this raw fetch bypasses api()'s token refresh, so a token
+    // that has aged out mid-session would otherwise be rejected by RLS (400).
+    const token = await freshAccessToken();
+    if (!token) throw new Error('Not signed in — sign in again to upload.');
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
     const path = `${editId}-${Date.now()}.${ext}`;
     const res = await fetch(`${SUPABASE_URL}/storage/v1/object/content-images/${path}`, {
       method: 'POST',
-      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + accessToken(), 'Content-Type': file.type || 'image/jpeg', 'x-upsert': 'true' },
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + token, 'Content-Type': file.type || 'image/jpeg', 'x-upsert': 'true' },
       body: file,
     });
-    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || res.statusText);
+    if (!res.ok) {
+      const msg = (await res.json().catch(() => ({}))).message || res.statusText;
+      // RLS rejection usually means the admin session expired — guide the fix.
+      if (/row-level security|unauthorized|jwt/i.test(msg)) {
+        throw new Error('Session expired — sign out and back in, then retry.');
+      }
+      throw new Error(msg);
+    }
     const url = `${SUPABASE_URL}/storage/v1/object/public/content-images/${path}`;
     const o = (draft.recipes[editId] = draft.recipes[editId] || {}); o.photo = url;
     if (draft.added[editId]) draft.added[editId].photo = url;

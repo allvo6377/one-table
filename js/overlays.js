@@ -7,6 +7,7 @@ import { esc, photoUrl, thumb } from './ui.js';
 import { auth } from './sync.js';
 import { CATEGORIES, matchesCategory, DIET_OPTIONS } from './tags.js';
 import { adminPanel } from './admin.js';
+import { kcalOf } from './derive.js';
 
 const slotForTag = t => /breakfast/i.test(t) ? 'breakfast' : /lunch/i.test(t) ? 'lunch' : 'dinner';
 
@@ -50,8 +51,8 @@ function searchModal() {
   <div class="modal modal-search" role="dialog" aria-modal="true" aria-label="Search meals">
     <div class="search-head">
       <input id="search-input" class="sync-input search-input" type="search" inputmode="search" autocomplete="off"
-             placeholder="Search ${Object.keys(recipes).length}+ meals — name, cuisine, ingredient…" data-act="search" value="${esc(state.searchQuery)}">
-      <button class="btn-ghost search-close" data-act="closeSearch">Close</button>
+             placeholder="Search ${Object.keys(recipes).length} meals…" data-act="search" value="${esc(state.searchQuery)}">
+      <button class="search-close" data-act="closeSearch" aria-label="Close search">×</button>
     </div>
     <div id="search-body" class="search-body">${searchBodyHTML()}</div>
     <div class="search-foot">Tap a category to browse, or a meal to see the recipe and add its ingredients to your shopping list.</div>
@@ -84,6 +85,7 @@ function recipeSheet() {
         <span class="meta-chip">🔪 ${r.prep ?? Math.max(3, Math.round(r.timeMin / 3))} min prep</span>
         <span class="meta-chip">🍽 serves ${sv}</span>
         <span class="meta-chip">💪 ${r.protein}g protein</span>
+        <span class="meta-chip">🔥 ${kcalOf(r).toLocaleString('en-US')} kcal</span>
         <span class="meta-chip">＄${r.cost}${local ? ` · ${esc(local)}` : ''} / serving</span>
       </div>
       <div class="servings">
