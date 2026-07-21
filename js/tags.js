@@ -10,7 +10,7 @@ import { recipes, catOf } from './data.js';
 const DAIRY = new Set(['Greek yogurt', 'Milk', 'Feta', 'Cottage cheese', 'Parmesan', 'Yogurt',
   'Paneer', 'Mozzarella', 'Ricotta', 'Mursik (fermented milk)', 'Pecorino cheese', 'Butter', 'Cream cheese', 'Ghee']);
 // Wheat/gluten-bearing items (granola treated as not-GF, to stay on the safe side).
-const GLUTEN = new Set(['Sourdough bread', 'Pasta', 'Spaghetti', 'Flour', 'Chapati', 'Roti',
+const GLUTEN = new Set(['Sourdough bread', 'White bread', 'Pasta', 'Spaghetti', 'Flour', 'Chapati', 'Roti',
   'Semolina', 'Breadcrumbs', 'Stale bread', 'Puff pastry', 'Croissants', 'Granola']);
 
 const items = r => r.ingredients.map(i => i.item);
