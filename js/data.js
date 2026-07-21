@@ -445,4 +445,5 @@ Object.assign(photoMap, {
   'sukuma-ugali':'img/sukuma-ugali.jpg',
   'nduma-eggs':'img/nduma-eggs.webp',
   'kenyan-uji':'img/kenyan-uji.webp',
+  'chapati-ndengu':'img/chapati-ndengu.webp',
 });
