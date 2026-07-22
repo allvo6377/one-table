@@ -32,12 +32,14 @@ export const CURATED_DEFAULTS = {
     'pesto-chicken-pasta', 'rajma-rice', 'githeri', 'matoke-groundnut', 'sukuma-ugali', 'beef-posho'],
   kids: ['banana-pancakes', 'banana-bread', 'blueberry-muffins', 'cinnamon-rolls', 'spaghetti-bolognese',
     'pesto-chicken-pasta', 'chapati-beef-stew', 'mahamri-mbaazi', 'kabalagala', 'mango-fruit-bowl',
-    'chicken-parmigiana', 'mukimo-beef', 'viazi-karai', 'cheese-danish'],
+    'chicken-parmigiana', 'mukimo-beef', 'viazi-karai', 'cheese-danish',
+    'fluffy-pancakes', 'crepes', 'doughnuts', 'kenyan-chips'],
   special: ['nyama-choma', 'zanzibar-biryani', 'pilau', 'jollof-chicken', 'kuku-wa-kupaka',
     'luwombo-chicken', 'ofada-stew', 'chicken-parmigiana', 'suya-skewers', 'mishkaki-skewers',
     'mukimo-beef', 'chapati-beef-stew'],
   dessert: ['blueberry-muffins', 'cinnamon-rolls', 'cheese-danish', 'almond-croissant', 'banana-bread',
-    'mandazi-chai', 'mahamri-mbaazi', 'vitumbua-chai', 'kabalagala', 'pain-au-chocolat', 'cream-scones', 'puff-puff'],
+    'mandazi-chai', 'mahamri-mbaazi', 'vitumbua-chai', 'kabalagala', 'pain-au-chocolat', 'cream-scones', 'puff-puff',
+    'doughnuts', 'crepes'],
 };
 const CURATED = Object.keys(CURATED_DEFAULTS);
 const members = {};
