@@ -459,6 +459,7 @@ Object.assign(photoMap, {
   'fish-stew-rice':'img/fish-stew-rice.webp',
   'tilapia-ugali':'img/tilapia-ugali.jpg',
   'rice-kamande':'img/rice-kamande.jpg',
+  'kenyan-wet-fry-beef':'img/kenyan-wet-fry-beef.jpg',
 });
 
 // ---- Added recipes: a bread breakfast, two rice mains (green-gram ndengu and
@@ -496,3 +497,16 @@ Object.assign(recipes, {
 });
 Object.assign(emojiOf, { 'beef-samosas':'🥟' });
 cuisineMains.Kenyan.push('beef-samosas');
+
+// ---- Potato dishes (sautéed viazi, chips/fries, potato curry) + a how-to
+// recipe for three quick sauces. The sauces entry is a reference dish, so it
+// stays out of the meal pools but is findable in search.
+Object.assign(recipes, {
+  'sauteed-potatoes':{id:'sauteed-potatoes',name:'Sautéed Potatoes (Viazi)',cuisine:'Kenyan',region:'Nationwide',tagline:'Lunch · quick & savoury',cost:1.8,protein:8,timeMin:25,prep:8,ingredients:[{item:'Potato',qty:'3'},{item:'Onion',qty:'1'},{item:'Tomato',qty:'1'},{item:'Bell pepper',qty:'½'},{item:'Garlic',qty:'2 cloves'},{item:'Cooking oil',qty:'2 tbsp'}],steps:['Parboil the diced potatoes until just tender, then drain well.','Fry the onion, garlic, tomato and pepper in oil until soft.','Add the potatoes and toss over high heat until golden at the edges and coated in the sauce.'],note:'A quick, savoury Kenyan potato sauté — crisp-edged viazi in a soft onion-and-tomato base.',storage:'Keeps 2 days chilled; crisp up again in a hot pan.'},
+  'kenyan-chips':{id:'kenyan-chips',name:'Chips & Kachumbari',cuisine:'Kenyan',region:'Nationwide',tagline:'Lunch · fried favourite',cost:2.2,protein:7,timeMin:25,prep:10,ingredients:[{item:'Potato',qty:'4'},{item:'Cooking oil',qty:'for frying'},{item:'Tomato',qty:'1'},{item:'Red onion',qty:'1'},{item:'Chili',qty:'1'},{item:'Lemon',qty:'½'}],steps:['Cut the potatoes into thick chips, rinse and pat them dry.','Fry in hot oil until golden and crisp, then drain and salt.','Serve with a fresh kachumbari of tomato, red onion, chili and lemon.'],note:'Kenya’s beloved chips — hot, crisp fries with a sharp kachumbari on the side.',storage:'Best eaten fresh and hot; chips go soft on standing.'},
+  'potato-curry':{id:'potato-curry',name:'Potato Curry (Viazi Karanga)',cuisine:'Kenyan',region:'Coastal',tagline:'Dinner · rich & saucy',cost:2,protein:9,timeMin:30,prep:8,ingredients:[{item:'Potato',qty:'4'},{item:'Onion',qty:'1'},{item:'Tomato',qty:'2'},{item:'Coconut milk',qty:'½ cup'},{item:'Curry powder',qty:'1 tbsp'},{item:'Garlic',qty:'2 cloves'},{item:'Cilantro',qty:'handful'}],steps:['Fry the onion, garlic and curry powder until fragrant.','Add the tomato and diced potatoes, pour in the coconut milk, and simmer until the potatoes are tender and the sauce is thick.','Finish with fresh coriander and serve with rice or chapati.'],note:'Soft potatoes in a spiced coconut-tomato curry — comforting, vegan and cheap.',storage:'Keeps 3 days chilled and freezes well; loosen with water when reheating.'},
+  'homemade-sauces':{id:'homemade-sauces',name:'Homemade Sauces (3 Ways)',cuisine:'',tagline:'Sides · dips & drizzles',cost:1.5,protein:3,timeMin:15,prep:10,ingredients:[{item:'Tomato',qty:'3'},{item:'Garlic',qty:'4 cloves'},{item:'Chili',qty:'2'},{item:'Mayonnaise',qty:'3 tbsp'},{item:'Lemon',qty:'1'},{item:'Cooking oil',qty:'2 tbsp'}],steps:['Tomato sauce: simmer blended tomato with a little garlic, oil and salt until thick and glossy.','Pili pili (chilli) sauce: blend chilli with garlic, lemon and a splash of oil into a fiery drizzle.','Garlic sauce: stir crushed garlic and a squeeze of lemon into the mayonnaise for a quick creamy dip.'],note:'Three easy sauces to lift chips, samosas or grilled meat — a fresh tomato sauce, a fiery pili pili, and a creamy garlic dip.',storage:'Tomato and chilli sauces keep a week chilled; the garlic mayo about 3 days.'},
+});
+Object.assign(emojiOf, { 'sauteed-potatoes':'🥔','kenyan-chips':'🍟','potato-curry':'🍛','homemade-sauces':'🥫' });
+Object.assign(catOf, { 'Cooking oil':'Pantry','Mayonnaise':'Pantry' });
+cuisineMains.Kenyan.push('sauteed-potatoes', 'kenyan-chips', 'potato-curry');
