@@ -450,6 +450,14 @@ Object.assign(photoMap, {
   'omena-ugali':'img/omena-ugali.jpg',
   'beef-posho':'img/beef-posho.jpg',
   'chapati-beef-stew':'img/chapati-beef-stew.jpg',
+  'eggs-avocado-tea':'img/eggs-avocado-tea.webp',
+  'rice-ndengu':'img/rice-ndengu.webp',
+  'bread-eggs-chai':'img/bread-eggs-chai.webp',
+  'homemade-bread':'img/homemade-bread.jpg',
+  'sausage-eggs':'img/sausage-eggs.webp',
+  'egg-curry':'img/egg-curry.jpg',
+  'fish-stew-rice':'img/fish-stew-rice.webp',
+  'tilapia-ugali':'img/tilapia-ugali.jpg',
 });
 
 // ---- Added recipes: a bread breakfast, two rice mains (green-gram ndengu and
