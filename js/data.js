@@ -460,6 +460,13 @@ Object.assign(photoMap, {
   'tilapia-ugali':'img/tilapia-ugali.jpg',
   'rice-kamande':'img/rice-kamande.jpg',
   'kenyan-wet-fry-beef':'img/kenyan-wet-fry-beef.jpg',
+  'doughnuts':'img/doughnuts.jpg',
+  'beef-samosas':'img/beef-samosas.jpg',
+  'homemade-sauces':'img/homemade-sauces.jpg',
+  'crepes':'img/crepes.jpg',
+  'potato-curry':'img/potato-curry.jpg',
+  'sauteed-potatoes':'img/sauteed-potatoes.jpg',
+  'fluffy-pancakes':'img/fluffy-pancakes.jpg',
 });
 
 // ---- Added recipes: a bread breakfast, two rice mains (green-gram ndengu and
