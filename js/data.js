@@ -458,6 +458,7 @@ Object.assign(photoMap, {
   'egg-curry':'img/egg-curry.jpg',
   'fish-stew-rice':'img/fish-stew-rice.webp',
   'tilapia-ugali':'img/tilapia-ugali.jpg',
+  'rice-kamande':'img/rice-kamande.jpg',
 });
 
 // ---- Added recipes: a bread breakfast, two rice mains (green-gram ndengu and

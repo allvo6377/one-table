@@ -1,7 +1,7 @@
 // Service worker: precache the whole (static) app for offline use. App code
 // is served network-first so online visits always get the latest deploy;
 // fonts/icons are cache-first. Bump VERSION on any deploy to invalidate.
-const VERSION = 'tfo-architect-v12';
+const VERSION = 'tfo-architect-v13';
 const ASSETS = [
   './',
   'index.html',
@@ -39,6 +39,7 @@ const ASSETS = [
   'img/egg-curry.jpg',
   'img/fish-stew-rice.webp',
   'img/tilapia-ugali.jpg',
+  'img/rice-kamande.jpg',
   'fonts/source-serif-var.woff2',
   'fonts/source-serif-italic-var.woff2',
   'fonts/hanken-var.woff2',
