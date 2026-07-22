@@ -469,6 +469,7 @@ Object.assign(photoMap, {
   'potato-curry':'img/potato-curry.jpg',
   'sauteed-potatoes':'img/sauteed-potatoes.jpg',
   'fluffy-pancakes':'img/fluffy-pancakes.jpg',
+  'kenyan-chips':'img/kenyan-chips.webp',
 });
 
 // ---- Added recipes: a bread breakfast, two rice mains (green-gram ndengu and
