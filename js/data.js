@@ -533,3 +533,9 @@ Object.assign(recipes, {
 Object.assign(emojiOf, { 'crepes':'🫓','fluffy-pancakes':'🥞','doughnuts':'🍩' });
 Object.assign(catOf, { 'Baking powder':'Pantry' });
 neutralBreakfasts.push('crepes', 'fluffy-pancakes', 'doughnuts');
+
+// ---- The owner's own perfected chapati (a standalone side/bread; search-only). ----
+Object.assign(recipes, {
+  'chapati':{id:'chapati',name:'Chapati',cuisine:'Kenyan',region:'Nationwide',tagline:'Side · soft & layered',cost:1.2,protein:8,timeMin:40,prep:20,ingredients:[{item:'Flour',qty:'2 cups'},{item:'Sugar',qty:'2 tbsp'},{item:'Salt',qty:'pinch'},{item:'Milk',qty:'250ml warm (part milk, part water)'},{item:'Cooking oil',qty:'2 tbsp + for frying'}],steps:['Mix the flour, sugar and salt, then gradually work in the warm milk-and-water and a little oil, kneading until the dough is very soft and smooth.','Rub the dough with oil, cover it fully, and rest for at least 30 minutes.','Divide into balls; roll each out thin, brush with oil, coil into a spiral, then roll flat again for flaky layers.','Fry on a hot pan with a little oil, turning, until golden brown with soft, tender layers.'],note:'My perfected chapati — enriched with milk and a touch of sugar for soft, layered, golden flatbreads.',storage:'Keep wrapped in a cloth to stay soft; reheat on a dry pan. The dough can be made a day ahead and chilled.'},
+});
+Object.assign(emojiOf, { 'chapati':'🫓' });
